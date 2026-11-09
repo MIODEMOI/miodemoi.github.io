@@ -85,7 +85,7 @@ body{margin:0}
 <p class="msg" id="msg" hidden></p>
 <div id="lock" class="locked">
 <div id="teaser" class="report"></div>
-<div class="gate"><strong>내 상세 리포트 받기 · 120,000원 (부가세 포함)</strong><span style="font-size:14px;color:var(--muted)">결제 후 미오드모이 카카오톡 채널을 추가하고 메시지를 남겨 주세요. 제작형 상품이므로 구매 전 안내를 꼭 확인해 주세요.</span><span id="buyBox"></span></div>
+<div class="gate"><strong>내 상세 리포트 받기 · 120,000원 (부가세 포함)</strong><span style="font-size:14px;color:var(--muted)">결제 후 미오드모이 카카오톡 채널을 추가하고 메시지를 남겨 주세요. 제작형 상품이므로 구매 전 안내를 꼭 확인해 주세요.</span><span id="buyBox"></span><strong style="margin-top:8px">결제 후 할 일</strong><span style="font-size:14px;color:var(--muted)">아래 버튼으로 측정값을 복사해 미오드모이 카카오톡 채널에 붙여 넣어 주세요. 이 화면을 닫으면 값이 사라져요.</span><button type="button" id="copy">내 측정값 복사</button><p class="msg" id="copied" hidden></p><textarea id="copyText" rows="9" aria-label="복사할 측정값" hidden></textarea></div>
 </div>
 </section>
 </div>
@@ -118,6 +118,9 @@ function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  $('teaser').innerHTML=why+prev+'<div><h3>'+r.type+' 상세 리포트에 담긴 것</h3><ul class="products"><li><span>내가 왜 '+r.type+'처럼 보이는지, 그 이유</span></li>'+male+'<li><span>'+r.type+'의 장단점과 어울리는 스타일 레퍼런스 PDF</span></li><li><span>내 얼굴형에 맞는 헤어스타일 추천</span></li><li><span>대표가 사진을 직접 보고 확인하는 최종 체형 판정</span></li><li><span>재측정용 줄자와 측정 가이드 무료 배송</span></li></ul></div>';
  $('lock').hidden=false}
 $('f').addEventListener('input',draw);$('f').addEventListener('submit',e=>e.preventDefault());
+function summary(){const v=(n,i,u)=>n+': '+($(i).value||'-')+(u||'');return['[미오드모이 측정값]','판정 체형: '+$('type').textContent,v('성별','sex'),v('평소 입는 사이즈','size'),v('키','height','cm'),v('몸무게','weight','kg'),v('어깨 둘레','s','cm'),v('가슴 둘레','chest','cm'),v('허리 둘레','w','cm'),v('엉덩이 둘레','h','cm'),v('허벅지 둘레','thigh','cm'),v('복부 상태','belly'),v('이마(상안)','f1','cm'),v('코(중안)','f2','cm'),v('턱(하안)','f3','cm'),v('얼굴 폭','fw','cm')].join('\n')}
+$('copy').addEventListener('click',()=>{const text=summary(),done=$('copied'),box=$('copyText');const manual=()=>{box.hidden=false;box.value=text;box.focus();box.select();done.hidden=false;done.textContent='자동 복사가 안 되었어요. 아래 내용을 길게 눌러 복사해 주세요.'};
+ if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{box.hidden=true;done.hidden=false;done.textContent='복사했어요. 카카오톡 채널에 붙여 넣어 주세요.'}).catch(manual);else manual()});
 $('buyBox').innerHTML=STORE_URL?'<a class="buy" href="'+STORE_URL+'" target="_blank" rel="noopener">프로그램 구매하기</a>':'<span>상품 준비 중이에요.</span>';
 draw();
 </script>
