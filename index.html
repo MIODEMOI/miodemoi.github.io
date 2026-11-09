@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미오드모이 체형 확인</title>
+<meta name="description" content="집에 있는 줄자로 잰 수치로 내 체형 유형을 무료로 확인하세요.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+/* Layout: 줄자 눈금 띠를 기준선으로, 왼쪽 입력지와 오른쪽 결과지를 나란히 놓는다 */
+:root{--bg:#f2f0f4;--paper:#fff;--ink:#27212e;--muted:#675f70;--line:#d9d4de;--plum:#55305f;--tape:#f4c430;--tape-ink:#2a2230;--soft:#ece6f0;--warn:#8a4b00;
+--display:"Gowun Batang","Noto Serif KR",serif;--body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1720;--paper:#262030;--ink:#f1edf4;--muted:#b5acbd;--line:#433a4d;--plum:#d4b2de;--soft:#342b3e;--warn:#f0b56a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1720;--paper:#262030;--ink:#f1edf4;--muted:#b5acbd;--line:#433a4d;--plum:#d4b2de;--soft:#342b3e;--warn:#f0b56a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.65 var(--body)}
+.tape{height:34px;background-color:var(--tape);background-image:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--tape-ink) 0 2px,transparent 2px 50px);background-size:100% 9px,100% 17px;background-repeat:no-repeat}
+.wrap{max-width:1040px;margin:auto;padding-block:26px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font:700 clamp(28px,5vw,40px)/1.25 var(--display);margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:6px 0 0}
+.note{display:inline-block;margin-top:12px;background:var(--soft);padding:3px 10px;font-size:13px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;margin-top:24px;align-items:start}
+@media(max-width:780px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--paper);border:1px solid var(--line);padding:20px;display:grid;gap:18px;min-width:0}
+h2{font:700 19px/1.4 var(--display);margin:0}
+h3{font-size:14px;margin:0 0 8px;color:var(--plum)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label{display:grid;gap:3px;font-size:13px;color:var(--muted);min-width:0}
+input,select{font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:8px;width:100%;font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--plum);outline-offset:1px}
+.check{display:flex;gap:8px;align-items:flex-start;color:var(--ink)}.check input{width:auto;margin-top:5px}
+.type{font:700 clamp(30px,6vw,42px)/1.2 var(--display);color:var(--plum);margin:2px 0 0}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nums div{background:var(--soft);padding:8px}.nums b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.nums span{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;font-size:12px;border:1px solid currentColor;padding:0 8px;color:var(--plum)}
+.msg{margin:0;color:var(--warn);font-size:14px}
+.locked{position:relative;border:1px solid var(--line);padding:16px;overflow:hidden}
+.fake{filter:blur(6px);user-select:none;color:var(--muted);margin:0}
+.gate{display:grid;gap:8px;margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row input{flex:1 1 140px;width:auto}
+button{font:600 15px var(--body);background:var(--plum);color:var(--paper);border:0;padding:9px 16px;cursor:pointer}
+.report{display:grid;gap:14px}.report p{margin:0}
+.todo{border:1px dashed var(--line);padding:10px;color:var(--muted);font-size:14px}
+.products{display:grid;gap:6px;margin:0;padding:0;list-style:none}.products li{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:6px}.products b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.shots{display:grid;gap:14px}.shot{display:grid;gap:8px}.pic{position:relative;max-width:320px;cursor:crosshair;line-height:0}.pic img{width:100%;display:block}.pic i{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--tape);border:2px solid var(--tape-ink)}.next{font-size:14px;margin:0}.ghost{background:none;color:var(--plum);border:1px solid var(--line);padding:5px 12px;font-size:14px;justify-self:start}
+.foot{color:var(--muted);font-size:13px;margin:18px 0 0}
+.buy{display:inline-block;background:var(--plum);color:var(--paper);padding:10px 18px;font-weight:600;text-decoration:none;justify-self:start}
+body{margin:0}
+</style>
+</head>
+<body>
+<div class="tape" aria-hidden="true"></div>
+<main class="wrap">
+<h1>미오드모이 체형 확인</h1>
+<p class="lead">집에 있는 줄자로 잰 숫자로 내 체형 유형을 무료로 확인해 보세요. 사진은 필요 없어요.</p>
+<span class="note">입력한 값은 이 화면에서만 계산되고 저장되거나 전송되지 않아요</span>
+<div class="grid">
+<form class="panel" id="f" novalidate>
+<h2>측정값 입력</h2>
+<div class="fields">
+<label>성별<select id="sex"><option>여</option><option>남</option></select></label>
+<label>평소 입는 사이즈<input id="size"></label>
+<label>키 (cm)<input id="height" type="number" inputmode="decimal"></label>
+<label>몸무게 (kg)<input id="weight" type="number" inputmode="decimal"></label>
+</div>
+<div><h3>체형 둘레 (cm)</h3><div class="fields">
+<label>어깨 둘레<input id="s" type="number" step="0.5" inputmode="decimal"></label>
+<label>가슴 둘레<input id="chest" type="number" step="0.5" inputmode="decimal"></label>
+<label>허리 둘레<input id="w" type="number" step="0.5" inputmode="decimal"></label>
+<label>엉덩이 둘레<input id="h" type="number" step="0.5" inputmode="decimal"></label>
+<label>허벅지 둘레<input id="thigh" type="number" step="0.5" inputmode="decimal"></label>
+</div></div>
+<label>복부 상태<select id="belly"><option>배가 나오지 않음</option><option>상체는 말랐고 배가 나옴</option><option>어깨·엉덩이 너비가 비슷하고 허리 구분 없이 배가 나옴</option></select></label>
+<div><h3>얼굴 (cm)</h3><div class="fields">
+<label>이마 (상안)<input id="f1" type="number" step="0.1" inputmode="decimal"></label>
+<label>코 (중안)<input id="f2" type="number" step="0.1" inputmode="decimal"></label>
+<label>턱 (하안)<input id="f3" type="number" step="0.1" inputmode="decimal"></label>
+<label>얼굴 폭<input id="fw" type="number" step="0.1" inputmode="decimal"></label>
+</div></div>
+<label class="check"><input id="ok" type="checkbox"><span>만 19세 이상이며, 측정값 이용에 동의합니다.</span></label>
+</form>
+<section class="panel" aria-live="polite">
+<div><span class="pill" id="status"></span><h2 style="margin-top:6px">내 체형은</h2><p class="type" id="type"></p></div>
+<div class="nums"><div><b id="a">-</b><span>어깨 − 허리</span></div><div><b id="b">-</b><span>엉덩이 − 허리</span></div><div><b id="d">-</b><span>어깨 − 엉덩이</span></div></div>
+<p class="msg" id="msg" hidden></p>
+<div id="lock" class="locked">
+<div id="teaser" class="report"></div>
+<div class="gate"><strong>내 상세 리포트 받기 · 120,000원 (부가세 포함)</strong><span style="font-size:14px;color:var(--muted)">결제 후 미오드모이 카카오톡 채널을 추가하고 메시지를 남겨 주세요. 제작형 상품이므로 구매 전 안내를 꼭 확인해 주세요.</span><span id="buyBox"></span></div>
+</div>
+</section>
+</div>
+<p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며, 최종 체형은 결제 후 사진을 확인해 안내합니다. 만 19세 이상 이용 가능합니다.</p>
+</main>
+<script>
+// 스마트스토어 상품 링크가 생기면 아래 따옴표 안에 붙여 넣으세요.
+const STORE_URL="";
+const $=i=>document.getElementById(i),T=20,G=10;
+const TIP={"상안부|여": ["앞머리로 이마 길이를 줄여 세 부위의 균형을 맞춰요", 2], "상안부|남": ["앞머리로 이마 길이를 줄이면 좋지만, 전체적으로 얼굴이 길어 보일 수 있으니 스트레이트 앞머리는 금지예요", 0], "중안부|여": ["정수리 볼륨으로 상안부를 채워 중·하안부와 균형을 맞춰요", 2], "중안부|남": ["안경이나 눈썹 문신으로 시선을 위로 끌어올려 시선을 분산시켜 주세요", 1], "하안부|여": ["정수리와 사이드 볼륨으로 시선을 위로 올려요", 2], "하안부|남": ["중안부처럼 안경이나 눈썹 문신으로 시선을 위로 끌어올려 분산시켜 주세요", 1], "균형형|여": ["상·중·하안부가 고르게 균형 잡혀 있어요", 2], "균형형|남": ["상·중·하안부가 고르게 균형 잡혀 있어요", 2]};
+const LABEL={ok:'수치 기준 판정',near:'사진 확인 권장',belly:'사진 확인 필요'};
+function judge(s,w,h,belly){const a=s-w,b=h-w,d=s-h;
+ if(belly!=='배가 나오지 않음')return{a,b,d,type:belly.startsWith('상체')?'서양배형':'타원형',status:'belly'};
+ const type=d>=G?'상체집중 역삼각형':-d>=G?'하체집중 삼각형':a>=T&&b>=T?'모래시계형':'직사각형';
+ return{a,b,d,type,status:Math.abs(a-T)<=1||Math.abs(b-T)<=1||Math.abs(Math.abs(d)-G)<=1?'near':'ok'}}
+function faceRatio(v){const m=Math.min(...v);if(Math.max(...v)-m<1)return{key:'균형형',name:'균형형'};
+ const p=['상안부','중안부','하안부'].filter((_,i)=>v[i]-m>=1);return{key:p[0],name:p.join(' · ')+'가 긴 편'}}
+const num=i=>{const v=parseFloat($(i).value);return v>0?v:NaN};
+function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
+ const empty=t=>{$('type').textContent='-';$('status').textContent='입력 필요';['a','b','d'].forEach(i=>$(i).textContent='-');m.hidden=false;m.textContent=t;$('lock').hidden=true};
+ if(!$('ok').checked)return empty('동의에 체크하면 결과를 볼 수 있어요.');
+ if([s,w,h].some(isNaN))return empty('어깨, 허리, 엉덩이 둘레를 cm로 입력해 주세요.');
+ const r=judge(s,w,h,$('belly').value),sex=$('sex').value;
+ $('type').textContent=r.type;$('status').textContent=LABEL[r.status];$('a').textContent=r.a;$('b').textContent=r.b;$('d').textContent=r.d;
+ m.hidden=r.status!=='near';m.textContent='기준값에 가까워요. 다시 재서 확인해 주세요.';
+ const fv=['f1','f2','f3'].map(num);let prev='';
+ if(!fv.some(isNaN)){const f=faceRatio(fv),[tip,more]=TIP[f.key+'|'+sex];prev='<div><h3>내 얼굴 비율 미리보기</h3><p><strong>'+f.name+'</strong></p><p>'+tip+'</p>'+(more?'<p class="fake" aria-hidden="true">이 결과에 맞는 다음 조언이 이 자리에 공개됩니다.</p><p style="font-size:14px">이 결과에 맞는 조언이 '+more+'가지 더 있어요.</p>':'')+'</div>'}
+ const why=r.status==='ok'?'':'<p class="msg">'+(r.status==='belly'?'복부 형태는 숫자로 알 수 없어요. 사진을 확인해야 최종 체형이 확정돼요.':'수치만으로는 두 체형의 경계에 있어요. 사진으로 윤곽을 확인해야 최종 체형이 확정돼요.')+'</p>';
+ const male=sex==='남'&&(r.type==='모래시계형'||r.type==='하체집중 삼각형')?'<li><span>남성 '+r.type.replace('하체집중 ','')+'이 여성과 다른 이유</span></li>':'';
+ $('teaser').innerHTML=why+prev+'<div><h3>'+r.type+' 상세 리포트에 담긴 것</h3><ul class="products"><li><span>내가 왜 '+r.type+'처럼 보이는지, 그 이유</span></li>'+male+'<li><span>'+r.type+'의 장단점과 어울리는 스타일 레퍼런스 PDF</span></li><li><span>내 얼굴형에 맞는 헤어스타일 추천</span></li><li><span>대표가 사진을 직접 보고 확인하는 최종 체형 판정</span></li><li><span>재측정용 줄자와 측정 가이드 무료 배송</span></li></ul></div>';
+ $('lock').hidden=false}
+$('f').addEventListener('input',draw);$('f').addEventListener('submit',e=>e.preventDefault());
+$('buyBox').innerHTML=STORE_URL?'<a class="buy" href="'+STORE_URL+'" target="_blank" rel="noopener">프로그램 구매하기</a>':'<span>상품 준비 중이에요.</span>';
+draw();
+</script>
+</body>
+</html>
