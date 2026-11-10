@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>미오드모이 측정값 보내기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#f7f2cf;--ink:#111;--muted:#55494f;--line:#111;--accent:#8a6a12;--yellow:#ffe27a;--dark:#23252c}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font:15px/1.65 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all}
+.wrap{max-width:460px;margin:auto;padding:44px max(16px,env(safe-area-inset-right,0px)) 72px max(16px,env(safe-area-inset-left,0px));display:grid;gap:26px}
+.tag{display:inline-block;width:max-content;border:1px solid #111;padding:5px 10px;font-size:12px;font-weight:700}
+h1{font-size:clamp(28px,7vw,36px);line-height:1.3;font-weight:900;letter-spacing:-.04em;margin:16px 0 0}
+mark{background:var(--dark);color:#fff;padding:0 8px}
+.lead{margin:0;font-size:15px;line-height:1.75}
+.box{background:#fff;padding:22px 18px;display:grid;gap:16px}
+h2{display:inline-block;width:max-content;background:var(--dark);color:#fff;font-size:17px;font-weight:700;margin:0;padding:4px 10px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
+.full{grid-column:1/-1}
+label{display:grid;gap:6px;font-size:13px;font-weight:500;color:var(--muted);min-width:0}
+label b{color:#b23a3a;font-weight:700}
+input,select{font:16px "Pretendard",sans-serif;color:var(--ink);background:#fffdf0;border:1px solid #111;border-radius:0;padding:11px;width:100%;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.hint{margin:0;font-size:13px;color:var(--muted)}
+.miss{border-color:#b23a3a;background:#fff1f1}
+.send{background:var(--dark);color:#fff;padding:24px 18px;display:grid;gap:12px}
+.send h2{background:var(--yellow);color:#111}
+.send p{margin:0;font-size:14px;line-height:1.75;color:#e9e4d6}
+button{font:700 16px "Pretendard",sans-serif;border:0;border-radius:0;padding:15px;cursor:pointer;width:100%}
+#share{background:var(--yellow);color:#111}
+#copy{background:#fff;color:#111}
+#msg{margin:0;font-size:14px;font-weight:600;color:var(--yellow)}
+textarea{width:100%;font:14px/1.6 "Pretendard",sans-serif;padding:12px;border:0}
+ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
+.foot{margin:0;font-size:12px;color:var(--muted);line-height:1.7}
+[hidden]{display:none!important}
+.notice{margin:0;background:#fff;border:1px solid #111;padding:13px 15px;font-size:14px;font-weight:600;line-height:1.7}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div>
+<span class="tag">MIO DE MOI / MEASURE</span>
+<h1>측정한 값을<br><mark>한 번에</mark> 보내세요</h1>
+</div>
+<p class="lead">결제해 주셔서 감사해요.<br>측정 가이드를 보고 잰 값을 입력한 뒤,<br>맨 아래 버튼으로 카카오톡에 보내 주세요.</p>
+<p class="notice">📦 결제 후, 집에 줄자와 측정 가이드가<br>도착한 다음에 재서 보내 주시면 돼요.</p>
+
+<form id="f" novalidate>
+<div class="box" style="margin-bottom:26px">
+<h2>기본 정보</h2>
+<div class="fields">
+<label class="full"><span>주문자 이름 <b>*</b></span><input id="name" autocomplete="name" placeholder="예: 김미오"></label>
+<label><span>성별 <b>*</b></span><select id="sex"><option value="">선택</option><option>여</option><option>남</option></select></label>
+<label><span>나이 <b>*</b></span><input id="age" type="number" inputmode="numeric" placeholder="예: 34"></label>
+<label><span>키 (cm) <b>*</b></span><input id="height" type="number" inputmode="decimal" placeholder="예: 163"></label>
+<label><span>몸무게 (kg) <b>*</b></span><input id="weight" type="number" inputmode="decimal" placeholder="예: 57"></label>
+</div>
+<p class="hint">나이는 스타일 추천에 필요해요.</p>
+</div>
+
+<div class="box" style="margin-bottom:26px">
+<h2>체형 둘레 (cm)</h2>
+<div class="fields">
+<label><span>어깨 둘레 <b>*</b></span><input id="shoulder" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>가슴 둘레 <b>*</b></span><input id="chest" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>허리 둘레 <b>*</b></span><input id="waist" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>엉덩이 둘레 <b>*</b></span><input id="hip" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>허벅지 둘레 <b>*</b></span><input id="thigh" type="number" step="0.1" inputmode="decimal"></label>
+</div>
+<p class="hint">재는 위치는 측정 가이드를 그대로 따라 주세요.</p>
+</div>
+
+<div class="box">
+<h2>얼굴 (cm)</h2>
+<div class="fields">
+<label><span>상안부 <b>*</b></span><input id="f1" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>중안부 <b>*</b></span><input id="f2" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>하안부 <b>*</b></span><input id="f3" type="number" step="0.1" inputmode="decimal"></label>
+<label><span>얼굴 너비 <b>*</b></span><input id="fw" type="number" step="0.1" inputmode="decimal"></label>
+</div>
+</div>
+</form>
+
+<div class="box">
+<h2>사진 3장</h2>
+<ol><li>전신 정면</li><li>전신 측면</li><li>얼굴 정면</li></ol>
+<p class="hint">사진은 측정값을 보낸 같은 카카오톡 대화방에 이어서 보내 주세요.</p>
+</div>
+
+<div class="send">
+<h2>카카오톡으로 보내기</h2>
+<p>결제 후 받으신 카카오톡 링크로 대화방에 들어간 뒤,<br>아래 버튼을 눌러 주세요.</p>
+<button type="button" id="share">카카오톡으로 보내기</button>
+<button type="button" id="copy">내용 복사하기</button>
+<p id="msg" hidden></p>
+<textarea id="out" rows="12" readonly hidden aria-label="보낼 내용"></textarea>
+</div>
+
+<p class="foot">입력한 값은 이 휴대폰에만 임시로 저장되고, 카카오톡으로 보내기 전에는 어디에도 전송되지 않아요.</p>
+</main>
+<script>
+const $=i=>document.getElementById(i);
+const F=[['name','주문자 이름',''],['sex','성별',''],['age','나이','세'],['height','키','cm'],['weight','몸무게','kg'],
+['shoulder','어깨 둘레','cm'],['chest','가슴 둘레','cm'],['waist','허리 둘레','cm'],['hip','엉덩이 둘레','cm'],['thigh','허벅지 둘레','cm'],
+['f1','상안부','cm'],['f2','중안부','cm'],['f3','하안부','cm'],['fw','얼굴 너비','cm']];
+const KEY='miodemoi-measure';
+try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');F.forEach(([id])=>{if(s[id])$(id).value=s[id]})}catch(e){}
+$('f').addEventListener('input',e=>{e.target.classList.remove('miss');try{const s={};F.forEach(([id])=>s[id]=$(id).value);localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}});
+function build(){
+ const miss=F.filter(([id])=>!$(id).value.trim());
+ F.forEach(([id])=>$(id).classList.toggle('miss',!$(id).value.trim()));
+ if(miss.length){say(miss.map(m=>m[1]).join(', ')+'을(를) 입력해 주세요.');$(miss[0][0]).focus();$(miss[0][0]).scrollIntoView({behavior:'smooth',block:'center'});return null}
+ return['[미오드모이 측정값]',...F.map(([id,n,u])=>n+': '+$(id).value.trim()+u),'','사진 3장(전신 정면, 전신 측면, 얼굴 정면)은 이어서 보낼게요.'].join('\n')}
+function say(t){$('msg').hidden=false;$('msg').textContent=t}
+function manual(text){const o=$('out');o.hidden=false;o.value=text;o.focus();o.select();say('아래 내용을 길게 눌러 복사한 뒤, 카카오톡 대화방에 붙여 넣어 주세요.')}
+function copy(text){if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{$('out').hidden=true;say('복사했어요. 카카오톡 대화방에 붙여 넣어 주세요.')}).catch(()=>manual(text));else manual(text)}
+$('copy').addEventListener('click',()=>{const t=build();if(t)copy(t)});
+$('share').addEventListener('click',()=>{const t=build();if(!t)return;
+ if(navigator.share){navigator.share({text:t}).then(()=>say('공유 창에서 카카오톡을 골라 미오드모이 대화방으로 보내 주세요.')).catch(err=>{if(err&&err.name==='AbortError')return;copy(t)})}
+ else{copy(t)}});
+</script>
+</body>
+</html>
