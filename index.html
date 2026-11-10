@@ -240,12 +240,14 @@ html{background:var(--bg)}
 <p class="msg" id="msg" hidden></p>
 <div id="lock" class="locked">
 <div id="teaser" class="report"></div>
-<div class="gate"><strong>가려진 부분을 모두 알고 싶으시면<br>120,000원 <small class="vat">부가세 포함</small></strong><span style="font-size:14px;color:var(--muted)">제작형 상품이므로<br>구매 전 안내를 꼭 확인해 주세요.</span><span id="buyBox"></span><strong style="margin-top:8px">결제 전에 꼭 해 주세요</strong><span style="font-size:14px;color:var(--muted)">결제 후에 내용이 날아가지 않도록,<br>아래 버튼으로 복사해 메모장에 붙여 넣어 두세요.<br><br>결제 완료 후 보내드리는 카카오톡을 추가한 뒤,<br>메모장의 내용을 붙여 넣어 보내 주세요.</span><button type="button" id="copy">내 측정값 복사</button><p class="msg" id="copied" hidden></p><textarea id="copyText" rows="9" aria-label="복사할 측정값" hidden></textarea></div>
+<div class="gate"><strong>가려진 부분을 모두 알고 싶으시면<br>120,000원 <small class="vat">부가세 포함</small></strong><span style="font-size:14px;color:var(--muted)">제작형 상품이라 구매 전 안내를 꼭 확인해 주세요.</span>
+<strong style="margin-top:10px;font-size:18px">① 내 측정값 복사해 두기</strong><span style="font-size:14px;color:var(--muted)">결제하는 동안 입력한 값이 사라질 수 있어요.<br>복사해서 메모장에 붙여 넣어 두세요.</span><button type="button" id="copy">내 측정값 복사</button><p class="msg" id="copied" hidden></p><textarea id="copyText" rows="9" aria-label="복사할 측정값" hidden></textarea>
+<strong style="margin-top:10px;font-size:18px">② 결제하기</strong><span style="font-size:14px;color:var(--muted)">결제 후 카카오톡으로 안내를 보내 드려요.</span><span id="buyBox"></span></div>
 </div>
 </section>
 </div>
 <div class="offline"><strong>바로 신청하기</strong>
-<div class="opt"><b>비대면 체형분석 · 120,000원 <small class="vat">부가세 포함</small></b><p>줄자와 측정 가이드를 집으로 보내드려요.</p><a class="onbtn" href="https://smartstore.naver.com/miodemoi/products/13864990147" target="_blank" rel="noopener">스마트스토어에서 결제하기</a></div>
+<div class="opt" id="onlineOpt"><b>비대면 체형분석 · 120,000원 <small class="vat">부가세 포함</small></b><p>줄자와 측정 가이드를 집으로 보내드려요.</p><a class="onbtn" href="https://smartstore.naver.com/miodemoi/products/13864990147" target="_blank" rel="noopener">스마트스토어에서 결제하기</a></div>
 <div class="opt"><b>대면으로 받고 싶으신가요?</b><p>스튜디오에서 직접 측정하고 분석해 드려요.<br>스마트플레이스에서 체형분석을 선택해 주세요.</p><a class="offbtn" href="https://naver.me/5CW71ZCo" target="_blank" rel="noopener">스마트플레이스에서 대면 예약하기</a></div></div>
 <p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며,<br>최종 체형은 결제 후 사진을 확인해 안내합니다.<br>만 19세 이상 이용 가능합니다.</p>
 </main>
@@ -266,7 +268,7 @@ function pics(k){const c={style:'어울리는 스타일 레퍼런스는 PDF로 �
 let bellyText='-',isValid=false,shown=false;
 const num=i=>{const v=parseFloat($(i).value);return v>0?v:NaN};
 function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
- const empty=t=>{$('type').textContent='-';$('status').textContent='입력 필요';['a','b','d'].forEach(i=>$(i).textContent='-');m.hidden=false;m.textContent=t;$('lock').hidden=true;isValid=false;$('goMsg').hidden=!shown;$('goMsg').textContent=t};
+ const empty=t=>{$('type').textContent='-';$('status').textContent='입력 필요';['a','b','d'].forEach(i=>$(i).textContent='-');m.hidden=false;m.textContent=t;$('lock').hidden=true;$('onlineOpt').hidden=false;isValid=false;$('goMsg').hidden=!shown;$('goMsg').textContent=t};
  if(!$('ok').checked)return empty('동의에 체크하면 결과를 볼 수 있어요.');
  if([s,w,h].some(isNaN))return empty('어깨, 허리, 엉덩이 둘레를 cm로 입력해 주세요.');
  const sex=$('sex').value,kg=num('weight'),cm=num('height'),bmi=kg/((cm/100)*(cm/100));
@@ -285,7 +287,7 @@ function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  const why=r.status==='ok'?'':'<p class="msg">'+(r.status==='belly'?'복부 형태는 숫자로 알 수 없어요.<br>사진을 확인해야 최종 체형이 확정돼요.':'수치만으로는 두 체형의 경계에 있어요.<br>사진으로 윤곽을 확인해야 최종 체형이 확정돼요.')+'</p>';
  const male=sex==='남'&&(r.type==='모래시계형'||r.type==='하체집중 삼각형')?lk('남성 '+r.type.replace('하체집중 ','')+'이 여성과 다른 이유',2):'';
  $('teaser').innerHTML=why+'<div>'+pics('report')+'</div><div><h3>'+r.type+' 체형 분석 결과</h3>'+lk('내가 왜 '+r.type+'처럼 보이는지',0)+male+lk('내 체형의 장점',1)+lk('내 체형의 단점',2)+lk('단점을 보완하는 방법',0)+lk('내게 어울리는 패션 스타일 레퍼런스',1)+pics('style')+lk('내게 맞는 컬러 코디 팁',2)+'</div>'+face+'<p class="sub">대표가 사진을 직접 보고 최종 판정하며,<br>재측정용 줄자와 측정 가이드를 무료로 보내드려요.</p>';
- $('lock').hidden=false;isValid=true;$('goMsg').hidden=true}
+ $('lock').hidden=false;$('onlineOpt').hidden=true;isValid=true;$('goMsg').hidden=true}
 $('f').addEventListener('input',()=>{draw();if(shown)$('result').hidden=!isValid});
 $('go').addEventListener('click',()=>{shown=true;draw();$('result').hidden=!isValid;if(isValid){$('result').scrollIntoView({behavior:'smooth',block:'start'});return}
  const b=$('bellyBox');if(!b.hidden&&!$('belly').value){b.scrollIntoView({behavior:'smooth',block:'center'});$('belly').focus()}});$('f').addEventListener('submit',e=>e.preventDefault());
