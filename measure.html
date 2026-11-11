@@ -38,6 +38,11 @@ ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
 .foot{margin:0;font-size:12px;color:var(--muted);line-height:1.7}
 [hidden]{display:none!important}
 .notice{margin:0;background:#fff;border:1px solid #111;padding:13px 15px;font-size:14px;font-weight:600;line-height:1.7}
+.pics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pic{position:relative;aspect-ratio:3/4;border:1.5px dashed #111;background:#fffdf0 center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;color:var(--ink);font-size:13px;font-weight:700}
+.pic input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.pic span{background:rgba(255,255,255,.85);width:100%;text-align:center;padding:6px 0}
+.pic.on{border-style:solid}
 </style>
 </head>
 <body>
@@ -87,8 +92,13 @@ ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
 
 <div class="box">
 <h2>사진 3장</h2>
-<ol><li>전신 정면</li><li>전신 측면</li><li>얼굴 정면</li></ol>
-<p class="hint">사진은 측정값을 보낸 같은 카카오톡 대화방에 이어서 보내 주세요.</p>
+<p class="hint">아래 칸을 눌러 사진을 골라 주세요. 측정값과 함께 카카오톡으로 한 번에 보내져요.</p>
+<div class="pics">
+<label class="pic"><input type="file" accept="image/*" data-n="전신 정면"><span>전신 정면</span></label>
+<label class="pic"><input type="file" accept="image/*" data-n="전신 측면"><span>전신 측면</span></label>
+<label class="pic"><input type="file" accept="image/*" data-n="얼굴 정면"><span>얼굴 정면</span></label>
+</div>
+<p class="hint">여성은 탑+레깅스, 남성은 반팔+반바지 차림으로 찍어 주세요.</p>
 </div>
 
 <div class="send">
@@ -114,13 +124,20 @@ function build(){
  const miss=F.filter(([id])=>!$(id).value.trim());
  F.forEach(([id])=>$(id).classList.toggle('miss',!$(id).value.trim()));
  if(miss.length){say(miss.map(m=>m[1]).join(', ')+'을(를) 입력해 주세요.');$(miss[0][0]).focus();$(miss[0][0]).scrollIntoView({behavior:'smooth',block:'center'});return null}
- return['[미오드모이 측정값]',...F.map(([id,n,u])=>n+': '+$(id).value.trim()+u),'','사진 3장(전신 정면, 전신 측면, 얼굴 정면)은 이어서 보낼게요.'].join('\n')}
+ return['[미오드모이 측정값]',...F.map(([id,n,u])=>n+': '+$(id).value.trim()+u),'','사진 3장(전신 정면, 전신 측면, 얼굴 정면)도 함께 보내요.'].join('\n')}
 function say(t){$('msg').hidden=false;$('msg').textContent=t}
 function manual(text){const o=$('out');o.hidden=false;o.value=text;o.focus();o.select();say('아래 내용을 길게 눌러 복사한 뒤, 카카오톡 대화방에 붙여 넣어 주세요.')}
 function copy(text){if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{$('out').hidden=true;say('복사했어요. 카카오톡 대화방에 붙여 넣어 주세요.')}).catch(()=>manual(text));else manual(text)}
 $('copy').addEventListener('click',()=>{const t=build();if(t)copy(t)});
-$('share').addEventListener('click',()=>{const t=build();if(!t)return;
- if(navigator.share){navigator.share({text:t}).then(()=>say('공유 창에서 카카오톡을 골라 미오드모이 대화방으로 보내 주세요.')).catch(err=>{if(err&&err.name==='AbortError')return;copy(t)})}
+document.querySelectorAll('.pic input').forEach(inp=>inp.addEventListener('change',()=>{const f=inp.files[0],l=inp.parentElement;if(!f){l.style.backgroundImage='';l.classList.remove('on');return}
+ l.style.backgroundImage='url('+URL.createObjectURL(f)+')';l.classList.add('on')}));
+function photos(){return [...document.querySelectorAll('.pic input')].map(i=>i.files[0]).filter(Boolean)}
+$('share').addEventListener('click',async()=>{const t=build();if(!t)return;const fs=photos();
+ if(fs.length<3){say('사진 3장을 모두 골라 주세요. 사진 없이 보내려면 아래 "내용 복사하기"를 눌러 주세요.');document.querySelector('.pics').scrollIntoView({behavior:'smooth',block:'center'});return}
+ if(fs.length&&navigator.canShare&&navigator.canShare({files:fs})){
+  try{await navigator.share({files:fs,text:t});say('공유 창에서 카카오톡을 골라 미오드모이 대화방으로 보내 주세요. 사진과 측정값이 함께 가요.');return}
+  catch(err){if(err&&err.name==='AbortError')return}}
+ if(navigator.share){navigator.share({text:t}).then(()=>say(fs.length?'이 휴대폰에서는 사진을 함께 보낼 수 없어요. 측정값을 보낸 뒤 같은 대화방에 사진 3장을 이어서 보내 주세요.':'공유 창에서 카카오톡을 골라 미오드모이 대화방으로 보내 주세요. 사진 3장도 이어서 보내 주세요.')).catch(err=>{if(err&&err.name==='AbortError')return;copy(t)})}
  else{copy(t)}});
 </script>
 </body>
