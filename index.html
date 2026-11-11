@@ -66,6 +66,7 @@ h3{font-size:17px;font-weight:600;color:var(--ink);margin:0 0 18px;padding-botto
 label{font-size:14px;gap:7px}
 input,select{padding:13px 12px;font-size:16px;border-radius:9px;background:var(--bg)}
 .check{font-size:14px;line-height:1.6}
+.consent{font-size:13px;line-height:1.7;color:var(--muted);margin-top:-8px}.consent summary{cursor:pointer;text-decoration:underline}.consent p{margin:8px 0 0}.consent b{color:var(--ink);margin-right:6px}
 section.panel>div:first-child{background:var(--hero);color:var(--hero-ink);margin:-36px -32px 0;padding:40px 32px;border-radius:18px 18px 0 0}
 section.panel>div:first-child h2{color:var(--hero-sub);font-size:17px;font-weight:400;margin-top:18px!important;font-family:var(--body)}
 .type{color:var(--hero-ink);font-size:clamp(34px,7vw,46px);margin-top:6px}
@@ -231,7 +232,13 @@ html{background:var(--bg)}
 <label>턱 (하안)<input id="f3" type="number" step="0.1" inputmode="decimal"></label>
 <label>얼굴 폭<input id="fw" type="number" step="0.1" inputmode="decimal"></label>
 </div></div>
-<label class="check"><input id="ok" type="checkbox"><span>만 19세 이상이며, 측정값 이용에 동의합니다.</span></label>
+<label class="check"><input id="ok" type="checkbox"><span>(필수) 만 19세 이상이에요.</span></label>
+<label class="check"><input id="save" type="checkbox"><span>(선택) 내 측정값을 미오드모이 체형 분석에 활용하는 데 동의해요.<br><small style="color:var(--muted)">동의해 주시면 더 정확한 체형 분석 기준을 만드는 데 쓰여요.</small></span></label>
+<details class="consent"><summary>개인정보 수집·이용 안내 보기</summary>
+<p><b>수집 항목</b> 성별, 키, 몸무게, 몸 둘레 5곳, 얼굴 4곳, 판정된 체형, 입력 시각<br>이름·연락처 등 나를 알아볼 수 있는 정보는 받지 않아요.</p>
+<p><b>이용 목적</b> 미오드모이 체형 분석 기준을 다듬는 데에만 써요.<br>외부에 제공하거나 판매하지 않고, 유출되지 않게 관리해요.</p>
+<p><b>보관 기간</b> 1개월 보관 후 지워요.</p>
+<p><b>동의하지 않아도</b> 결과는 똑같이 볼 수 있어요.</p></details>
 <button type="button" id="go">결과 보기</button><p class="msg" id="goMsg" hidden></p>
 </form>
 <section class="panel" id="result" aria-live="polite" hidden>
@@ -252,7 +259,22 @@ html{background:var(--bg)}
 <p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며,<br>최종 체형은 결제 후 사진을 확인해 안내합니다.<br>만 19세 이상 이용 가능합니다.</p>
 </main>
 <script>
+/* 방문 통계: 아래 따옴표 안에 측정 ID(G-로 시작)만 넣으면 켜져요 */
+const GA_ID="";
+if(GA_ID){const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;document.head.appendChild(s);
+window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',GA_ID);}
+function track(n){try{if(window.gtag)gtag('event',n)}catch(e){}}
+document.addEventListener('click',e=>{const t=e.target.closest('a,button');if(!t)return;
+const h=t.getAttribute('href')||'';
+if(t.id==='go')track('click_result');else if(t.id==='copy')track('click_copy');else if(t.id==='share')track('click_kakao_send');
+else if(h.includes('smartstore.naver.com'))track('click_pay');else if(h.includes('naver.me'))track('click_offline_booking');});
+</script>
+<script>
 // 스마트스토어 상품 링크가 생기면 아래 따옴표 안에 붙여 넣으세요.
+/* 측정값 저장: 구글 시트 웹 앱 주소를 따옴표 안에 넣으면 켜져요 */
+const SHEET_URL="https://script.google.com/macros/s/AKfycbwST7T1-bbvBAbrItM7UWiPqiNrKfX8TxEnopl7KnqfHmCA-dTVBPeKXLF0T-Whi2me/exec";
+let sent=false;
+function saveData(){if(!SHEET_URL||sent||!$('save').checked)return;sent=true;const d={type:$('type').textContent};['sex','height','weight','s','chest','w','h','thigh','belly','f1','f2','f3','fw'].forEach(i=>d[i]=$(i).value);try{fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(d)})}catch(e){}}
 const STORE_URL="https://smartstore.naver.com/miodemoi/products/13864990147";
 const $=i=>document.getElementById(i),T=20,G=10;
 const MORE={"상안부|여": 3, "상안부|남": 1, "중안부|여": 3, "중안부|남": 2, "하안부|여": 3, "하안부|남": 2, "균형형|여": 3, "균형형|남": 3};
@@ -269,7 +291,7 @@ let bellyText='-',isValid=false,shown=false;
 const num=i=>{const v=parseFloat($(i).value);return v>0?v:NaN};
 function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  const empty=t=>{$('type').textContent='-';$('status').textContent='입력 필요';['a','b','d'].forEach(i=>$(i).textContent='-');m.hidden=false;m.textContent=t;$('lock').hidden=true;$('onlineOpt').hidden=false;isValid=false;$('goMsg').hidden=!shown;$('goMsg').textContent=t};
- if(!$('ok').checked)return empty('동의에 체크하면 결과를 볼 수 있어요.');
+ if(!$('ok').checked)return empty('만 19세 이상 항목에 체크하면 결과를 볼 수 있어요.');
  if([s,w,h].some(isNaN))return empty('어깨, 허리, 엉덩이 둘레를 cm로 입력해 주세요.');
  const sex=$('sex').value,kg=num('weight'),cm=num('height'),bmi=kg/((cm/100)*(cm/100));
  if(isNaN(kg)||isNaN(cm)){$('bellyBox').hidden=true;return empty('키와 몸무게를 입력해 주세요.')}
@@ -288,8 +310,8 @@ function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  const male=sex==='남'&&(r.type==='모래시계형'||r.type==='하체집중 삼각형')?lk('남성 '+r.type.replace('하체집중 ','')+'이 여성과 다른 이유',2):'';
  $('teaser').innerHTML=why+'<div>'+pics('report')+'</div><div><h3>'+r.type+' 체형 분석 결과</h3>'+lk('내가 왜 '+r.type+'처럼 보이는지',0)+male+lk('내 체형의 장점',1)+lk('내 체형의 단점',2)+lk('단점을 보완하는 방법',0)+lk('내게 어울리는 패션 스타일 레퍼런스',1)+pics('style')+lk('내게 맞는 컬러 코디 팁',2)+'</div>'+face+'<p class="sub">대표가 사진을 직접 보고 최종 판정하며,<br>재측정용 줄자와 측정 가이드를 무료로 보내드려요.</p>';
  $('lock').hidden=false;$('onlineOpt').hidden=true;isValid=true;$('goMsg').hidden=true}
-$('f').addEventListener('input',()=>{draw();if(shown)$('result').hidden=!isValid});
-$('go').addEventListener('click',()=>{shown=true;draw();$('result').hidden=!isValid;if(isValid){$('result').scrollIntoView({behavior:'smooth',block:'start'});return}
+$('f').addEventListener('input',()=>{sent=false});$('f').addEventListener('input',()=>{draw();if(shown)$('result').hidden=!isValid});
+$('go').addEventListener('click',()=>{shown=true;draw();$('result').hidden=!isValid;if(isValid){saveData();$('result').scrollIntoView({behavior:'smooth',block:'start'});return}
  const b=$('bellyBox');if(!b.hidden&&!$('belly').value){b.scrollIntoView({behavior:'smooth',block:'center'});$('belly').focus()}});$('f').addEventListener('submit',e=>e.preventDefault());
 function summary(){const v=(n,i,u)=>n+': '+($(i).value||'-')+(u||'');return['[미오드모이 측정값]','판정 체형: '+$('type').textContent,v('성별','sex'),v('키','height','cm'),v('몸무게','weight','kg'),v('어깨 둘레','s','cm'),v('가슴 둘레','chest','cm'),v('허리 둘레','w','cm'),v('엉덩이 둘레','h','cm'),v('허벅지 둘레','thigh','cm'),'복부 상태: '+bellyText,v('이마(상안)','f1','cm'),v('코(중안)','f2','cm'),v('턱(하안)','f3','cm'),v('얼굴 폭','fw','cm')].join('\n')}
 $('copy').addEventListener('click',()=>{const text=summary(),done=$('copied'),box=$('copyText');const manual=()=>{box.hidden=false;box.value=text;box.focus();box.select();done.hidden=false;done.textContent='자동 복사가 안 되었어요. 아래 내용을 길게 눌러 복사해 주세요.'};
