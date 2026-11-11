@@ -238,6 +238,7 @@ html{background:var(--bg)}
 <p><b>수집 항목</b> 성별, 키, 몸무게, 몸 둘레 5곳, 얼굴 4곳, 판정된 체형, 입력 시각<br>이름·연락처 등 나를 알아볼 수 있는 정보는 받지 않아요.</p>
 <p><b>이용 목적</b> 미오드모이 체형 분석 기준을 다듬는 데에만 써요.<br>외부에 제공하거나 판매하지 않고, 유출되지 않게 관리해요.</p>
 <p><b>보관 기간</b> 1개월 보관 후 지워요.</p>
+<p><b>방문 통계</b> 방문 수와 버튼 클릭은 구글 애널리틱스로 익명 집계돼요. 입력한 수치는 보내지 않아요.</p>
 <p><b>동의하지 않아도</b> 결과는 똑같이 볼 수 있어요.</p></details>
 <button type="button" id="go">결과 보기</button><p class="msg" id="goMsg" hidden></p>
 </form>
@@ -260,7 +261,7 @@ html{background:var(--bg)}
 </main>
 <script>
 /* 방문 통계: 아래 따옴표 안에 측정 ID(G-로 시작)만 넣으면 켜져요 */
-const GA_ID="";
+const GA_ID="G-W6LZXCWEHB";
 if(GA_ID){const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;document.head.appendChild(s);
 window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',GA_ID);}
 function track(n){try{if(window.gtag)gtag('event',n)}catch(e){}}
