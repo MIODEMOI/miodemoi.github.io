@@ -270,7 +270,7 @@ function openEdit(d){
 }
 function sex(){return /^남/.test(S.values['성별']||'')?'남':'여'}
 function set(k,v){S.values[k]=v;dirty=true;$('barMsg').textContent='저장하지 않은 변경이 있어요'}
-document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){set(k,e.target.value);calc();status()}if(e.target.id==='name'){const was=S.name;S.name=e.target.value;dirty=true;const d=document.querySelector('[data-k="앱 표시 이름"]');const auto=n=>n.trim().length>=3?n.trim().slice(1):n.trim();if(!S.values['앱 표시 이름']||S.values['앱 표시 이름']===auto(was)){S.values['앱 표시 이름']=auto(S.name);d.value=S.values['앱 표시 이름']}}});
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){set(k,e.target.value);calc();status()}if(e.target.id==='name'){const was=S.name;S.name=e.target.value;dirty=true;const d=document.querySelector('[data-k="앱 표시 이름"]');const auto=n=>n.trim();if(!S.values['앱 표시 이름']||S.values['앱 표시 이름']===auto(was)){S.values['앱 표시 이름']=auto(S.name);d.value=S.values['앱 표시 이름']}}});
 
 function syncChips(){
   document.querySelectorAll('[data-one]').forEach(g=>{const v=S.values[g.dataset.one]||'';g.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',b.textContent===v))});
