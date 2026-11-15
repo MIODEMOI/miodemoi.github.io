@@ -124,6 +124,28 @@ nav button[aria-current="true"]:after{content:"";position:absolute;top:0;left:30
 [hidden]{display:none!important}
 .blur2{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.bl{position:relative;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line)}.bl img{display:block;width:100%}.bl.app{max-width:230px;margin:14px auto 0;border-radius:22px;box-shadow:0 6px 20px rgba(0,0,0,.12)}.lock{position:absolute;right:8px;top:8px;background:rgba(29,26,23,.8);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
 .pchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px 12px;padding:0 18px}.pchips::-webkit-scrollbar{display:none}.pchips button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer}.pchips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.pchips small{opacity:.6;margin-left:2px}
+.ptbl{width:100%;border-collapse:collapse;margin-top:12px}.ptbl th{text-align:left;font-size:16px;font-weight:800;padding:14px 0;border-top:1px solid var(--line);width:80px;vertical-align:top}.ptbl td{text-align:right;padding:14px 0;border-top:1px solid var(--line);line-height:1.5}.ptbl s{color:var(--muted);font-size:13px}.ptbl .off{display:inline-block;margin-left:6px;font-size:12px;font-weight:800;color:#fff;background:var(--bad);border-radius:6px;padding:1px 6px}.ptbl b{font-size:18px;font-weight:800}.ptbl small{display:block;font-size:13px;color:var(--good);font-weight:700}
+.appnote{margin-top:14px;background:var(--soft);border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.65;color:var(--sub)}.appnote b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+/* 줄바꿈·정렬 다듬기 */
+body{word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+p,li,.desc,figcaption,.prod p,.appnote,.tbl td{text-wrap:pretty}
+h1,h2,h3,h4,.big,.sec-h h2,.prod b,.cover p{text-wrap:balance}
+.gal{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.gal figure{flex:0 0 calc((100% - 20px)/3);text-align:center}
+.gal.two{gap:14px}
+.gal.two figure{flex:0 0 calc((100% - 14px)/2)}
+.gal img,.tees img,.prod img{object-position:center}
+.gal figcaption{margin-top:6px;line-height:1.5}
+.tees{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.tees figure{flex:0 0 calc((100% - 20px)/3)}
+.pairs{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.pair{flex:0 0 calc((100% - 24px)/3)}
+.chips{justify-content:center}
+.prod{align-items:center}
+.prod > div{min-width:0}
+.blur2 .bl img,.bl.app img{margin:0 auto}
+.outro p{text-wrap:balance}
+
 footer{text-align:center;font-size:12px;color:var(--muted);margin:30px 0 10px;line-height:1.6}
 .a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}
 </style>
@@ -145,11 +167,12 @@ footer{text-align:center;font-size:12px;color:var(--muted);margin:30px 0 10px;li
 const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
 const code=new URLSearchParams(location.search).get('c')||'';
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tidy=s=>/^\s*(data:|https?:|tel:|mailto:|#|ootd\.html|shopper_)/.test(String(s??''))?String(s??''):String(s??'').replace(/[ \t]+([,.!?)])/g,'$1').replace(/\(\s+/g,'(').replace(/[ \t]{2,}/g,' ').replace(/,(?=[^\s\d])/g,', ');
+const esc=s=>tidy(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const HEX={'화이트':'#ffffff','오프화이트':'#f7f4ec','아이보리':'#f5efdf','크림':'#f1e7cf','라이트베이지':'#e8dcc7','베이지':'#d8c4a3','카멜':'#b8895a','브라운':'#6b4a35','다크브라운':'#4a3326','카키':'#7a7457','올리브':'#6e6b3d','라이트그레이':'#d5d5d5','그레이':'#9b9b9b','차콜':'#4a4a4c','차콜그레이':'#56575a','블랙':'#151515','네이비':'#1f2a44','라이트블루':'#c9daee','스카이블루':'#a6c8e8','블루':'#5b86c0','코발트블루':'#2f5aa8','핑크':'#f1c3cd','라이트핑크':'#f7dde2','로즈':'#d98a9b','라벤더':'#d8cfec','퍼플':'#8c6bb1','민트':'#cfeadf','그린':'#5f8f6a','레드':'#c0392b','와인':'#6d2232','버건디':'#7a1f2b','옐로우':'#f3dc7a','레몬':'#f6eb9c','오렌지':'#e8964a','코랄':'#f08a7a','실버':'#c9cbd0','골드':'#c9a85a'};
 const hex=n=>{n=String(n).trim();const m=n.match(/#[0-9a-f]{3,6}/i);return m?m[0]:(HEX[n.replace(/\s/g,'')]||'#cccccc')};
 const cname=n=>String(n).replace(/[:：]?\s*#[0-9a-f]{3,6}/i,'').trim();
-const L=a=>Array.isArray(a)?a.filter(Boolean):String(a||'').split(/\n/).map(x=>x.trim()).filter(Boolean);
+const L=a=>(Array.isArray(a)?a:String(a||'').split(/\n/)).map(x=>String(x).trim()).filter(Boolean).reduce((o,x)=>{if(o.length&&/^[,.!?)~]/.test(x))o[o.length-1]+=x;else o.push(x);return o},[]);
 const ul=a=>L(a).length?`<ul class="notes">${L(a).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
 const head=(n,en,ko)=>`<div class="sec-h"><small>${n} ${en}</small><h2>${ko}</h2></div>`;
 let D=window.DEMO||null;
@@ -236,7 +259,7 @@ function gallery(list,f){
 function styleTab(){
   return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어/.test(s.sec))+
   `<div class="outro"><h3>Thank you</h3><p>${esc(D.outro||'고객님의 가장 좋은 모습을 찾는 데 도움이 되길 바랍니다.')}</p><p>쇼핑이 필요하시면 퍼스널쇼퍼 프로그램을 이용해 주세요.</p>
-  <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
+  <button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show('shopper')">퍼스널쇼퍼 가격 · 견본 보기 →</button><a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
 }
 const SAMPLE=window.SAMPLE||{look:['shopper_sample_1.jpg','shopper_sample_2.jpg'],shop:['shopper_sample_3.jpg','shopper_sample_4.jpg'],app:'shopper_sample_app.jpg'};
 function shopperTab(){
@@ -250,8 +273,11 @@ function shopperTab(){
    <p class="desc">체형과 퍼스널컬러에 맞는 아이템을 골라 구매 링크와 함께 보내 드려요.</p>
    <div class="blur2">${SAMPLE.shop.map(u=>`<div class="bl"><img src="${u}" alt="" loading="lazy">${lock}</div>`).join('')}</div></div>
   <div class="card"><p class="k">03 TODAY'S OUTFIT APP</p><p class="big ko" style="font-size:20px">'오늘 뭐 입지' 전용 앱</p>
-   <p class="desc">오늘 날씨와 가는 곳에 맞춰 내 옷장 속 코디를 골라 주는 앱이에요. 퍼스널쇼퍼 3회 이상 이용 고객님께 드려요.</p>
+   <p class="desc">오늘 날씨와 상황에 맞춰 스타일링을 추천하고, 전에 쇼핑한 아이템과 함께 코디해 주는 앱이에요. 퍼스널쇼퍼 3시간 이상 이용 고객님께 별도로 드려요.</p>
    <div class="bl app"><img src="${SAMPLE.app}" alt="" loading="lazy">${lock}</div></div>
+  <div class="card"><p class="k">PRICE</p><p class="big ko" style="font-size:20px">퍼스널쇼퍼 가격</p><p class="desc" style="color:var(--sub)">시간이 길수록 시간당 더 저렴해요.</p>
+   <table class="ptbl">${[[1,120000,0],[3,300000,360000],[5,480000,600000],[10,822000,1200000]].map(([h,p,o])=>`<tr><th>${h}시간</th><td>${o?`<s>${o.toLocaleString()}</s><span class="off">${Math.round((1-p/o)*100)}%</span><br>`:''}<b>${p.toLocaleString()}원</b><small>시간당 ${Math.round(p/h).toLocaleString()}원</small></td></tr>`).join('')}</table>
+   <div class="appnote"><b>📱 3시간 이상 이용 고객님 특별 제공</b>'오늘 뭐 입지' 앱으로 날씨와 상황에 따라 스타일링을 추천해 드려요. 전에 쇼핑한 아이템과 함께 코디되는 앱을 별도로 제공해요.</div></div>
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
 }
 const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,shopper:shopperTab};
