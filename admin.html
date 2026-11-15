@@ -100,6 +100,12 @@ input:focus,textarea:focus{outline:none;border-color:var(--navy)}
  .phone .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px}
 }
 
+.bcat{border-top:1px solid #e6e8ef;padding:14px 0}.bcat:first-child{border-top:0;padding-top:0}.bcat h4{margin:0 0 10px;font-size:13px;letter-spacing:.08em}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.bt{border:1px solid #e6e8ef;border-radius:12px;padding:8px;background:#fff;position:relative}.bt .im{aspect-ratio:1;border-radius:8px;background:#f3f4f8;overflow:hidden;position:relative;display:grid;place-items:center;font-size:12px;color:#8a8e9c;cursor:pointer}
+.bt .im img{width:100%;height:100%;object-fit:cover}.bt .im input{position:absolute;inset:0;opacity:0;cursor:pointer}.bt input[type=text],.bt textarea{width:100%;box-sizing:border-box;margin-top:6px;font-size:13px;padding:7px 8px}
+.bt .x{position:absolute;top:12px;right:12px;z-index:2;border:0;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer}
+.badd{border:1.5px dashed #c9cde0;border-radius:12px;display:grid;place-items:center;text-align:center;font-size:13px;font-weight:700;color:#2f3d86;min-height:150px;position:relative;cursor:pointer}.badd input{position:absolute;inset:0;opacity:0;cursor:pointer}
 </style>
 </head>
 <body>
@@ -129,8 +135,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--navy)}
    <label class="f"><span>고객 이름 <small>(나만 봄)</small></span><input type="text" id="name"></label>
    <label class="f"><span>앱 표시 이름 <small>(고객 화면에 "○○ 님"으로 나와요 · 자동 입력)</small></span><input type="text" data-k="앱 표시 이름"></label>
   </div>
-  <div class="f"><span>리포트 종류</span><div class="chips" data-one="리포트 종류"><button class="chip">종합</button><button class="chip">퍼스널컬러</button></div></div>
-  <p class="hint" style="margin:4px 0 0">퍼스널컬러만 진단한 고객은 '퍼스널컬러'를 누르세요. 치수·얼굴형·체형 칸이 숨겨지고, 고객 화면도 퍼스널컬러 리포트로 바뀌어요.</p>
+  <div class="f"><span>리포트 종류</span><div class="chips" data-one="리포트 종류"><button class="chip">종합</button><button class="chip">퍼스널컬러</button><button class="chip">패션컨설팅</button></div></div>
+  <p class="hint" style="margin:4px 0 0">종합 = 퍼스널컬러+얼굴형+체형 · 퍼스널컬러 = 퍼스널컬러만 (치수·얼굴형·체형 칸 숨김) · 패션컨설팅 = 종합 + 추천 브랜드</p>
   <div class="f"><span>성별</span><div class="chips" data-one="성별"><button class="chip">여</button><button class="chip">남</button></div></div>
   <div class="f"><span>측정 방식</span><div class="chips" data-one="측정 방식"><button class="chip">대면</button><button class="chip">온라인</button></div></div>
   <label class="f"><span>진단일</span><input type="text" data-k="진단일" placeholder="예) 2026. 11. 15"></label>
@@ -217,6 +223,11 @@ input:focus,textarea:focus{outline:none;border-color:var(--navy)}
   <div id="secs"></div>
  </details>
 
+ <details class="card" id="brandCard"><summary><span class="n">★</span>추천 브랜드 <small style="font-weight:500;color:var(--muted);font-size:12px">패션컨설팅</small><span class="st" id="stB"></span></summary>
+  <p class="hint" style="margin-top:0">카테고리마다 아이템 5~6개를 넣어요. 사진을 여러 장 한 번에 끌어다 놓으면 사진마다 칸이 생겨요. 브랜드 · 상품명 · 코멘트 · 링크를 적으면 돼요.</p>
+  <div id="brands"></div>
+ </details>
+
  <details class="card"><summary><span class="n">8</span>마무리<span class="st"></span></summary>
   <label class="f"><span>마무리 메시지 <small>(비우면 기본 문구)</small></span><textarea data-k="마무리 메시지"></textarea></label>
  </details>
@@ -261,12 +272,12 @@ async function loadList(){view('vList');$('list').innerHTML='<p class="hint">불
 
 /* ---------- editor ---------- */
 function openEdit(d){
-  S={code:d.code||'',name:d.name||'',values:Object.assign({},d.values||{}),products:(d.products||[]).map(p=>Object.assign({},p)),secs:[]};
+  S={code:d.code||'',name:d.name||'',values:Object.assign({},d.values||{}),products:(d.products||[]).filter(p=>!isB(p)).map(p=>Object.assign({},p)),shop:(d.products||[]).filter(isB).map(p=>Object.assign({},p)),secs:[]};
   (d.photos||[]).forEach(p=>{let s=S.secs.find(x=>x.sec===p.sec);if(!s){s={sec:p.sec,desc:'',items:[]};S.secs.push(s)}if(p.desc&&!s.desc)s.desc=p.desc;if(p.img)s.items.push({img:p.img,cap:p.cap||''})});
   $('eTitle').textContent=S.code?(S.name||'고객')+' 리포트':'새 고객 리포트';
   $('name').value=S.name;
   document.querySelectorAll('[data-k]').forEach(el=>el.value=S.values[el.dataset.k]||'');
-  syncChips();renderBody();renderProds();renderSecs();calc();status();
+  syncChips();renderBody();renderProds();renderSecs();renderBrands();calc();status();
   $('doneBox').innerHTML='';$('preview').hidden=!S.code;$('barMsg').textContent=S.code?'코드 '+S.code:'저장 전이에요';dirty=false;
   view('vEdit');
 }
@@ -278,11 +289,12 @@ function syncChips(){
   document.querySelectorAll('[data-one]').forEach(g=>{const v=S.values[g.dataset.one]||'';g.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',b.textContent===v))});
   document.querySelectorAll('[data-range]').forEach(g=>{const tk=String(S.values[g.dataset.range]||'').split(/~|-/).map(s=>s.replace(/\s/g,'')).map(s=>LEVELS.indexOf(s)).filter(i=>i>=0);const lo=Math.min(...tk),hi=Math.max(...tk);g.querySelectorAll('.chip').forEach((b,i)=>b.classList.toggle('on',tk.length&&i>=lo&&i<=hi))});
   $('prodTitle').textContent=sex()==='여'?'메이크업 · 스킨케어 제품':'스킨케어 · 베이스 제품';
-  const pc=/퍼스널컬러/.test(S.values['리포트 종류']||'');document.querySelectorAll('#vEdit details.card').forEach((c,i)=>{if([1,4,5].includes(i))c.hidden=pc});document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc});
+  const pc=/퍼스널컬러/.test(S.values['리포트 종류']||'');
+  const fc=/패션컨설팅/.test(S.values['리포트 종류']||'');$('brandCard').hidden=!fc;document.querySelectorAll('#brandCard .fem').forEach(x=>x.hidden=sex()!=='여');document.querySelectorAll('#vEdit details.card').forEach((c,i)=>{if([1,4,5].includes(i))c.hidden=pc});document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc});
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
-  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds()}status()}
+  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands()}status()}
   else if(g.dataset.range){e.preventDefault();b.classList.toggle('on');const on=[...g.querySelectorAll('.chip')].map((x,i)=>x.classList.contains('on')?i:-1).filter(i=>i>=0);
     set(g.dataset.range,on.length?(on.length===1?LEVELS[on[0]]:LEVELS[on[0]]+' ~ '+LEVELS[on[on.length-1]]):'');syncChips();status()}
 });
@@ -355,6 +367,31 @@ $('secs').addEventListener('change',async e=>{const t=e.target;if(t.dataset.sadd
   for(let k=0;k<files.length;k++){try{const r=await upload(files[k],s.sec);its[k].img=r.url;its[k].local=r.local}catch(err){toast('사진 1장을 올리지 못했어요');its[k].fail=1}delete its[k].busy;renderSecs()}
   s.items=s.items.filter(x=>!x.fail);dirty=true;renderSecs()});
 
+
+/* ---------- brands (shopping items) ---------- */
+const BCATS=['OUTER','INNER','PANTS','ACCESSORIES','DRESS','SKIRT'];
+const isB=p=>BCATS.includes(p.cat);
+function renderBrands(){
+  const cats=BCATS.filter(k=>sex()==='여'||!/DRESS|SKIRT/.test(k));
+  $('brands').innerHTML=cats.map(k=>{const L=S.shop.map((b,i)=>[b,i]).filter(([b])=>b.cat===k);return `<div class="bcat"><h4>${k} <small style="color:#8a8e9c;font-weight:500">${L.length}개</small></h4><div class="bgrid">${L.map(([b,i])=>`<div class="bt">
+   <button class="x" data-bx="${i}">✕</button>
+   <label class="im">${b.local||b.img?`<img src="${esc(b.local||thumb(b.img))}" alt="">`:'사진 추가'}${b.busy?'<span class="up" style="position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.7);font-weight:700;color:#2f3d86">올리는 중</span>':''}<input type="file" accept="image/*" data-bp="${i}"></label>
+   <input type="text" placeholder="브랜드 (예: ZARA)" value="${esc(b.brand)}" data-bf="brand" data-bi="${i}">
+   <input type="text" placeholder="상품명" value="${esc(b.name)}" data-bf="name" data-bi="${i}">
+   <textarea placeholder="코멘트" style="margin-top:6px;min-height:64px;font-size:13px;padding:7px 8px" data-bf="how" data-bi="${i}">${esc(b.how)}</textarea>
+   <input type="text" placeholder="구매 링크 (선택)" value="${esc(b.url)}" data-bf="url" data-bi="${i}"></div>`).join('')}
+   <label class="badd">＋ ${k} 사진<br><small style="font-weight:400;color:#8a8e9c">여러 장 선택 또는<br>끌어다 놓기</small><input type="file" accept="image/*" multiple data-badd="${k}"></label></div></div>`}).join('');
+  status();
+}
+$('brands').addEventListener('input',e=>{const t=e.target;if(t.dataset.bi==null)return;S.shop[+t.dataset.bi][t.dataset.bf]=t.value;dirty=true});
+$('brands').addEventListener('click',e=>{const t=e.target;if(t.dataset.bx==null)return;e.preventDefault();if(confirm('이 아이템을 지울까요?')){S.shop.splice(+t.dataset.bx,1);dirty=true;renderBrands()}});
+$('brands').addEventListener('change',async e=>{const t=e.target;let its,files;
+  if(t.dataset.badd){const k=t.dataset.badd;files=[...t.files];its=files.map(()=>({cat:k,brand:'',name:'',how:'',url:'',shade:'',img:'',busy:1}));S.shop.push(...its)}
+  else if(t.dataset.bp!=null){files=[t.files[0]];its=[S.shop[+t.dataset.bp]];its[0].busy=1}else return;
+  renderBrands();
+  for(let n=0;n<files.length;n++){if(!files[n])continue;try{const r=await upload(files[n],'쇼핑_'+its[n].cat);its[n].img=r.url;its[n].local=r.local}catch(err){toast('사진 1장을 올리지 못했어요');its[n].fail=1}delete its[n].busy;renderBrands()}
+  S.shop=S.shop.filter(x=>!x.fail);dirty=true;renderBrands()});
+
 /* ---------- status ---------- */
 function status(){
   const v=S.values,f=(id,ok,t)=>{$(id).textContent=t;$(id).classList.toggle('ok',ok)};
@@ -363,6 +400,7 @@ function status(){
   f('st3',!!v['퍼스널컬러 메인'],v['퍼스널컬러 메인']||'');
   f('st4',S.products.length>0,S.products.length+'개');
   f('st5',!!v['얼굴형'],v['얼굴형']||'');f('st6',!!v['체형'],v['체형']||'');
+  if($('stB'))f('stB',S.shop.length>0,S.shop.length+'개');
   f('st7',S.secs.length>0,S.secs.length+'개 섹션 · '+S.secs.reduce((a,s)=>a+s.items.length,0)+'장');
 }
 
@@ -373,7 +411,7 @@ $('save').onclick=async()=>{
   $('save').disabled=true;$('save').textContent='저장 중...';
   try{
     const photos=[];S.secs.forEach(s=>{if(!s.items.length)photos.push({sec:s.sec,desc:s.desc,img:'',cap:''});s.items.forEach((it,j)=>photos.push({sec:s.sec,desc:j===0?s.desc:'',img:it.img,cap:it.cap}))});
-    const j=await api({action:'save',code:S.code,name:S.name.trim(),values:S.values,products:S.products.map(({busy,local,...p})=>p),photos});
+    const j=await api({action:'save',code:S.code,name:S.name.trim(),values:S.values,products:S.products.concat(S.shop.map(b=>Object.assign({},b,{name:b.name||b.brand||'아이템'}))).map(({busy,local,...p})=>p),photos});
     S.code=j.code;dirty=false;$('barMsg').textContent='저장됨 · 코드 '+S.code;$('preview').hidden=false;$('eTitle').textContent=S.name+' 리포트';
     const link=SITE+'report.html?c='+S.code;
     const msg=`${S.values['앱 표시 이름']||S.name} 님의 퍼스널 이미지 리포트예요 👉 ${link}\n\n링크를 길게 눌러 아이폰은 'Safari로 열기', 갤럭시는 '다른 브라우저로 열기'를 누른 뒤 홈 화면에 추가해 주세요.\n링크는 다른 분께 공유하지 말아 주세요.`;
@@ -389,11 +427,11 @@ window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.return
 
 
 /* ---------- desktop: side nav, drag & drop, preview ---------- */
-const SECN=['기본 정보','치수','퍼스널컬러','제품','얼굴형','체형','레퍼런스 사진','마무리'];
-function side(){const cards=[...document.querySelectorAll('#vEdit details.card')];cards.forEach((c,i)=>c.id='sec'+(i+1));
-  $('side').innerHTML=cards.map((c,i)=>{const st=c.querySelector('.st');return `<a href="#sec${i+1}"><span class="n">${i+1}</span><span>${SECN[i]}<small class="${st&&st.classList.contains('ok')?'ok':''}">${esc(st?st.textContent:'')||'&nbsp;'}</small></span></a>`}).join('');
+const SECN=['기본 정보','치수','퍼스널컬러','제품','얼굴형','체형','레퍼런스 사진','추천 브랜드','마무리'];
+function side(){const cards=[...document.querySelectorAll('#vEdit details.card')];cards.forEach((c,i)=>{if(!c.id||/^sec\d/.test(c.id))c.id='sec'+(i+1)});
+  $('side').innerHTML=cards.map((c,i)=>{const st=c.querySelector('.st');return `<a href="#${c.id}"><span class="n">${c.id==='brandCard'?'★':(i<7?i+1:i)}</span><span>${SECN[i]}<small class="${st&&st.classList.contains('ok')?'ok':''}">${esc(st?st.textContent:'')||'&nbsp;'}</small></span></a>`}).join('');
   $('side').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));t.open=true;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})})}
-const _status=status;status=function(){_status();if($('side')){side();const pc=/퍼스널컬러/.test((S&&S.values['리포트 종류'])||'');document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc})}};
+const _status=status;status=function(){_status();if($('side')){side();const pc=/퍼스널컬러/.test((S&&S.values['리포트 종류'])||'');document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc;if(i===7)x.hidden=!/패션컨설팅/.test((S&&S.values['리포트 종류'])||'')})}};
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+'report.html?c='+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;

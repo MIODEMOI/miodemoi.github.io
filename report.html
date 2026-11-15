@@ -25,6 +25,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Pretendard","
 .cover .line{display:none}
 .cover p{margin:0;color:var(--sub);font-size:15px}
 .cover #date{font-size:13px;color:var(--muted);margin-top:2px}
+.brand-cat{padding:16px 0;border-top:1px solid var(--line)}.brand-cat:first-of-type{border-top:0;padding-top:4px}
+.brand-cat h4{margin:0 0 10px;font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:800}
+.bl-list{display:flex;flex-direction:column;gap:8px}.bl-list div{background:#faf6f1;border-radius:12px;padding:11px 14px}.bl-list b{font-size:15.5px;letter-spacing:-.02em}.bl-list small{display:block;font-size:13px;color:var(--sub);margin-top:3px;line-height:1.5}
+.chipline{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}.chipline span{font-size:12px;font-weight:700;letter-spacing:.04em;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:#faf6f1}
+.si{border-top:1px solid var(--line);padding:16px 0 4px;text-align:center}.si img{width:64%;max-width:260px;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;margin:0 auto 12px;background:#f3eee8}
+.si b{display:block;font-size:16px;letter-spacing:-.02em;line-height:1.4}.si .sb p:not(.k){font-size:14px;color:var(--sub);line-height:1.65;margin:8px 0 0}.si a{display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:var(--accent);text-decoration:none}
 .sec-h{margin:34px 2px 14px}
 .sec-h small{display:block;font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;margin-bottom:4px}
 .sec-h h2{margin:0;font-size:23px;font-weight:800;letter-spacing:-.04em;line-height:1.3}
@@ -267,12 +273,12 @@ function gallery(list,f){
 function styleTab(){
   return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어/.test(s.sec))+
   `<div class="outro"><h3>Thank you</h3><p>${esc(D.outro||'고객님의 가장 좋은 모습을 찾는 데 도움이 되길 바랍니다.')}</p><p>쇼핑이 필요하시면 퍼스널쇼퍼 프로그램을 이용해 주세요.</p>
-  <button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show('shopper')">퍼스널쇼퍼 가격 · 견본 보기 →</button><a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
+  <button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show(FC?'brand':'shopper')">${FC?'추천 브랜드 보기':'퍼스널쇼퍼 가격 · 견본 보기'} →</button><a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
 }
 const SAMPLE=window.SAMPLE||{look:['shopper_sample_1.jpg','shopper_sample_2.jpg'],shop:['shopper_sample_3.jpg','shopper_sample_4.jpg'],app:'shopper_sample_app.jpg'};
 function shopperTab(){
   const lock='<span class="lock">🔒 견본</span>';
-  return head('05','PERSONAL SHOPPER','퍼스널쇼퍼 견본')+
+  return head(FC?'06':'05','PERSONAL SHOPPER','퍼스널쇼퍼 견본')+
   `<p class="desc" style="margin:-4px 2px 14px;color:var(--muted)">이 리포트를 바탕으로 퍼스널쇼퍼를 이용하시면 이렇게 받아 보실 수 있어요.<br>실제 고객님께 드린 결과물이라 흐리게 처리했어요.</p>
   <div class="card"><p class="k">01 STYLING GUIDE</p><p class="big ko" style="font-size:20px">내 옷으로 만든 코디 가이드</p>
    <p class="desc">새로 산 옷과 갖고 계신 옷을 섞어 입는 코디를 한 장씩 정리해 드려요. 셔츠 넣어 입기, 양말 색까지 입는 법을 함께 적어 드려요.</p>
@@ -288,7 +294,20 @@ function shopperTab(){
    <div class="appnote"><b>📱 3시간 이상 이용 고객님 특별 제공</b>'오늘 뭐 입지' 앱으로 날씨와 상황에 따라 스타일링을 추천해 드려요. 전에 쇼핑한 아이템과 함께 코디되는 앱을 별도로 제공해요.</div></div>
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
 }
-const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,shopper:shopperTab};
+let FC=false;
+const BRAND_KO={OUTER:'아우터',INNER:'이너',PANTS:'팬츠',ACCESSORIES:'액세서리',DRESS:'원피스',SKIRT:'스커트'};
+const SHOP_CATS=['OUTER','INNER','PANTS','ACCESSORIES','DRESS','SKIRT'];
+function brandTab(){
+  const fem=/^여/.test(D.sex||'');
+  const cats=SHOP_CATS.filter(k=>fem||!/DRESS|SKIRT/.test(k));
+  const S=(D.shop||[]).filter(p=>cats.includes(p.cat));
+  const box=p=>`<div class="si">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}<div class="sb">${p.brand?`<p class="k" style="margin:0 0 4px">${esc(p.brand)}</p>`:''}<b>${esc(p.name)}</b>${L(p.how).length?`<p>${L(p.how).map(esc).join('<br>')}</p>`:''}${p.url?`<a href="${esc(p.url)}" target="_blank" rel="noopener">구매 링크 →</a>`:''}</div></div>`;
+  return head('05','BRAND & SHOPPING','추천 브랜드')+
+  `<p class="desc" style="margin:-4px 2px 14px;color:var(--muted)">퍼스널컬러 · 얼굴형 · 체형 결과를 바탕으로 고객님께 잘 맞는 브랜드와 아이템을 골랐어요.</p>`+
+  (S.length?cats.filter(k=>S.some(p=>p.cat===k)).map(k=>`<div class="card"><p class="k">${k}<span style="color:var(--muted);font-weight:600;letter-spacing:0"> · ${BRAND_KO[k]}</span></p><div class="chipline">${[...new Set(S.filter(p=>p.cat===k).map(p=>p.brand).filter(Boolean))].map(b=>`<span>${esc(b)}</span>`).join('')}</div>${S.filter(p=>p.cat===k).map(box).join('')}</div>`).join(''):'<div class="card"><p class="desc">추천 브랜드를 준비하고 있어요.</p></div>')+
+  `<div class="card" style="text-align:center"><p class="desc">사이즈와 코디까지 함께 골라 드려요.</p><button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show('shopper')">퍼스널쇼퍼 알아보기 →</button></div>`;
+}
+const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,brand:brandTab,shopper:shopperTab};
 const SAMPLE2=window.SAMPLE2||{face:'sample_face.jpg',body:'sample_body.jpg'};
 function pcGuideTab(){return head('02','COLOR GUIDE','컬러 코디 가이드').replace(/^/,'')+colorGuide().replace(/<div class="sec-h">[\s\S]*?<\/div>/,'')+gallery(D.styles,s=>!/헤어|흑백/.test(s.sec))}
 function pcProdTab(){const fem=/^여/.test(D.sex||'');return prodSec().replace(/<div class="sec-h"><small>[^<]*<\/small><h2>/,`<div class="sec-h"><small>02 ${fem?'MAKEUP':'SKIN & BASE'}</small><h2>`)||head('02',fem?'MAKEUP':'SKIN CARE','추천 제품')+'<div class="card"><p class="desc">추천 제품을 준비하고 있어요.</p></div>'}
@@ -310,8 +329,10 @@ function show(t){
   document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
 }
 function start(){
-  PCM=/퍼스널컬러/.test(D.kind||'');
+  PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));
   $('who').textContent=PCM?`${D.name||'고객'} 님의 퍼스널컬러 분석`:`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
+  if(FC){document.querySelector('.cover h1').textContent='Fashion Consulting Report';$('who').textContent=`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 · 브랜드 컨설팅`;
+    document.querySelector('#nav div').innerHTML=['color:퍼스널컬러','face:얼굴형','body:체형','style:스타일','brand:브랜드','shopper:퍼스널쇼퍼'].map((x,i)=>{const [t,n]=x.split(':');return `<button data-t="${t}"${i?'':' aria-current="true"'}><b>0${i+1}</b>${n}</button>`}).join('');}
   if(PCM){document.querySelector('.cover h1').textContent='Personal Color Report';const fem=/^여/.test(D.sex||'');
     document.querySelector('#nav div').innerHTML=`<button data-t="color" aria-current="true"><b>01</b>진단 결과</button><button data-t="pcprod"><b>02</b>${fem?'메이크업':'스킨케어'}</button><button data-t="pcnext"><b>03</b>다음 단계</button>`;}
   $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show('color');
