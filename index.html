@@ -232,14 +232,8 @@ html{background:var(--bg)}
 <label>턱 (하안)<input id="f3" type="number" step="0.1" inputmode="decimal"></label>
 <label>얼굴 폭<input id="fw" type="number" step="0.1" inputmode="decimal"></label>
 </div></div>
-<label class="check"><input id="ok" type="checkbox"><span>(필수) 만 19세 이상이에요.</span></label>
-<label class="check"><input id="save" type="checkbox"><span>(선택) 내 측정값을 미오드모이 체형 분석에 활용하는 데 동의해요.<br><small style="color:var(--muted)">동의해 주시면 더 정확한 체형 분석 기준을 만드는 데 쓰여요.</small></span></label>
-<details class="consent"><summary>개인정보 수집·이용 안내 보기</summary>
-<p><b>수집 항목</b> 성별, 키, 몸무게, 몸 둘레 5곳, 얼굴 4곳, 판정된 체형, 입력 시각<br>이름·연락처 등 나를 알아볼 수 있는 정보는 받지 않아요.</p>
-<p><b>이용 목적</b> 미오드모이 체형 분석 기준을 다듬는 데에만 써요.<br>외부에 제공하거나 판매하지 않고, 유출되지 않게 관리해요.</p>
-<p><b>보관 기간</b> 1개월 보관 후 지워요.</p>
-<p><b>방문 통계</b> 방문 수와 버튼 클릭은 구글 애널리틱스로 익명 집계돼요. 입력한 수치는 보내지 않아요.</p>
-<p><b>동의하지 않아도</b> 결과는 똑같이 볼 수 있어요.</p></details>
+
+
 <button type="button" id="go">결과 보기</button><p class="msg" id="goMsg" hidden></p>
 </form>
 <section class="panel" id="result" aria-live="polite" hidden>
@@ -257,7 +251,7 @@ html{background:var(--bg)}
 <div class="offline"><strong>바로 신청하기</strong>
 <div class="opt" id="onlineOpt"><b>비대면 체형분석 · 120,000원 <small class="vat">부가세 포함</small></b><p>줄자와 측정 가이드를 집으로 보내드려요.</p><a class="onbtn" href="https://smartstore.naver.com/miodemoi/products/13864990147" target="_blank" rel="noopener">스마트스토어에서 결제하기</a></div>
 <div class="opt"><b>대면으로 받고 싶으신가요?</b><p>스튜디오에서 직접 측정하고 분석해 드려요.<br>스마트플레이스에서 체형분석을 선택해 주세요.</p><a class="offbtn" href="https://naver.me/5CW71ZCo" target="_blank" rel="noopener">스마트플레이스에서 대면 예약하기</a></div></div>
-<p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며,<br>최종 체형은 결제 후 사진을 확인해 안내합니다.<br>만 19세 이상 이용 가능합니다.</p>
+<p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며,<br>최종 체형은 결제 후 사진을 확인해 안내합니다.</p>
 <p style="text-align:center;font-size:12px;color:#8a817a;margin:24px 0 0">© 미오드모이(MIO DE MOI). 체형 판정 기준과 페이지 콘텐츠의 무단 복제·사용을 금지합니다.</p>
 </main>
 <script>
@@ -285,12 +279,11 @@ const num=i=>{const v=parseFloat($(i).value);return v>0?v:NaN};
 let reqNo=0;
 async function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  const empty=t=>{$('type').textContent='-';$('status').textContent='입력 필요';['a','b','d'].forEach(i=>$(i).textContent='-');m.hidden=false;m.textContent=t;$('lock').hidden=true;$('onlineOpt').hidden=false;isValid=false;$('goMsg').hidden=!shown;$('goMsg').textContent=t;return false};
- if(!$('ok').checked)return empty('만 19세 이상 항목에 체크하면 결과를 볼 수 있어요.');
  if([s,w,h].some(isNaN))return empty('어깨, 허리, 엉덩이 둘레를 cm로 입력해 주세요.');
  const sex=$('sex').value,kg=num('weight'),cm=num('height');
  if(!sex)return empty('성별을 선택해 주세요.');
  if(isNaN(kg)||isNaN(cm))return empty('키와 몸무게를 입력해 주세요.');
- const q={save:$('save').checked};['sex','height','weight','s','chest','w','h','thigh','belly','f1','f2','f3','fw'].forEach(i=>q[i]=$(i).value);
+ const q={save:true};['sex','height','weight','s','chest','w','h','thigh','belly','f1','f2','f3','fw'].forEach(i=>q[i]=$(i).value);
  const my=++reqNo;$('goMsg').hidden=false;$('goMsg').textContent='결과를 계산하고 있어요...';
  let R;try{const res=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(q)});R=await res.json()}catch(e){return empty('결과를 불러오지 못했어요. 잠시 후 다시 눌러 주세요.')}
  if(my!==reqNo)return false;
