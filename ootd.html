@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="오늘 뭐 입지">
+<meta name="theme-color" content="#2f3d86">
+<link rel="manifest" href="ootd.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>오늘 뭐 입지 | 미오드모이</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#f4f3ef;--paper:#fff;--ink:#16181f;--muted:#6d7080;--navy:#2f3d86;--teal:#2ba59a;--line:#e7e5df;--soft:#f4f3ef;--new:#2f3d86;--old:#9a9cab}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.025em;word-break:keep-all;padding-bottom:88px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;padding:0 16px 30px}
+header{background:var(--navy);color:#fff;margin:0 -16px;padding:22px 20px 22px;border-radius:0 0 28px 28px}
+.logo{display:flex;align-items:baseline;gap:8px;font-weight:900;font-size:13px;letter-spacing:.04em}
+.logo em{font-style:normal;font-weight:500;font-size:10px;letter-spacing:.14em;color:#7fd3c9}
+header h1{margin:16px 0 2px;font-size:28px;font-weight:800;letter-spacing:-.04em}
+header p{margin:0;color:#c9cfee;font-size:14px}
+header .only{margin-top:6px;font-size:11.5px;color:#9aa3d6}
+.wx{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 16px;margin-top:18px;color:#fff}
+.wx b{font-size:26px;font-weight:800;white-space:nowrap;letter-spacing:-.03em}
+.wx span{color:#d3d8f3;font-size:12.5px;line-height:1.5}
+.wx #wxn{color:#7fd3c9;font-weight:700}
+h2{font-size:17px;font-weight:800;margin:26px 0 12px;letter-spacing:-.03em}
+h2 small{font-size:13px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;background:var(--paper);border-radius:999px;padding:9px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.card{background:var(--paper);border-radius:24px;padding:20px;margin-top:16px;box-shadow:0 1px 2px rgba(20,24,40,.04),0 8px 24px rgba(20,24,40,.05)}
+.card h3{margin:6px 0 2px;font-size:21px;font-weight:800;letter-spacing:-.04em;line-height:1.35}
+.tags{display:flex;flex-wrap:wrap;gap:5px;font-size:0}
+.tags span{font-size:11.5px;font-weight:700;color:var(--teal);background:#e8f6f4;border-radius:6px;padding:3px 8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.grid.three{grid-template-columns:1fr 1fr 1fr}
+.it{background:none;border:0;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit}
+.it img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:16px;padding:6px;box-shadow:inset 0 0 0 1px var(--line);border:1px solid var(--line)}
+.it div{padding:8px 2px 2px;font-size:13.5px;font-weight:600;line-height:1.35}
+.it em{display:block;font-style:normal;font-weight:400;color:var(--muted);font-size:11.5px;margin-top:1px}
+.badge{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;color:#fff;background:var(--old);z-index:1;letter-spacing:0}
+.badge.new{background:var(--new)}.badge.past{background:#5f9b95}
+.tips{margin-top:16px;background:#eef8f6;border-radius:16px;padding:12px 14px 6px}.tips p{margin:0 0 6px;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--teal)}.tip{display:flex;gap:10px;font-size:14px;line-height:1.5;color:#1f3d3a;padding:6px 0;border-top:1px solid #d6efeb}.tips p+.tip{border-top:0}
+.tip i{font-style:normal;flex:none;width:20px;height:20px;font-size:11px!important;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+.btn{display:flex;justify-content:center;align-items:center;gap:8px;width:100%;margin-top:16px;border:0;border-radius:16px;padding:16px;background:var(--navy);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;text-align:center;text-decoration:none}
+.btn small{font-weight:500;opacity:.7;font-size:13px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.focus{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;border-radius:16px;padding:12px 16px;margin-top:16px;font-size:14px;font-weight:600}
+.focus button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px}
+.msg{color:var(--muted);text-align:center;padding:26px 10px}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.row{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;font-size:14px}
+.row b{font-size:15px}
+.bar{height:8px;background:var(--soft);border-radius:99px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--teal));border-radius:99px}
+.done{color:var(--teal);font-weight:800}
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav div{display:flex;max-width:480px;width:100%}
+nav button{flex:1;border:0;background:none;padding:9px 0 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current="true"]{color:var(--navy)}
+footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-height:1.6}
+[hidden]{display:none!important}
+.shop-r{margin:22px 0 -4px;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--navy)}
+.sh-row{display:flex;gap:10px;margin-top:12px;overflow-x:auto;scrollbar-width:none}.sh-row::-webkit-scrollbar{display:none}
+.sh-it{flex:0 0 31%;border:0;background:none;padding:0;font:inherit;text-align:left;cursor:pointer;color:inherit}.sh-it img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px}.sh-it span{display:block;font-size:12.5px;font-weight:600;margin-top:6px;line-height:1.35}
+.sh-note{white-space:pre-line;font-size:14px;line-height:1.6;margin:12px 0 0;background:var(--soft);border-radius:12px;padding:10px 12px}
+.btn.sm{padding:12px;font-size:14px;margin-top:12px}
+.a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">MIO DE MOI <em>BEYOND TRENDS</em></div><h1 id="ttl">오늘 뭐 입지?</h1><p id="sub">내 옷장 속 옷으로 미오드모이가 짜 둔 코디예요.</p><p class="only">퍼스널쇼퍼 3회 이상 구입 고객님 전용 앱입니다.</p>
+ <div class="wx" id="wx"><b>…</b><span>오늘 날씨를 확인하고 있어요</span></div></header>
+
+<section id="t-today">
+ <h2>오늘 어디 가세요?</h2>
+ <div class="chips" id="sits"></div>
+ <div id="out"><p class="msg">코디를 불러오고 있어요...</p></div>
+</section>
+
+<section id="t-closet" hidden>
+ <h2>내 옷장 <small id="cnt" style="color:var(--muted);font-weight:400"></small></h2>
+ <div class="chips" id="cf"></div>
+ <p class="note">옷을 누르면 그 옷으로 만든 코디를 볼 수 있어요.</p>
+ <div id="closet"></div>
+</section>
+
+<section id="t-shop" hidden><h2>쇼핑 리스트 <small id="scnt" style="color:var(--muted);font-weight:400"></small></h2><p class="note" style="margin-top:-4px">미오드모이가 골라 드린 아이템이에요. 링크를 누르면 상품 페이지로 이동해요.</p><div id="shop"></div></section>
+
+<section id="t-prog" hidden><div id="prog"></div></section>
+
+<footer>© 미오드모이(MIO DE MOI). 고객님 전용 페이지예요.<br>링크를 다른 분께 공유하지 말아 주세요.</footer>
+</div>
+<nav><div>
+ <button data-t="today" aria-current="true"><svg viewBox="0 0 24 24"><path d="M8 3l4 3 4-3 5 3-2 5-3-1v11H8V10l-3 1-2-5z"/></svg>오늘 코디</button>
+ <button data-t="closet"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9.5 11v2M14.5 11v2"/></svg>내 옷장</button>
+ <button data-t="shop"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.5H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>쇼핑 리스트</button>
+ <button data-t="prog"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14.5l2.5 2.5 5-5"/></svg>내 프로그램</button>
+</div></nav>
+<script>
+const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const KAKAO="http://pf.kakao.com/_ESuxln";
+const BUCKET=t=>t>=28?0:t>=23?1:t>=17?2:t>=12?3:t>=5?4:5;
+const KINDS=['아우터','상의','원피스','하의','신발','양말','가방','액세서리'];
+const code=new URLSearchParams(location.search).get('c')||'';
+let D=window.DEMO||null,wxi=null,sit='전체',list=[],idx=0,focus=null,cf='전체';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd=i=>i.round!=null?+i.round:(/구매|새|new/i.test(i.own||'')?1:0);
+let LATEST=0;
+const isNew=i=>LATEST>0&&rnd(i)===LATEST;
+const grp=i=>rnd(i)===0?'기존 옷':isNew(i)?'이번 쇼핑':'지난 쇼핑';
+const lab=i=>rnd(i)===0?'기존':isNew(i)?'NEW':rnd(i)+'회차';
+const tile=(id,i)=>`<button class="it" data-id="${esc(id)}"><span class="badge ${isNew(i)?'new':rnd(i)?'past':''}">${lab(i)}</span><img src="${esc(i.img)}" alt="${esc(i.name)}" loading="lazy" referrerpolicy="no-referrer"><div>${esc(i.name)}<em>${esc(i.kind)}</em></div></button>`;
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+function tab(t){
+  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
+  ['today','closet','shop','prog'].forEach(x=>$('t-'+x).hidden=x!==t);
+  window.scrollTo(0,0);
+}
+
+async function weather(){
+  const get=async(lat,lon,where)=>{
+    if(where!=='내 위치'&&mine)return;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`);
+    const d=(await r.json()).daily;
+    if(where!=="내 위치"&&mine)return;
+    const feel=(d.apparent_temperature_max[0]+d.apparent_temperature_min[0])/2;
+    wxi=BUCKET(feel);
+    $('wx').innerHTML=`<b>${Math.round(d.temperature_2m_min[0])}° / ${Math.round(d.temperature_2m_max[0])}°</b><span>${where} · 체감 ${Math.round(feel)}°<br><span id="wxn"></span> 날씨에 맞춘 코디예요</span>`;
+    render();
+  };
+  let mine=false;
+  get(35.18,129.08,'부산 기준').catch(()=>{if(!mine){$('wx').innerHTML='<span>날씨를 불러오지 못해 모든 코디를 보여드려요</span>';render()}});
+  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{mine=true;get(p.coords.latitude.toFixed(2),p.coords.longitude.toFixed(2),'내 위치').catch(()=>{})},()=>{},{timeout:8000,maximumAge:3600000});
+}
+
+function chips(){
+  const used=new Set();D.outfits.forEach(o=>o.sit.forEach(s=>used.add(s)));
+  const all=['전체',...D.situations.filter(s=>used.has(s))];
+  $('sits').innerHTML=all.map(s=>`<button class="chip" aria-pressed="${s===sit}">${esc(s)}</button>`).join('');
+  $('sits').querySelectorAll('button').forEach(b=>b.onclick=()=>{sit=b.textContent;focus=null;chips();render(true)});
+}
+
+function pick(){
+  if(focus)return{l:D.outfits.filter(o=>o.items.includes(focus)),near:false};
+  const bySit=D.outfits.filter(o=>sit==='전체'||o.sit.includes(sit));
+  if(wxi==null)return{l:bySit,near:false};
+  const exact=bySit.filter(o=>!o.wx.length||o.wx.includes(wxi));
+  if(exact.length)return{l:exact,near:false};
+  return{l:bySit.filter(o=>o.wx.some(w=>Math.abs(w-wxi)===1)),near:true};
+}
+
+function render(reshuffle){
+  if(!D)return;
+  if($('wxn')&&wxi!=null)$('wxn').textContent=D.weather[wxi];
+  const p=pick();
+  if(reshuffle||list.length!==p.l.length||list.some((o,i)=>o!==p.l[i])){list=p.l.slice().sort(()=>Math.random()-.5);idx=0}
+  const fb=focus?`<div class="focus"><span>👕 ${esc(D.items[focus].name)} 코디 ${list.length}개</span><button id="unf">전체 보기</button></div>`:'';
+  if(!list.length){$('out').innerHTML=fb+'<div class="card"><p class="msg">조건에 맞는 코디가 아직 없어요.<br>다른 상황을 골라 보시거나 미오드모이에 물어봐 주세요.</p></div>';bindUnf();return}
+  const o=list[idx%list.length];
+  const its=o.items.map(id=>[id,D.items[id]]).filter(x=>x[1]);
+  $('out').innerHTML=fb+`<div class="card">
+   <div class="tags">${o.sit.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+   <h3>${esc(o.name||'오늘의 코디')}</h3>
+   ${p.near?'<p class="note">오늘 날씨와 딱 맞는 코디가 없어 가장 가까운 코디를 보여드려요.</p>':''}
+   <div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>
+   ${String(o.tip||'').trim()?`<div class="tips"><p>STYLING TIP</p>${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<div class="tip"><i>✓</i><span>${esc(x)}</span></div>`).join('')}</div>`:''}
+   ${list.length>1?`<button class="btn" id="next">다른 코디 보기 <small>${idx%list.length+1} / ${list.length}</small></button>`:''}
+  </div>`;
+  if($('next'))$('next').onclick=()=>{idx++;render();window.scrollTo({top:$('out').offsetTop-80,behavior:'smooth'})};
+  $('out').querySelectorAll('.it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;render(true)});
+  bindUnf();
+}
+function bindUnf(){if($('unf'))$('unf').onclick=()=>{focus=null;render(true)}}
+
+function closet(){
+  const ids=Object.keys(D.items);
+  const n=ids.filter(id=>isNew(D.items[id])).length;
+  $('cnt').textContent=`${ids.length}벌 · 이번 쇼핑 ${n}벌`;
+  const has=g=>ids.some(id=>grp(D.items[id])===g);
+  $('cf').innerHTML=['전체','이번 쇼핑','지난 쇼핑','기존 옷'].filter(g=>g==='전체'||has(g)).map(s=>`<button class="chip" aria-pressed="${s===cf}">${s}</button>`).join('');
+  $('cf').querySelectorAll('button').forEach(b=>b.onclick=()=>{cf=b.textContent;closet()});
+  const show=ids.filter(id=>cf==='전체'||grp(D.items[id])===cf);
+  const kinds=[...KINDS,...new Set(show.map(id=>D.items[id].kind).filter(k=>!KINDS.includes(k)))];
+  $('closet').innerHTML=kinds.map(k=>{const g=show.filter(id=>D.items[id].kind===k);return g.length?`<h2>${esc(k)} <small style="color:var(--muted);font-weight:400">${g.length}</small></h2><div class="grid three">${g.map(id=>tile(id,D.items[id])).join('')}</div>`:''}).join('');
+  $('closet').querySelectorAll('.it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
+}
+
+function shopList(){
+  const L=D.shop||[];if(!L.length)return;
+  const rounds=[...new Set(L.map(x=>+x.round||0))].sort((a,b)=>b-a);
+  $('scnt').textContent=L.length+'개';
+  $('shop').innerHTML=rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
+    return `<div class="card sh">${x.cat?`<div class="tags"><span>${esc(x.cat)}</span></div>`:''}
+    ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
+    ${String(x.note||'').trim()?`<p class="sh-note">${esc(x.note)}</p>`:''}
+    ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
+  $('shop').querySelectorAll('.sh-it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
+}
+
+function program(){
+  const P=D.program;if(!P){$('prog').innerHTML='<p class="msg">프로그램 정보가 아직 없어요.</p>';return}
+  const part=(label,x)=>{if(!x||!x.total)return'';const left=x.total-x.used;return`<div class="row"><b>${esc(label)}</b><span class="${left?'':'done'}">${left?`${left}${esc(x.unit)} 남음`:'완료 ✓'} <small style="color:var(--muted)">(${x.used}/${x.total}${esc(x.unit)})</small></span></div><div class="bar"><i style="width:${Math.min(100,x.used/x.total*100)}%"></i></div>`};
+  $('prog').innerHTML=`<div class="card"><div class="tags">MY PROGRAM</div><h3>${esc(P.name)}</h3><p class="note" style="margin:0">${(P.parts||[]).map(esc).join(' · ')}${P.price?' · '+esc(P.price):''}</p>
+   ${P.body?`<div class="row"><b>체형분석</b><span class="done">완료 ✓</span></div>`:''}
+   ${part('오프라인 동행 쇼핑',P.offline)}${P.shopDate?`<p class="note">동행 쇼핑일 ${esc(P.shopDate)}</p>`:''}
+   ${part('온라인 쇼핑',P.online)}
+   <a class="btn" href="${KAKAO}" target="_blank" rel="noopener">온라인 쇼핑 요청하기 (카카오톡)</a>
+   <p class="note">사고 싶은 옷, 필요한 상황을 카톡으로 보내 주시면 고객님 체형과 지금 옷장에 맞춰 골라 드려요. 산 옷은 옷장과 코디에 추가해 드려요.</p></div>`;
+}
+
+function start(){
+  LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd));
+  chips();closet();shopList();program();
+  if(!(D.shop||[]).length)document.querySelector('nav button[data-t=shop]').hidden=true;
+  if(D.title)$('ttl').textContent=D.title;
+  render(true);
+}
+
+(async()=>{
+  weather();
+  if(D){start();return}
+  if(!code){$('out').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
+  try{
+    const j=await (await fetch(API+'?k='+encodeURIComponent(code))).json();
+    if(j.error){$('out').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
+    D=j;start();
+  }catch(e){$('out').innerHTML='<p class="msg">코디를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
+})();
+</script>
+<script>
+(function(){
+  var K='mio-ootd';
+  try{var q=new URLSearchParams(location.search).get('c');if(q)localStorage.setItem(K,q);else{var s=localStorage.getItem(K);if(s){location.replace(location.pathname+'?c='+encodeURIComponent(s));return}}}catch(e){}
+  var standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  var seen=false;try{seen=localStorage.getItem(K+'-a2hs')==='1'}catch(e){}
+  if(standalone||seen||!new URLSearchParams(location.search).get('c'))return;
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent),deferred=null;
+  function box(msg,btn){var d=document.createElement('div');d.className='a2hs';d.innerHTML='<img src="icon-180.png" alt=""><div style="flex:1"><b>홈 화면에 바로가기 만들기</b>'+msg+'</div>'+(btn?'<button class="go">추가</button>':'')+'<button class="x" aria-label="닫기">✕</button>';document.body.appendChild(d);
+    d.querySelector('.x').onclick=function(){d.remove();try{localStorage.setItem(K+'-a2hs','1')}catch(e){}};
+    if(btn)d.querySelector('.go').onclick=function(){deferred.prompt();deferred.userChoice.then(function(){d.remove();try{localStorage.setItem(K+'-a2hs','1')}catch(e){}})};}
+  if(ios){setTimeout(function(){box('아래 <b style="display:inline">공유 버튼(□↑)</b> → <b style="display:inline">홈 화면에 추가</b>를 눌러 주세요.',false)},1200)}
+  else{addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;box('앱처럼 바로 열 수 있어요.',true)});
+    setTimeout(function(){if(!deferred&&!document.querySelector('.a2hs'))box('브라우저 메뉴(⋮) → <b style="display:inline">홈 화면에 추가</b>를 눌러 주세요.',false)},4000)}
+})();
+</script>
+</body>
+</html>

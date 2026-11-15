@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MIO 입력">
+<meta name="theme-color" content="#2f3d86">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>미오드모이 리포트 입력</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#f4f3ef;--paper:#fff;--ink:#16181f;--sub:#555a6b;--muted:#8a8e9c;--navy:#2f3d86;--teal:#2ba59a;--line:#e5e3dd;--soft:#f6f5f2;--red:#c0503c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;padding-bottom:110px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header{background:var(--navy);color:#fff;padding:16px 18px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px}
+header b{font-size:16px}header small{color:#c9cfee;font-size:12px}
+header .sp{flex:1}
+header button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+h2{font-size:18px;margin:26px 0 10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px}
+.card > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.card > summary::-webkit-details-marker{display:none}
+.card > summary .n{width:26px;height:26px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+.card > summary .st{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted)}
+.card > summary .st.ok{color:var(--teal)}
+.card[open] > summary{margin-bottom:14px}
+.f{display:block;margin:12px 0 0}
+.f > span{display:block;font-size:13px;font-weight:700;color:var(--sub);margin-bottom:5px}
+.f > span small{font-weight:400;color:var(--muted)}
+input[type=text],input[type=number],input[type=url],input[type=password],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:84px;line-height:1.6}
+input:focus,textarea:focus{outline:none;border-color:var(--navy)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.g2 .f,.g3 .f,.g5 .f{margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font:inherit;font-size:14px;cursor:pointer;color:var(--sub)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:12px 16px;background:var(--navy);color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:10px}
+.btn.del{background:#fff;color:var(--red);border:1.5px solid #f0d5cf}
+.btn.full{width:100%}
+.list .row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer}
+.list .row:first-child{border-top:0}
+.list .row b{font-size:15.5px}.list .row small{color:var(--muted);font-size:12.5px;display:block}
+.list .row .go{margin-left:auto;color:var(--navy);font-weight:700;font-size:13px}
+.item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:var(--soft)}
+.item .top{display:flex;gap:12px;align-items:flex-start}
+.ph{width:84px;height:84px;border-radius:12px;background:#fff;border:1.5px dashed #c9c6be;display:grid;place-items:center;flex:none;position:relative;overflow:hidden;cursor:pointer;font-size:12px;color:var(--muted);text-align:center}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ph .up{position:absolute;inset:0;background:rgba(255,255,255,.75);display:grid;place-items:center;font-size:11px;color:var(--navy);font-weight:700}
+.item .fields{flex:1;display:grid;gap:8px}
+.item .acts{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+.pics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.pic{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pic .im{aspect-ratio:3/4;background:var(--soft);position:relative}
+.pic .im img{width:100%;height:100%;object-fit:cover;display:block}
+.pic textarea{border:0;border-top:1px solid var(--line);border-radius:0;min-height:56px;font-size:12.5px;padding:8px}
+.pic .x{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:13px;cursor:pointer}
+.add{border:1.5px dashed #b9b6ad;border-radius:12px;display:grid;place-items:center;aspect-ratio:3/4;color:var(--navy);font-weight:700;font-size:13px;position:relative;cursor:pointer;background:#fff;text-align:center}
+.add input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.bal{display:flex;gap:8px;margin-top:10px}.bal div{flex:1;background:var(--soft);border-radius:10px;padding:8px;text-align:center;font-size:12px;color:var(--muted)}.bal b{display:block;font-size:17px;color:var(--ink)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));z-index:6}
+.bar .in{max-width:640px;margin:0 auto;display:flex;gap:8px;align-items:center}
+.bar .msg{flex:1;font-size:13px;color:var(--muted)}
+.done{background:#eef7f5;border:1px solid #cfe9e3;border-radius:14px;padding:14px;margin-top:12px}
+.done code{display:block;background:#fff;border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13px;word-break:break-all}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-size:13.5px;z-index:9;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div><b>MIO DE MOI</b> <small>리포트 입력</small></div><span class="sp"></span><button id="toList" hidden>고객 목록</button><button id="logout" hidden>로그아웃</button></header>
+<div class="wrap">
+
+<section id="vLogin">
+ <h2>입력 페이지 로그인</h2>
+ <div class="card"><label class="f"><span>비밀번호</span><input id="pw" type="password" autocomplete="current-password"></label>
+ <p class="hint">구글 시트 메뉴 '미오드모이 → 입력 페이지 비밀번호 정하기'에서 정한 비밀번호예요.</p>
+ <button class="btn full" id="login" style="margin-top:14px">들어가기</button><p class="hint" id="loginMsg"></p></div>
+</section>
+
+<section id="vList" hidden>
+ <h2>체형분석 리포트</h2>
+ <button class="btn full" id="new">＋ 새 고객 리포트 만들기</button>
+ <div class="card list" id="list" style="margin-top:12px"><p class="hint">불러오는 중...</p></div>
+</section>
+
+<section id="vEdit" hidden>
+ <h2 id="eTitle">새 고객</h2>
+
+ <details class="card" open><summary><span class="n">1</span>기본 정보<span class="st" id="st1"></span></summary>
+  <div class="g2">
+   <label class="f"><span>고객 이름 <small>(나만 봄)</small></span><input type="text" id="name"></label>
+   <label class="f"><span>앱 표시 이름 <small>(○○ 님)</small></span><input type="text" data-k="앱 표시 이름"></label>
+  </div>
+  <div class="f"><span>성별</span><div class="chips" data-one="성별"><button class="chip">여</button><button class="chip">남</button></div></div>
+  <div class="f"><span>측정 방식</span><div class="chips" data-one="측정 방식"><button class="chip">대면</button><button class="chip">온라인</button></div></div>
+  <label class="f"><span>진단일</span><input type="text" data-k="진단일" placeholder="예) 2026. 11. 15"></label>
+ </details>
+
+ <details class="card" open><summary><span class="n">2</span>치수<span class="st" id="st2"></span></summary>
+  <label class="f"><span>고객이 카톡으로 보낸 측정값 붙여넣기 <small>(온라인 고객)</small></span><textarea id="paste" placeholder="[미오드모이 측정값]&#10;성별: 여&#10;어깨 둘레: 105cm ..."></textarea></label>
+  <button class="btn sm ghost" id="parse" style="margin-top:8px">붙여넣은 값 칸에 채우기</button>
+  <div class="g5" style="margin-top:6px">
+   <label class="f"><span>어깨</span><input type="number" step="0.1" inputmode="decimal" data-k="어깨둘레"></label>
+   <label class="f"><span>가슴</span><input type="number" step="0.1" inputmode="decimal" data-k="가슴둘레"></label>
+   <label class="f"><span>허리</span><input type="number" step="0.1" inputmode="decimal" data-k="허리둘레"></label>
+   <label class="f"><span>엉덩이</span><input type="number" step="0.1" inputmode="decimal" data-k="엉덩이둘레"></label>
+   <label class="f"><span>허벅지</span><input type="number" step="0.1" inputmode="decimal" data-k="허벅지둘레"></label>
+  </div>
+  <div class="bal" id="bal"></div>
+  <div class="g3">
+   <label class="f"><span>상안부 cm</span><input type="number" step="0.1" inputmode="decimal" data-k="상안부(cm)"></label>
+   <label class="f"><span>중안부 cm</span><input type="number" step="0.1" inputmode="decimal" data-k="중안부(cm)"></label>
+   <label class="f"><span>하안부 cm</span><input type="number" step="0.1" inputmode="decimal" data-k="하안부(cm)"></label>
+  </div>
+  <p class="hint" id="faceHint"></p>
+ </details>
+
+ <details class="card"><summary><span class="n">3</span>퍼스널컬러<span class="st" id="st3"></span></summary>
+  <div class="g2">
+   <label class="f"><span>메인</span><input type="text" list="dlTone" data-k="퍼스널컬러 메인" placeholder="예) 여름 쿨 화이티시"></label>
+   <label class="f"><span>서브</span><input type="text" list="dlTone" data-k="퍼스널컬러 서브"></label>
+  </div>
+  <datalist id="dlTone"></datalist>
+  <div class="f"><span>명도 <small>(범위면 두 개 선택)</small></span><div class="chips" data-range="명도"><button class="chip">고명도</button><button class="chip">중고명도</button><button class="chip">중명도</button><button class="chip">중저명도</button><button class="chip">저명도</button></div></div>
+  <div class="f"><span>채도</span><div class="chips" data-one="채도"><button class="chip">고채도</button><button class="chip">중채도</button><button class="chip">저채도</button></div></div>
+  <div class="f"><span>대비감</span><div class="chips" data-one="대비감"><button class="chip">강한 대비감</button><button class="chip">중간 대비감</button><button class="chip">약한 대비감</button></div></div>
+  <div class="g2">
+   <label class="f"><span>피할 컬러</span><input type="text" data-k="피할 컬러"></label>
+   <label class="f"><span>액세서리 · 안경테</span><input type="text" data-k="액세서리·안경테"></label>
+  </div>
+  <label class="f"><span>컨설턴트 노트 <small>(한 줄에 하나)</small></span><textarea data-k="컬러 컨설턴트 노트"></textarea></label>
+  <label class="f"><span>추천 컬러 조합 <small>(한 줄에 하나: 화이트+베이지)</small></span><textarea data-k="추천 컬러 조합"></textarea></label>
+  <div class="g2">
+   <label class="f"><span>톤인톤 컬러 <small>(한 줄에 하나)</small></span><textarea data-k="톤인톤 컬러"></textarea></label>
+   <label class="f"><span>톤온톤 컬러 <small>(밝은 색부터)</small></span><textarea data-k="톤온톤 컬러"></textarea></label>
+  </div>
+  <label class="f"><span>흑백 모드 한 줄</span><input type="text" data-k="흑백 모드 한 줄" placeholder="예) 이 컬러 모두 입기 좋겠죠?"></label>
+  <p class="hint">흑백 모드 티셔츠 사진은 7번 '레퍼런스 사진'에서 '흑백 티셔츠' 섹션으로 넣어요.</p>
+ </details>
+
+ <details class="card"><summary><span class="n">4</span><span id="prodTitle">제품 추천</span><span class="st" id="st4"></span></summary>
+  <div id="prods"></div>
+  <button class="btn ghost full" id="addProd" style="margin-top:10px">＋ 제품 추가</button>
+ </details>
+
+ <details class="card"><summary><span class="n">5</span>얼굴형<span class="st" id="st5"></span></summary>
+  <label class="f"><span>얼굴형</span><input type="text" list="dlFace" data-k="얼굴형" placeholder="예) 계란형"></label>
+  <datalist id="dlFace"><option>계란형</option><option>각진형</option><option>둥근형</option><option>긴형</option><option>하트형</option><option>다이아몬드형</option></datalist>
+  <label class="f"><span>균형 포인트 <small>(한 줄에 하나)</small></span><textarea data-k="균형 포인트"></textarea></label>
+  <div class="g2">
+   <label class="f"><span>추천 헤어</span><textarea data-k="추천 헤어"></textarea></label>
+   <label class="f"><span>피할 헤어</span><textarea data-k="피할 헤어"></textarea></label>
+  </div>
+  <label class="f"><span>안경 추천</span><input type="text" data-k="안경 추천"></label>
+  <label class="f"><span>얼굴형 컨설턴트 노트</span><textarea data-k="얼굴형 컨설턴트 노트"></textarea></label>
+  <div class="g2">
+   <label class="f"><span>추천 샵 이름</span><input type="text" data-k="추천 샵 이름"></label>
+   <label class="f"><span>추천 샵 전화</span><input type="text" data-k="추천 샵 전화"></label>
+  </div>
+  <label class="f"><span>추천 샵 링크</span><input type="url" data-k="추천 샵 링크" placeholder="https://naver.me/..."></label>
+  <label class="f"><span>추천 샵 주소</span><input type="text" data-k="추천 샵 주소"></label>
+ </details>
+
+ <details class="card"><summary><span class="n">6</span>체형<span class="st" id="st6"></span></summary>
+  <div class="f"><span>체형</span><div class="chips" data-one="체형" id="bodyChips"></div></div>
+  <label class="f"><span>체형 요약 <small>(결과 아래 2~3문장)</small></span><textarea data-k="체형 요약"></textarea></label>
+  <label class="f"><span>체형 분석 노트 <small>(한 줄에 하나)</small></span><textarea data-k="체형 분석 노트"></textarea></label>
+  <div class="g2">
+   <label class="f"><span>잘 어울리는 스타일</span><textarea data-k="잘 어울리는 스타일"></textarea></label>
+   <label class="f"><span>피하면 좋은 핏</span><textarea data-k="피하면 좋은 핏"></textarea></label>
+  </div>
+ </details>
+
+ <details class="card"><summary><span class="n">7</span>레퍼런스 사진<span class="st" id="st7"></span></summary>
+  <p class="hint" style="margin-top:0">섹션을 만들고 사진을 여러 장 한 번에 고르세요. 사진 아래 칸에 코멘트를 적으면 리포트에 그대로 나와요. '헤어'가 들어간 섹션은 얼굴형 탭, '흑백 티셔츠'는 컬러 탭, 나머지는 스타일 탭에 나와요.</p>
+  <div class="chips" id="secPreset" style="margin-top:10px"></div>
+  <div id="secs"></div>
+ </details>
+
+ <details class="card"><summary><span class="n">8</span>마무리<span class="st"></span></summary>
+  <label class="f"><span>마무리 메시지 <small>(비우면 기본 문구)</small></span><textarea data-k="마무리 메시지"></textarea></label>
+ </details>
+
+ <div id="doneBox"></div>
+</section>
+</div>
+
+<div class="bar" id="bar" hidden><div class="in"><span class="msg" id="barMsg">저장 전이에요</span><button class="btn ghost sm" id="preview" hidden>미리보기</button><button class="btn" id="save">저장하기</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const SITE="https://miodemoi.github.io/";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const BODY={여:['역삼각형','직사각형','라운드형','삼각형','모래시계형','8자형'],남:['직사각형','삼각형','사다리꼴형','타원형','역삼각형','모래시계형']};
+const CATS={여:['베이스','아이','브로우','립','블러셔','스킨케어','선케어','클렌징'],남:['클렌징','스킨케어','선케어','베이스','립케어','헤어']};
+const SECS=['흑백 티셔츠','추천 헤어스타일','팬츠 스타일링','아우터 스타일링','셔츠 스타일링','원피스 스타일링','스커트 스타일링','데님 스타일링','자켓 WORST & BEST','컬러 코디 예시'];
+const LEVELS=['고명도','중고명도','중명도','중저명도','저명도'];
+let PW='',S=null,dirty=false;
+try{PW=localStorage.getItem('mio-admin-pw')||''}catch(e){}
+
+function toast(t){$('toast').textContent=t;$('toast').classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('on'),2200)}
+async function api(o){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({pw:PW},o))});const j=await r.json();if(j.error==='pw'){logout();throw new Error('비밀번호가 맞지 않아요')}if(j.error)throw new Error(j.error);return j}
+function view(v){['vLogin','vList','vEdit'].forEach(x=>$(x).hidden=x!==v);$('bar').hidden=v!=='vEdit';$('toList').hidden=v!=='vEdit';$('logout').hidden=v==='vLogin';window.scrollTo(0,0)}
+function logout(){PW='';try{localStorage.removeItem('mio-admin-pw')}catch(e){}view('vLogin')}
+
+$('login').onclick=async()=>{PW=$('pw').value.trim();$('loginMsg').textContent='확인 중...';try{await api({action:'ping'});try{localStorage.setItem('mio-admin-pw',PW)}catch(e){}loadList()}catch(e){$('loginMsg').textContent=e.message}};
+$('logout').onclick=logout;
+$('toList').onclick=()=>{if(dirty&&!confirm('저장하지 않은 내용이 있어요. 목록으로 갈까요?'))return;loadList()};
+$('new').onclick=()=>openEdit({code:'',name:'',values:{'측정 방식':'대면'},products:[],photos:[]});
+
+async function loadList(){view('vList');$('list').innerHTML='<p class="hint">불러오는 중...</p>';
+  try{const j=await api({action:'list'});
+    $('list').innerHTML=j.list.length?j.list.map(c=>`<div class="row" data-c="${esc(c.code)}"><div><b>${esc(c.name||'(이름 없음)')}</b><small>${esc([c.sex,c.type,c.date,c.code].filter(Boolean).join(' · '))}</small></div><span class="go">열기 ›</span></div>`).join(''):'<p class="hint">아직 고객이 없어요. 위 버튼으로 만들어 주세요.</p>';
+    $('list').querySelectorAll('.row').forEach(r=>r.onclick=async()=>{toast('불러오는 중...');try{openEdit(await api({action:'get',code:r.dataset.c}))}catch(e){toast(e.message)}});
+    const tones=new Set();j.list.forEach(()=>{});
+  }catch(e){$('list').innerHTML='<p class="hint">'+esc(e.message)+'</p>'}}
+
+/* ---------- editor ---------- */
+function openEdit(d){
+  S={code:d.code||'',name:d.name||'',values:Object.assign({},d.values||{}),products:(d.products||[]).map(p=>Object.assign({},p)),secs:[]};
+  (d.photos||[]).forEach(p=>{let s=S.secs.find(x=>x.sec===p.sec);if(!s){s={sec:p.sec,desc:'',items:[]};S.secs.push(s)}if(p.desc&&!s.desc)s.desc=p.desc;if(p.img)s.items.push({img:p.img,cap:p.cap||''})});
+  $('eTitle').textContent=S.code?(S.name||'고객')+' 리포트':'새 고객 리포트';
+  $('name').value=S.name;
+  document.querySelectorAll('[data-k]').forEach(el=>el.value=S.values[el.dataset.k]||'');
+  syncChips();renderBody();renderProds();renderSecs();calc();status();
+  $('doneBox').innerHTML='';$('preview').hidden=!S.code;$('barMsg').textContent=S.code?'코드 '+S.code:'저장 전이에요';dirty=false;
+  view('vEdit');
+}
+function sex(){return /^남/.test(S.values['성별']||'')?'남':'여'}
+function set(k,v){S.values[k]=v;dirty=true;$('barMsg').textContent='저장하지 않은 변경이 있어요'}
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){set(k,e.target.value);calc();status()}if(e.target.id==='name'){S.name=e.target.value;dirty=true}});
+
+function syncChips(){
+  document.querySelectorAll('[data-one]').forEach(g=>{const v=S.values[g.dataset.one]||'';g.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',b.textContent===v))});
+  document.querySelectorAll('[data-range]').forEach(g=>{const tk=String(S.values[g.dataset.range]||'').split(/~|-/).map(s=>s.replace(/\s/g,'')).map(s=>LEVELS.indexOf(s)).filter(i=>i>=0);const lo=Math.min(...tk),hi=Math.max(...tk);g.querySelectorAll('.chip').forEach((b,i)=>b.classList.toggle('on',tk.length&&i>=lo&&i<=hi))});
+  $('prodTitle').textContent=sex()==='여'?'메이크업 · 스킨케어 제품':'스킨케어 · 베이스 제품';
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
+  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds()}status()}
+  else if(g.dataset.range){e.preventDefault();b.classList.toggle('on');const on=[...g.querySelectorAll('.chip')].map((x,i)=>x.classList.contains('on')?i:-1).filter(i=>i>=0);
+    set(g.dataset.range,on.length?(on.length===1?LEVELS[on[0]]:LEVELS[on[0]]+' ~ '+LEVELS[on[on.length-1]]):'');syncChips();status()}
+});
+function renderBody(){const L=BODY[sex()];$('bodyChips').innerHTML=L.map(t=>`<button class="chip">${t}</button>`).join('');syncChips()}
+
+function calc(){
+  const n=k=>parseFloat(S.values[k])||0,a=n('어깨둘레'),c=n('허리둘레'),h=n('엉덩이둘레');
+  $('bal').innerHTML=a&&c&&h?[[a-c,'어깨−허리'],[h-c,'엉덩이−허리'],[a-h,'어깨−엉덩이']].map(([v,t])=>`<div><b>${v>0?'+':''}${Math.round(v*10)/10}</b>${t}</div>`).join(''):'';
+  const f=[n('상안부(cm)'),n('중안부(cm)'),n('하안부(cm)')];
+  if(f.every(x=>x>0)){const mn=Math.min(...f),nm=['상안부','중안부','하안부'],L=nm.filter((_,i)=>f[i]-mn>=1);$('faceHint').textContent=L.length?L.join(' · ')+'가 가장 짧은 부위보다 1cm 이상 길어요.':'세 부위가 고르게 균형 잡혀 있어요.'}else $('faceHint').textContent='';
+}
+$('parse').onclick=()=>{
+  const t=$('paste').value;if(!t.trim())return toast('붙여넣은 내용이 없어요');
+  const m={'어깨 둘레':'어깨둘레','가슴 둘레':'가슴둘레','허리 둘레':'허리둘레','엉덩이 둘레':'엉덩이둘레','허벅지 둘레':'허벅지둘레','상안부':'상안부(cm)','중안부':'중안부(cm)','하안부':'하안부(cm)'};let cnt=0;
+  t.split(/\n/).forEach(l=>{const [k,...r]=l.split(':');if(!r.length)return;const key=k.trim(),val=r.join(':').trim();
+    if(m[key]){const v=(val.match(/[\d.]+/)||[''])[0];if(v){set(m[key],v);cnt++}}
+    if(key==='성별'&&/^[여남]/.test(val)){set('성별',val[0]);cnt++}
+    if(key==='주문자 이름'&&val&&!S.name){S.name=val;$('name').value=val}});
+  set('측정 방식','온라인');
+  document.querySelectorAll('[data-k]').forEach(el=>el.value=S.values[el.dataset.k]||'');syncChips();renderBody();renderProds();calc();status();toast(cnt+'개 값을 채웠어요');
+};
+
+/* ---------- photos ---------- */
+function resize(file,max=1400){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.width,h=im.height;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.85))};im.onerror=no;im.src=u})}
+let uploading=0;
+async function upload(file,label){uploading++;upd();try{const data=await resize(file);const j=await api({action:'upload',data,name:(S.name||'customer')+'_'+label});return {url:j.url,local:data}}finally{uploading--;upd()}}
+function upd(){$('save').disabled=uploading>0;$('save').textContent=uploading?'사진 올리는 중 '+uploading:'저장하기'}
+const thumb=u=>{const m=String(u||'').match(/(?:\/d\/|id=)([\w-]{20,})/);return m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w600':u};
+
+/* ---------- products ---------- */
+function renderProds(){
+  const cats=CATS[sex()];
+  $('prods').innerHTML=S.products.map((p,i)=>`<div class="item" data-i="${i}"><div class="top">
+   <label class="ph">${p.local||p.img?`<img src="${esc(p.local||thumb(p.img))}" alt="">`:'사진<br>추가'}${p.busy?'<span class="up">올리는 중</span>':''}<input type="file" accept="image/*" data-pi="${i}"></label>
+   <div class="fields"><div class="chips">${cats.map(c=>`<button class="chip pc ${p.cat===c?'on':''}" data-pi="${i}">${c}</button>`).join('')}</div>
+   <input type="text" placeholder="제품명" value="${esc(p.name)}" data-pf="name" data-pi="${i}">
+   <div class="g2" style="gap:8px"><input type="text" placeholder="브랜드" value="${esc(p.brand)}" data-pf="brand" data-pi="${i}"><input type="text" placeholder="컬러 · 호수" value="${esc(p.shade)}" data-pf="shade" data-pi="${i}"></div></div></div>
+   <textarea placeholder="사용법 · 코멘트" style="margin-top:8px;min-height:60px" data-pf="how" data-pi="${i}">${esc(p.how)}</textarea>
+   <input type="url" placeholder="구매 링크 (선택)" value="${esc(p.url)}" data-pf="url" data-pi="${i}" style="margin-top:8px">
+   <div class="acts"><button class="btn sm ghost" data-up="${i}">▲</button><button class="btn sm ghost" data-dn="${i}">▼</button><button class="btn sm del" data-rm="${i}">삭제</button></div></div>`).join('');
+  status();
+}
+$('addProd').onclick=()=>{const last=S.products[S.products.length-1];S.products.push({cat:last?last.cat:'',name:'',brand:last?last.brand:'',shade:'',how:'',url:'',img:''});dirty=true;renderProds();const it=$('prods').lastElementChild;it&&it.scrollIntoView({behavior:'smooth',block:'center'})};
+$('prods').addEventListener('input',e=>{const i=e.target.dataset.pi,f=e.target.dataset.pf;if(i!=null&&f){S.products[i][f]=e.target.value;dirty=true}});
+$('prods').addEventListener('click',e=>{const t=e.target;
+  if(t.classList.contains('pc')){e.preventDefault();const p=S.products[t.dataset.pi];p.cat=p.cat===t.textContent?'':t.textContent;dirty=true;renderProds()}
+  if(t.dataset.rm!=null){if(confirm('이 제품을 지울까요?')){S.products.splice(+t.dataset.rm,1);dirty=true;renderProds()}}
+  if(t.dataset.up!=null){const i=+t.dataset.up;if(i>0){[S.products[i-1],S.products[i]]=[S.products[i],S.products[i-1]];renderProds()}}
+  if(t.dataset.dn!=null){const i=+t.dataset.dn;if(i<S.products.length-1){[S.products[i+1],S.products[i]]=[S.products[i],S.products[i+1]];renderProds()}}});
+$('prods').addEventListener('change',async e=>{if(e.target.type!=='file')return;const i=+e.target.dataset.pi,f=e.target.files[0];if(!f)return;const p=S.products[i];p.busy=1;renderProds();
+  try{const r=await upload(f,'제품');p.img=r.url;p.local=r.local;dirty=true}catch(err){toast('사진을 올리지 못했어요: '+err.message)}delete p.busy;renderProds()});
+
+/* ---------- reference sections ---------- */
+function renderSecs(){
+  $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';
+  $('secs').innerHTML=S.secs.map((s,i)=>`<div class="item" data-si="${i}">
+   <div style="display:flex;gap:8px"><input type="text" value="${esc(s.sec)}" data-sf="sec" data-si="${i}" style="font-weight:700"><button class="btn sm del" data-srm="${i}">삭제</button></div>
+   <textarea placeholder="섹션 설명 (선택)" style="margin-top:8px;min-height:52px" data-sf="desc" data-si="${i}">${esc(s.desc)}</textarea>
+   <div class="pics">${s.items.map((it,j)=>`<div class="pic"><div class="im">${it.local||it.img?`<img src="${esc(it.local||thumb(it.img))}" alt="">`:''}${it.busy?'<span class="up" style="position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.7);font-size:12px;font-weight:700;color:#2f3d86">올리는 중</span>':''}<button class="x" data-xr="${i}:${j}">✕</button></div><textarea placeholder="사진 아래 코멘트" data-cap="${i}:${j}">${esc(it.cap)}</textarea></div>`).join('')}
+    <label class="add">＋ 사진<br>여러 장 선택<input type="file" accept="image/*" multiple data-sadd="${i}"></label></div></div>`).join('');
+  status();
+}
+$('secPreset').addEventListener('click',e=>{const b=e.target.closest('.sp');if(!b)return;e.preventDefault();let name=b.textContent;if(b.dataset.custom){name=prompt('섹션 이름 (예: 코트 스타일링)');if(!name)return}S.secs.push({sec:name.trim(),desc:'',items:[]});dirty=true;renderSecs();$('secs').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})});
+$('secs').addEventListener('input',e=>{const t=e.target;if(t.dataset.sf){S.secs[t.dataset.si][t.dataset.sf]=t.value;dirty=true}if(t.dataset.cap){const [i,j]=t.dataset.cap.split(':');S.secs[i].items[j].cap=t.value;dirty=true}});
+$('secs').addEventListener('click',e=>{const t=e.target;
+  if(t.dataset.srm!=null){if(confirm('이 섹션과 사진을 모두 지울까요?')){S.secs.splice(+t.dataset.srm,1);dirty=true;renderSecs()}}
+  if(t.dataset.xr){const [i,j]=t.dataset.xr.split(':');S.secs[i].items.splice(+j,1);dirty=true;renderSecs()}});
+$('secs').addEventListener('change',async e=>{const t=e.target;if(t.dataset.sadd==null)return;const s=S.secs[+t.dataset.sadd];const files=[...t.files];
+  const its=files.map(()=>({img:'',cap:'',busy:1}));s.items.push(...its);renderSecs();
+  for(let k=0;k<files.length;k++){try{const r=await upload(files[k],s.sec);its[k].img=r.url;its[k].local=r.local}catch(err){toast('사진 1장을 올리지 못했어요');its[k].fail=1}delete its[k].busy;renderSecs()}
+  s.items=s.items.filter(x=>!x.fail);dirty=true;renderSecs()});
+
+/* ---------- status ---------- */
+function status(){
+  const v=S.values,f=(id,ok,t)=>{$(id).textContent=t;$(id).classList.toggle('ok',ok)};
+  f('st1',!!(S.name&&v['성별']),[v['성별'],v['측정 방식']].filter(Boolean).join(' · ')||'');
+  const m=['어깨둘레','허리둘레','엉덩이둘레','상안부(cm)','중안부(cm)','하안부(cm)'].filter(k=>v[k]).length;f('st2',m===6,m+'/6');
+  f('st3',!!v['퍼스널컬러 메인'],v['퍼스널컬러 메인']||'');
+  f('st4',S.products.length>0,S.products.length+'개');
+  f('st5',!!v['얼굴형'],v['얼굴형']||'');f('st6',!!v['체형'],v['체형']||'');
+  f('st7',S.secs.length>0,S.secs.length+'개 섹션 · '+S.secs.reduce((a,s)=>a+s.items.length,0)+'장');
+}
+
+/* ---------- save ---------- */
+$('save').onclick=async()=>{
+  if(!S.name.trim())return toast('고객 이름을 적어 주세요');
+  if(uploading)return toast('사진을 올리는 중이에요');
+  $('save').disabled=true;$('save').textContent='저장 중...';
+  try{
+    const photos=[];S.secs.forEach(s=>{if(!s.items.length)photos.push({sec:s.sec,desc:s.desc,img:'',cap:''});s.items.forEach((it,j)=>photos.push({sec:s.sec,desc:j===0?s.desc:'',img:it.img,cap:it.cap}))});
+    const j=await api({action:'save',code:S.code,name:S.name.trim(),values:S.values,products:S.products.map(({busy,local,...p})=>p),photos});
+    S.code=j.code;dirty=false;$('barMsg').textContent='저장됨 · 코드 '+S.code;$('preview').hidden=false;$('eTitle').textContent=S.name+' 리포트';
+    const link=SITE+'report.html?c='+S.code;
+    const msg=`${S.values['앱 표시 이름']||S.name} 님의 퍼스널 이미지 리포트예요 👉 ${link}\n\n링크를 길게 눌러 아이폰은 'Safari로 열기', 갤럭시는 '다른 브라우저로 열기'를 누른 뒤 홈 화면에 추가해 주세요.\n링크는 다른 분께 공유하지 말아 주세요.`;
+    $('doneBox').innerHTML=`<div class="done"><b>저장했어요 ✓</b><code>${esc(link)}</code><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="cpLink">링크 복사</button><button class="btn sm ghost" id="cpMsg">카톡 문구 복사</button><a class="btn sm ghost" href="${esc(link)}" target="_blank" rel="noopener">열어 보기</a></div></div>`;
+    $('cpLink').onclick=()=>copy(link);$('cpMsg').onclick=()=>copy(msg);
+    $('doneBox').scrollIntoView({behavior:'smooth',block:'center'});toast('저장했어요');
+  }catch(e){toast('저장하지 못했어요: '+e.message)}
+  $('save').disabled=false;upd();
+};
+$('preview').onclick=()=>window.open(SITE+'report.html?c='+S.code,'_blank');
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('복사했어요')).catch(()=>{prompt('길게 눌러 복사하세요',t)})}
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+
+if(PW){api({action:'ping'}).then(loadList).catch(()=>view('vLogin'))}else view('vLogin');
+</script>
+</body>
+</html>

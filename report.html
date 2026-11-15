@@ -14,106 +14,119 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
 <style>
-:root{--bg:#efe9e1;--paper:#f8f5f0;--ink:#2b2622;--muted:#7a6f66;--accent:#8c7a6b;--line:#ddd3c7;--serif:"Cormorant Garamond",Georgia,serif}
+:root{--bg:#f6f3ee;--paper:#fff;--ink:#1d1a17;--sub:#5c544c;--muted:#857b71;--accent:#8a6f57;--line:#ece6de;--soft:#f8f5f1;--good:#2f7d6b;--bad:#b4533f}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all;padding-bottom:80px}
-.wrap{max-width:480px;margin:0 auto;padding:0 16px}
-.cover{padding:34px 4px 18px}
-.brand{font-size:11px;letter-spacing:.35em;color:var(--muted)}
-.cover h1{font:italic 500 34px/1.1 var(--serif);margin:16px 0 8px}
-.cover p{margin:0;color:var(--muted);font-size:13px}
-.cover .line{width:36px;height:2px;background:var(--accent);margin:12px 0}
-.sec-h{display:flex;align-items:baseline;gap:10px;margin:30px 0 12px}
-.sec-h small{font-size:11px;letter-spacing:.2em;color:var(--accent);font-weight:700}
-.sec-h h2{margin:0;font-size:18px}
-.card{background:var(--paper);border-radius:18px;padding:18px;margin-bottom:12px}
-.k{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin:0 0 4px}
-.big{font:500 26px/1.25 var(--serif);margin:0}
-.big.ko{font:700 22px/1.3 "Pretendard",sans-serif}
-.sub{color:var(--muted);font-size:14px;margin-top:2px}
-.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
-.tbl th{text-align:left;color:var(--muted);font-weight:500;width:34%;padding:9px 0;border-top:1px solid var(--line);vertical-align:top}
-.tbl td{padding:9px 0;border-top:1px solid var(--line)}
-.grey{display:flex;gap:3px;margin-top:10px}
-.grey i{flex:1;height:34px;border-radius:4px;position:relative}
-.grey i.on{outline:2px solid var(--ink);outline-offset:2px}
-.glab{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
-.notes{list-style:none;margin:0;padding:0}
-.notes li{position:relative;padding:8px 0 8px 18px;border-top:1px solid var(--line);font-size:14px}
-.notes li:first-child{border-top:0}
-.notes li:before{content:"";position:absolute;left:2px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.tees{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.tees figure{margin:0;text-align:center;font-size:11px;color:var(--muted)}
-.tees img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:10px;background:#efe9e1;transition:filter .3s}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all;padding-bottom:92px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;padding:0 18px}
+.cover{padding:36px 2px 8px}
+.brand{font-size:12px;font-weight:700;letter-spacing:.3em;color:var(--accent)}
+.cover h1{font:500 34px/1.15 "Cormorant Garamond",Georgia,serif;margin:12px 0 6px;letter-spacing:0}
+.cover .line{display:none}
+.cover p{margin:0;color:var(--sub);font-size:15px}
+.cover #date{font-size:13px;color:var(--muted);margin-top:2px}
+.sec-h{margin:34px 2px 14px}
+.sec-h small{display:block;font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;margin-bottom:4px}
+.sec-h h2{margin:0;font-size:23px;font-weight:800;letter-spacing:-.04em;line-height:1.3}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px 20px;margin-bottom:14px}
+.k{font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:800;margin:0 0 8px}
+.big{font:800 24px/1.35 "Pretendard",sans-serif;letter-spacing:-.04em;margin:0}
+.big.ko{font:800 24px/1.35 "Pretendard",sans-serif}
+.sub{color:var(--sub);font-size:15px;margin-top:4px}
+.desc{font-size:15.5px;line-height:1.75;margin:8px 0 0;color:var(--ink)}
+.tbl{width:100%;border-collapse:collapse;font-size:15.5px;margin-top:14px}
+.tbl th{text-align:left;color:var(--muted);font-weight:600;width:112px;padding:12px 0;border-top:1px solid var(--line);vertical-align:top;font-size:14px}
+.tbl td{padding:12px 0;border-top:1px solid var(--line);font-weight:600}
+.grey{display:flex;gap:4px;margin-top:6px}
+.grey i{flex:1;height:38px;border-radius:6px;position:relative;border:1px solid var(--line)}
+.grey i.on{outline:2.5px solid var(--ink);outline-offset:2px}
+.glab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:8px}
+.notes{list-style:none;margin:0;padding:0;counter-reset:n}
+.notes li{position:relative;padding:12px 0 12px 30px;border-top:1px solid var(--line);font-size:15.5px;line-height:1.7}
+.notes li:first-child{border-top:0;padding-top:4px}
+.notes li:before{counter-increment:n;content:counter(n);position:absolute;left:0;top:14px;width:20px;height:20px;border-radius:50%;background:var(--soft);color:var(--accent);font-size:11.5px;font-weight:800;display:grid;place-items:center}
+.notes li:first-child:before{top:6px}
+.tees{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.tees figure{margin:0;text-align:center;font-size:12.5px;color:var(--sub);font-weight:600}
+.tees img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:12px;background:var(--soft);transition:filter .3s}
 .bw .tees img{filter:grayscale(1)}
-.tog{display:flex;background:#e6ded3;border-radius:999px;padding:3px;margin-top:12px}
-.tog button{flex:1;border:0;background:none;border-radius:999px;padding:8px;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.tog{display:flex;background:var(--soft);border-radius:12px;padding:4px;margin-top:14px}
+.tog button{flex:1;border:0;background:none;border-radius:9px;padding:10px;font:inherit;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer}
 .tog button.on{background:var(--ink);color:#fff}
-.combo{margin-top:12px}
-.combo h4{margin:14px 0 8px;font-size:13px}
-.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px}
-.pair{text-align:center;font-size:11px;color:var(--muted)}
-.pair div{display:flex;height:46px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.combo h4{margin:20px 0 10px;font-size:15px;font-weight:800}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:12px}
+.pair{text-align:center;font-size:12.5px;color:var(--sub);line-height:1.4}
+.pair div{display:flex;height:48px;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:6px}
 .pair div i{flex:1}
-.chips{display:flex;gap:6px;margin-top:8px}
-.chips span{flex:1;text-align:center;font-size:11px;color:var(--muted)}
-.chips span i{display:block;height:48px;border-radius:8px;border:1px solid var(--line);margin-bottom:4px}
-.rule{font-size:13px;color:var(--muted);margin:10px 0 0;padding-left:0;list-style:none}
-.rule li{padding:3px 0}
-.prod{display:flex;gap:14px;align-items:flex-start}
-.prod img{width:92px;height:92px;object-fit:cover;border-radius:12px;flex:none;background:#e6ded3}
-.prod .ph{width:92px;height:92px;border-radius:12px;flex:none;background:#e6ded3;display:grid;place-items:center;font-size:26px}
-.tag{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 8px;margin-bottom:4px}
-.prod b{display:block;font-size:15px;line-height:1.35}
-.prod em{display:block;font-style:normal;color:var(--muted);font-size:12px}
-.prod p{margin:6px 0 0;font-size:13px;white-space:pre-line}
-.face{display:flex;gap:16px;align-items:stretch;margin-top:14px}
-.thirds{width:96px;flex:none;display:flex;flex-direction:column;gap:3px}
-.thirds div{background:#d8cbbd;border-radius:6px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:11px;color:#4d433b}
+.chips{display:flex;gap:8px;margin-top:10px}
+.chips span{flex:1;text-align:center;font-size:12.5px;color:var(--sub)}
+.chips span i{display:block;height:50px;border-radius:10px;border:1px solid var(--line);margin-bottom:6px}
+.rule{font-size:15px;color:var(--sub);margin:12px 0 0;padding:0;list-style:none;line-height:1.7}
+.rule li{padding:4px 0}
+.prod{display:flex;gap:16px;align-items:flex-start}
+.prod img{width:96px;height:96px;object-fit:cover;border-radius:14px;flex:none;background:var(--soft)}
+.prod .ph{width:96px;height:96px;border-radius:14px;flex:none;background:var(--soft);display:grid;place-items:center;font-size:28px}
+.tag{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:6px;padding:2px 8px;margin-bottom:6px}
+.prod b{display:block;font-size:16.5px;line-height:1.4;font-weight:800}
+.prod em{display:block;font-style:normal;color:var(--muted);font-size:13.5px;margin-top:2px}
+.prod p{margin:8px 0 0;font-size:14.5px;line-height:1.65;white-space:pre-line;color:var(--sub)}
+.shade{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:3px 10px}
+.face{display:flex;gap:16px;align-items:stretch;margin-top:16px}
+.thirds{width:92px;flex:none;display:flex;flex-direction:column;gap:4px}
+.thirds div{background:var(--soft);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:12px;color:var(--sub);padding:6px 0}
 .thirds div.long{background:var(--accent);color:#fff}
-.thirds b{font-size:14px}
-.fbars{flex:1;font-size:13px}
-.fbars .r{padding:7px 0;border-top:1px solid var(--line)}
-.fbars .r:first-child{border-top:0}
-.bar{height:6px;background:#e6ded3;border-radius:9px;margin-top:5px;position:relative}
+.thirds b{font-size:16px}
+.fbars{flex:1;font-size:14.5px}
+.fbars .r{padding:9px 0;border-top:1px solid var(--line)}
+.fbars .r:first-child{border-top:0;padding-top:0}
+.bar{height:7px;background:var(--soft);border-radius:9px;margin-top:7px;position:relative}
 .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:9px}
-.bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);left:33.3%}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-.cols h4{margin:0 0 4px;font-size:13px}
-.cols ul{margin:0;padding-left:16px;font-size:13px}
-.cols li{margin:3px 0}
+.bar u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.cols{display:grid;grid-template-columns:1fr;gap:16px}
+.cols h4{margin:0 0 8px;font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.cols > div:first-child h4:before{content:"✓";width:22px;height:22px;border-radius:50%;background:#e6f2ee;color:var(--good);display:grid;place-items:center;font-size:12px}
+.cols > div:nth-child(2) h4:before{content:"✕";width:22px;height:22px;border-radius:50%;background:#f8e9e5;color:var(--bad);display:grid;place-items:center;font-size:11px}
+.cols > div + div{border-top:1px solid var(--line);padding-top:16px}
+.cols ul{margin:0;padding:0 0 0 30px;font-size:15.5px;line-height:1.7}
+.cols li{margin:4px 0}
 .shop a{color:var(--ink)}.shop a.btn{color:#fff}
-.btn{display:block;text-align:center;background:var(--ink);color:#fff;text-decoration:none;border-radius:14px;padding:14px;font-weight:700;margin-top:12px}
-.types{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:12px;text-align:center;font-size:10px;color:var(--muted)}
-.types svg{width:100%;height:46px}
+.btn{display:block;text-align:center;background:var(--ink);color:#fff;text-decoration:none;border-radius:14px;padding:15px;font-weight:700;font-size:15.5px;margin-top:14px}
+.types{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center;font-size:11.5px;color:var(--muted);line-height:1.3}
+.types svg{width:100%;height:44px}
 .types .on{color:var(--ink);font-weight:800}
-.types .on svg *{stroke:var(--ink);stroke-width:3}
-.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px;text-align:center}
-.mgrid div{background:#efe9e1;border-radius:10px;padding:8px 2px}
-.mgrid small{display:block;font-size:11px;color:var(--muted)}
-.mgrid b{font-size:16px}
-.bal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;text-align:center}
-.bal div{border:1px solid var(--line);border-radius:10px;padding:8px 2px}
-.bal b{font:500 24px var(--serif);display:block}
-.bal small{font-size:11px;color:var(--muted)}
-.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.gal figure{margin:0;font-size:11px;color:var(--muted);text-align:center}
-.gal img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#e6ded3}
-.empty{border:1.5px dashed var(--line);border-radius:10px;aspect-ratio:3/4;display:grid;place-items:center;font-size:11px;color:var(--muted)}
-.desc{font-size:14px;margin:4px 0 0}
-.outro{text-align:center;padding:30px 10px 10px}
-.outro h3{font:italic 500 30px var(--serif);margin:0 0 8px}
-.outro p{color:var(--muted);font-size:13px;margin:4px 0}
-nav{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.types .on svg *{stroke:var(--accent);stroke-width:3.2}
+.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px;text-align:center}
+.mgrid div{background:var(--soft);border-radius:12px;padding:10px 2px}
+.mgrid small{display:block;font-size:12px;color:var(--muted)}
+.mgrid b{font-size:18px;font-weight:800}
+.bal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;text-align:center}
+.bal div{border:1px solid var(--line);border-radius:12px;padding:10px 2px}
+.bal b{font-size:22px;font-weight:800;display:block}
+.bal small{font-size:12px;color:var(--muted)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.gal figure{margin:0;font-size:13px;color:var(--sub);text-align:center}
+.gal img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:var(--soft)}
+.gal.two{grid-template-columns:1fr 1fr;gap:14px}
+.gal.two figure{text-align:left;font-size:14px;line-height:1.6;color:var(--ink)}
+.gal.two figcaption{margin-top:6px}
+.empty{border:1.5px dashed var(--line);border-radius:12px;aspect-ratio:3/4;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.outro{text-align:center;padding:30px 6px 10px}
+.outro h3{font:500 32px "Cormorant Garamond",Georgia,serif;margin:0 0 10px}
+.outro p{color:var(--sub);font-size:15px;margin:4px 0}
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
 nav div{display:flex;max-width:480px;width:100%}
-nav button{flex:1;border:0;background:none;padding:10px 0 12px;font:inherit;font-size:11px;letter-spacing:-.04em;color:var(--muted);cursor:pointer}
-nav button b{display:block;font:italic 500 18px/1.2 var(--serif)}
-nav button[aria-current="true"]{color:var(--ink);font-weight:700}
-.msg{text-align:center;color:var(--muted);padding:60px 10px}
+nav button{flex:1;border:0;background:none;padding:9px 0 11px;font:inherit;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;letter-spacing:-.04em;position:relative}
+nav button b{display:block;font-size:11px;font-weight:800;color:#b9aea3;letter-spacing:.06em}
+nav button[aria-current="true"]{color:var(--ink);font-weight:800}
+nav button[aria-current="true"] b{color:var(--accent)}
+nav button[aria-current="true"]:after{content:"";position:absolute;top:0;left:30%;right:30%;height:2.5px;border-radius:2px;background:var(--accent)}
+.msg{text-align:center;color:var(--muted);padding:60px 10px;font-size:15px}
 [hidden]{display:none!important}
-.blur2{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.bl{position:relative;border-radius:12px;overflow:hidden;background:#fff}.bl img{display:block;width:100%}.bl.app{max-width:220px;margin:12px auto 0;border-radius:22px;box-shadow:0 6px 20px rgba(0,0,0,.12)}.lock{position:absolute;right:8px;top:8px;background:rgba(43,38,34,.78);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px}
-footer{text-align:center;font-size:11px;color:var(--muted);margin:26px 0 10px}
-.a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}</style>
+.blur2{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.bl{position:relative;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line)}.bl img{display:block;width:100%}.bl.app{max-width:230px;margin:14px auto 0;border-radius:22px;box-shadow:0 6px 20px rgba(0,0,0,.12)}.lock{position:absolute;right:8px;top:8px;background:rgba(29,26,23,.8);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
+.pchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px 12px;padding:0 18px}.pchips::-webkit-scrollbar{display:none}.pchips button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer}.pchips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.pchips small{opacity:.6;margin-left:2px}
+footer{text-align:center;font-size:12px;color:var(--muted);margin:30px 0 10px;line-height:1.6}
+.a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -129,7 +142,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);margin:26px 0 10px}
 <button data-t="shopper"><b>05</b>퍼스널쇼퍼</button>
 </div></nav>
 <script>
-const API="여기에_웹앱_URL";
+const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
 const code=new URLSearchParams(location.search).get('c')||'';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -168,8 +181,22 @@ function colorTab(){
    ${L(C.tit).length?`<h4 style="margin:8px 0 0;font-size:14px">톤인톤</h4><p class="desc" style="color:var(--muted);font-size:13px">색은 달라도 톤(밝기·선명함)을 맞추는 조합. 흑백 모드로 톤이 비슷한지 체크하세요.</p><div class="chips">${L(C.tit).map(c=>`<span><i style="background:${hex(c)}"></i>${esc(cname(c))}</span>`).join('')}</div>`:''}
    ${L(C.tot).length?`<h4 style="margin:16px 0 0;font-size:14px">톤온톤</h4><p class="desc" style="color:var(--muted);font-size:13px">같은 색 안에서 밝기만 달리하는 조합. 그라데이션을 떠올리면 쉬워요.</p><div class="chips">${L(C.tot).map(c=>`<span><i style="background:${hex(c)}"></i>${esc(cname(c))}</span>`).join('')}</div>`:''}
    <p style="font-size:11px;color:var(--muted);margin:10px 0 0">* 색상 칩은 예시예요.</p></div>`:'')+
-  ((D.products||[]).length?head('','SKIN & BASE','스킨케어 · 베이스 추천')+(D.products||[]).map(p=>`<div class="card prod">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:'<div class="ph">🧴</div>'}<div>${p.cat?`<span class="tag">${esc(p.cat)}</span>`:''}<b>${esc(p.name)}</b>${p.brand?`<em>${esc(p.brand)}</em>`:''}${p.how?`<p>${esc(p.how)}</p>`:''}${p.url?`<a class="shop" href="${esc(p.url)}" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent)">구매 링크 →</a>`:''}</div></div>`).join(''):'');
+  prodSec();
 }
+let PC='전체';
+function prodSec(){
+  const P=D.products||[];if(!P.length)return '';
+  const fem=/^여/.test(D.sex||'');
+  const cats=[...new Set(P.map(p=>p.cat).filter(Boolean))];
+  const many=P.length>6&&cats.length>1;
+  const list=P.filter(p=>!many||PC==='전체'||p.cat===PC);
+  const card=p=>`<div class="card prod">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:'<div class="ph">'+(fem?'💄':'🧴')+'</div>'}<div>${p.cat?`<span class="tag">${esc(p.cat)}</span>`:''}<b>${esc(p.name)}</b>${p.brand?`<em>${esc(p.brand)}</em>`:''}${p.shade?`<span class="shade">${esc(p.shade)}</span>`:''}${p.how?`<p>${esc(p.how)}</p>`:''}${p.url?`<a class="shop" href="${esc(p.url)}" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent)">구매 링크 →</a>`:''}</div></div>`;
+  return head('',fem?'MAKEUP & SKIN':'SKIN & BASE',fem?'메이크업 · 스킨케어 추천':'스킨케어 · 베이스 추천')+
+   (fem&&D.color&&D.color.main?`<p class="desc" style="margin:-4px 2px 10px;color:var(--muted)">${esc(D.color.main)}에 맞춰 고른 제품이에요.</p>`:'')+
+   (many?`<div class="pchips">${['전체',...cats].map(c=>`<button class="${c===PC?'on':''}" data-c="${esc(c)}">${esc(c)} <small>${c==='전체'?P.length:P.filter(p=>p.cat===c).length}</small></button>`).join('')}</div>`:'')+
+   list.map(card).join('');
+}
+
 function faceTab(){
   const F=D.face||{},f=(F.f||[]).map(Number);const ok=f.length===3&&f.every(x=>x>0);
   let parts='';
@@ -187,23 +214,24 @@ function faceTab(){
   (F.glasses?`<div class="card"><p class="k">GLASSES</p><p class="desc">${esc(F.glasses)}</p></div>`:'')+
   (L(F.notes).length?`<div class="card"><p class="k">CONSULTANT NOTE</p>${ul(F.notes)}</div>`:'')+
   gallery(D.styles,s=>/헤어/.test(s.sec))+
-  (S.name?`<div class="card shop"><p class="k">추천 드리는 샵</p><p class="big ko" style="font-size:18px">${esc(S.name)}</p><p class="desc">${S.addr?`📍 ${esc(S.addr)}<br>`:''}${S.tel?`📞 <a href="tel:${esc(S.tel.replace(/[^\d]/g,''))}">${esc(S.tel)}</a>`:''}</p>${S.url?`<a class="btn" href="${esc(S.url)}" target="_blank" rel="noopener">네이버에서 보기</a>`:''}</div>`:'');
+  (S.name?`<div class="card shop"><p class="k">추천 드리는 샵</p><p class="big ko" style="font-size:20px">${esc(S.name)}</p><p class="desc">${S.addr?`📍 ${esc(S.addr)}<br>`:''}${S.tel?`📞 <a href="tel:${esc(S.tel.replace(/[^\d]/g,''))}">${esc(S.tel)}</a>`:''}</p>${S.url?`<a class="btn" href="${esc(S.url)}" target="_blank" rel="noopener">네이버에서 보기</a>`:''}</div>`:'');
 }
+const TYPES_F=[['역삼각형','<path d="M8 6h34l-10 38H18z"/>'],['직사각형','<rect x="14" y="6" width="22" height="38" rx="2"/>'],['라운드형','<ellipse cx="25" cy="25" rx="13" ry="19"/>'],['삼각형','<path d="M18 6h14l8 38H10z"/>'],['모래시계형','<path d="M10 6h30l-10 19 10 19H10l10-19z"/>'],['8자형','<path d="M25 6c-14 0-14 17 0 19c14 2 14 19 0 19c-14 0-14-17 0-19c14-2 14-19 0-19z"/>']];
 const TYPES=[['직사각형','<rect x="14" y="6" width="22" height="38" rx="2"/>'],['삼각형','<path d="M18 6h14l8 38H10z"/>'],['사다리꼴형','<path d="M10 6h30l-6 38H16z"/>'],['타원형','<ellipse cx="25" cy="25" rx="13" ry="19"/>'],['역삼각형','<path d="M8 6h34l-10 38H18z"/>'],['모래시계형','<path d="M10 6h30l-10 19 10 19H10l10-19z"/>']];
 function bodyTab(){
   const B=D.body||{},M=B.m||{},n=k=>Number(M[k])||0;
   const bal=n('어깨')&&n('허리')&&n('엉덩이')?[[n('어깨')-n('허리'),'어깨 − 허리'],[n('엉덩이')-n('허리'),'엉덩이 − 허리'],[n('어깨')-n('엉덩이'),'어깨 − 엉덩이']]:[];
   return head('03','BODY SHAPE','체형 분석 결과')+
-  `<div class="card"><div class="types">${TYPES.map(([t,s])=>`<div class="${t===B.type?'on':''}"><svg viewBox="0 0 50 50" fill="none" stroke="#a89a8c" stroke-width="2">${s}</svg>${t}</div>`).join('')}</div>
+  `<div class="card"><div class="types">${(/^여/.test(D.sex||'')?TYPES_F:TYPES).map(([t,s])=>`<div class="${t===B.type?'on':''}"><svg viewBox="0 0 50 50" fill="none" stroke="#a89a8c" stroke-width="2">${s}</svg>${t}</div>`).join('')}</div>
    <p class="k" style="margin-top:16px">RESULT</p><p class="big ko">${esc(B.type||'')}</p>${B.summary?`<p class="desc">${esc(B.summary)}</p>`:''}</div>`+
   `<div class="card"><p class="k">MEASUREMENTS (cm)</p><div class="mgrid">${['어깨','가슴','허리','엉덩이','허벅지'].map(k=>`<div><small>${k}</small><b>${M[k]?esc(M[k]):'—'}</b></div>`).join('')}</div>
    ${bal.length?`<p class="k" style="margin-top:16px">BALANCE</p><div class="bal">${bal.map(([v,t])=>`<div><b>${v>0?'+':''}${v}</b><small>${t}</small></div>`).join('')}</div>`:''}</div>`+
   (L(B.notes).length?`<div class="card"><p class="k">ANALYSIS</p>${ul(B.notes)}</div>`:'')+
-  (L(B.good).length?`<div class="card"><p class="k">잘 어울리는 스타일</p>${ul(B.good)}</div>`:'');
+  ((L(B.good).length||L(B.avoid).length)?`<div class="card"><div class="cols">${L(B.good).length?`<div><h4>잘 어울리는 스타일</h4><ul>${L(B.good).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}${L(B.avoid).length?`<div><h4>피하면 좋은 핏</h4><ul>${L(B.avoid).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}</div></div>`:'');
 }
 function gallery(list,f){
-  return (list||[]).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:18px">${esc(s.sec)}</p>${s.desc?`<p class="desc">${esc(s.desc)}</p>`:''}
-  <div class="gal">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
+  return (list||[]).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:20px">${esc(s.sec)}</p>${s.desc?`<p class="desc">${esc(s.desc)}</p>`:''}
+  <div class="gal${(s.items||[]).some(i=>String(i.cap||'').length>14)?' two':''}">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
 }
 function styleTab(){
   return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어/.test(s.sec))+
@@ -211,40 +239,17 @@ function styleTab(){
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
 }
 const SAMPLE=window.SAMPLE||{look:['shopper_sample_1.jpg','shopper_sample_2.jpg'],shop:['shopper_sample_3.jpg','shopper_sample_4.jpg'],app:'shopper_sample_app.jpg'};
-let SH=null;
-function mine(){
-  const S=D.shopper||{};
-  if(!SH)return '<p class="msg">퍼스널쇼퍼 내용을 불러오고 있어요...</p>';
-  if(SH.error)return '<p class="msg">불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>';
-  const I=SH.items||{},im=id=>I[id]?`<figure><img src="${esc(I[id].img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><figcaption>${esc(I[id].name)}</figcaption></figure>`:'';
-  const shop=SH.shop||[],outs=SH.outfits||[];
-  let h=head('05','PERSONAL SHOPPER','내 퍼스널쇼퍼');
-  if(S.app)h+=`<a class="btn" style="margin:0 0 14px" href="ootd.html?c=${encodeURIComponent(code)}">'오늘 뭐 입지' 앱 열기 →</a>`;
-  if(!shop.length&&!outs.length)return h+'<div class="card"><p class="desc">미오드모이가 고객님 쇼핑을 준비하고 있어요. 준비가 끝나면 이 탭에 바로 열려요.</p></div>';
-  if(shop.length){const r=Math.max(...shop.map(x=>+x.round||0));
-    h+=`<div class="card"><p class="k">SHOPPING LIST${r?' · '+r+'회차':''}</p><p class="big ko" style="font-size:18px">추천 쇼핑 리스트</p></div>`+
-    shop.filter(x=>(+x.round||0)===r).map(x=>`<div class="card">${x.cat?`<span class="tag">${esc(x.cat)}</span>`:''}<div class="gal">${(x.items||[]).map(im).join('')}</div>${x.note?`<p class="desc" style="white-space:pre-line;margin-top:10px">${esc(x.note)}</p>`:''}${x.url?`<a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:11px" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`).join('');}
-  if(outs.length)h+=`<div class="card"><p class="k">STYLING GUIDE</p><p class="big ko" style="font-size:18px">코디 가이드 <span style="font-size:14px;color:var(--muted);font-weight:500">${outs.length}개</span></p>${S.app?'<p class="desc">오늘 날씨에 맞는 코디는 \'오늘 뭐 입지\' 앱에서 골라 드려요.</p>':''}</div>`+
-    outs.slice(0,SHN).map((o,n)=>`<div class="card"><p class="k">LOOK ${String(n+1).padStart(2,'0')}</p><p class="big ko" style="font-size:16px">${esc(o.name)}</p><div class="gal">${o.items.map(im).join('')}</div>${String(o.tip||'').trim()?ul(o.tip):''}</div>`).join('')+
-    (outs.length>SHN?`<button class="btn" id="more" style="width:100%;border:0;font:inherit;font-weight:700">코디 더 보기 (${SHN} / ${outs.length})</button>`:'');
-  return h;
-}
-let SHN=10;
 function shopperTab(){
-  if(D.shopper){
-    if(!SH){(window.DEMO_SHOP?Promise.resolve(window.DEMO_SHOP):fetch(API+'?c='+encodeURIComponent(code)).then(r=>r.json())).then(j=>{SH=j;if(document.querySelector('nav button[data-t=shopper][aria-current=true]'))show('shopper')}).catch(()=>{SH={error:1};show('shopper')})}
-    return mine();
-  }
   const lock='<span class="lock">🔒 견본</span>';
   return head('05','PERSONAL SHOPPER','퍼스널쇼퍼 견본')+
   `<p class="desc" style="margin:-4px 2px 14px;color:var(--muted)">이 리포트를 바탕으로 퍼스널쇼퍼를 이용하시면 이렇게 받아 보실 수 있어요.<br>실제 고객님께 드린 결과물이라 흐리게 처리했어요.</p>
-  <div class="card"><p class="k">01 STYLING GUIDE</p><p class="big ko" style="font-size:18px">내 옷으로 만든 코디 가이드</p>
+  <div class="card"><p class="k">01 STYLING GUIDE</p><p class="big ko" style="font-size:20px">내 옷으로 만든 코디 가이드</p>
    <p class="desc">새로 산 옷과 갖고 계신 옷을 섞어 입는 코디를 한 장씩 정리해 드려요. 셔츠 넣어 입기, 양말 색까지 입는 법을 함께 적어 드려요.</p>
    <div class="blur2">${SAMPLE.look.map(u=>`<div class="bl"><img src="${u}" alt="" loading="lazy">${lock}</div>`).join('')}</div></div>
-  <div class="card"><p class="k">02 SHOPPING LIST</p><p class="big ko" style="font-size:18px">추천 쇼핑 리스트</p>
+  <div class="card"><p class="k">02 SHOPPING LIST</p><p class="big ko" style="font-size:20px">추천 쇼핑 리스트</p>
    <p class="desc">체형과 퍼스널컬러에 맞는 아이템을 골라 구매 링크와 함께 보내 드려요.</p>
    <div class="blur2">${SAMPLE.shop.map(u=>`<div class="bl"><img src="${u}" alt="" loading="lazy">${lock}</div>`).join('')}</div></div>
-  <div class="card"><p class="k">03 TODAY'S OUTFIT APP</p><p class="big ko" style="font-size:18px">'오늘 뭐 입지' 전용 앱</p>
+  <div class="card"><p class="k">03 TODAY'S OUTFIT APP</p><p class="big ko" style="font-size:20px">'오늘 뭐 입지' 전용 앱</p>
    <p class="desc">오늘 날씨와 가는 곳에 맞춰 내 옷장 속 코디를 골라 주는 앱이에요. 퍼스널쇼퍼 3회 이상 이용 고객님께 드려요.</p>
    <div class="bl app"><img src="${SAMPLE.app}" alt="" loading="lazy">${lock}</div></div>
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
@@ -253,7 +258,7 @@ const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,shopper:shop
 function show(t){
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
   $('app').innerHTML=TABS[t]();window.scrollTo(0,0);
-  if($('more'))$('more').onclick=()=>{const y=window.scrollY;SHN+=10;show('shopper');window.scrollTo(0,y)};
+  document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show('color');window.scrollTo(0,y)});
   document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
 }
 function start(){
@@ -263,7 +268,7 @@ function start(){
 (async()=>{
   if(D){start();return}
   if(!code){$('app').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
-  try{const j=await (await fetch(API+'?app=report&c='+encodeURIComponent(code))).json();
+  try{const j=await (await fetch(API+'?app=report&k='+encodeURIComponent(code))).json();
     if(j.error){$('app').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
     D=j;start()}catch(e){$('app').innerHTML='<p class="msg">리포트를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
 })();
