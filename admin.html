@@ -129,6 +129,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--navy)}
    <label class="f"><span>고객 이름 <small>(나만 봄)</small></span><input type="text" id="name"></label>
    <label class="f"><span>앱 표시 이름 <small>(고객 화면에 "○○ 님"으로 나와요 · 자동 입력)</small></span><input type="text" data-k="앱 표시 이름"></label>
   </div>
+  <div class="f"><span>리포트 종류</span><div class="chips" data-one="리포트 종류"><button class="chip">종합</button><button class="chip">퍼스널컬러</button></div></div>
+  <p class="hint" style="margin:4px 0 0">퍼스널컬러만 진단한 고객은 '퍼스널컬러'를 누르세요. 치수·얼굴형·체형 칸이 숨겨지고, 고객 화면도 퍼스널컬러 리포트로 바뀌어요.</p>
   <div class="f"><span>성별</span><div class="chips" data-one="성별"><button class="chip">여</button><button class="chip">남</button></div></div>
   <div class="f"><span>측정 방식</span><div class="chips" data-one="측정 방식"><button class="chip">대면</button><button class="chip">온라인</button></div></div>
   <label class="f"><span>진단일</span><input type="text" data-k="진단일" placeholder="예) 2026. 11. 15"></label>
@@ -248,11 +250,11 @@ function logout(){PW='';try{localStorage.removeItem('mio-admin-pw')}catch(e){}vi
 $('login').onclick=async()=>{PW=$('pw').value.trim();$('loginMsg').textContent='확인 중...';try{await api({action:'ping'});try{localStorage.setItem('mio-admin-pw',PW)}catch(e){}loadList()}catch(e){$('loginMsg').textContent=e.message}};
 $('logout').onclick=logout;
 $('toList').onclick=()=>{if(dirty&&!confirm('저장하지 않은 내용이 있어요. 목록으로 갈까요?'))return;loadList()};
-$('new').onclick=()=>openEdit({code:'',name:'',values:{'측정 방식':'대면'},products:[],photos:[]});
+$('new').onclick=()=>openEdit({code:'',name:'',values:{'측정 방식':'대면','리포트 종류':'종합'},products:[],photos:[]});
 
 async function loadList(){view('vList');$('list').innerHTML='<p class="hint">불러오는 중...</p>';
   try{const j=await api({action:'list'});
-    $('list').innerHTML=j.list.length?j.list.map(c=>`<div class="row" data-c="${esc(c.code)}"><div><b>${esc(c.name||'(이름 없음)')}</b><small>${esc([c.sex,c.type,c.date,c.code].filter(Boolean).join(' · '))}</small></div><span class="go">열기 ›</span></div>`).join(''):'<p class="hint">아직 고객이 없어요. 위 버튼으로 만들어 주세요.</p>';
+    $('list').innerHTML=j.list.length?j.list.map(c=>`<div class="row" data-c="${esc(c.code)}"><div><b>${esc(c.name||'(이름 없음)')}</b><small>${esc([c.kind,c.sex,c.type,c.date,c.code].filter(Boolean).join(' · '))}</small></div><span class="go">열기 ›</span></div>`).join(''):'<p class="hint">아직 고객이 없어요. 위 버튼으로 만들어 주세요.</p>';
     $('list').querySelectorAll('.row').forEach(r=>r.onclick=async()=>{toast('불러오는 중...');try{openEdit(await api({action:'get',code:r.dataset.c}))}catch(e){toast(e.message)}});
     const tones=new Set();j.list.forEach(()=>{});
   }catch(e){$('list').innerHTML='<p class="hint">'+esc(e.message)+'</p>'}}
@@ -276,6 +278,7 @@ function syncChips(){
   document.querySelectorAll('[data-one]').forEach(g=>{const v=S.values[g.dataset.one]||'';g.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',b.textContent===v))});
   document.querySelectorAll('[data-range]').forEach(g=>{const tk=String(S.values[g.dataset.range]||'').split(/~|-/).map(s=>s.replace(/\s/g,'')).map(s=>LEVELS.indexOf(s)).filter(i=>i>=0);const lo=Math.min(...tk),hi=Math.max(...tk);g.querySelectorAll('.chip').forEach((b,i)=>b.classList.toggle('on',tk.length&&i>=lo&&i<=hi))});
   $('prodTitle').textContent=sex()==='여'?'메이크업 · 스킨케어 제품':'스킨케어 · 베이스 제품';
+  const pc=/퍼스널컬러/.test(S.values['리포트 종류']||'');document.querySelectorAll('#vEdit details.card').forEach((c,i)=>{if([1,4,5].includes(i))c.hidden=pc});document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc});
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
@@ -390,7 +393,7 @@ const SECN=['기본 정보','치수','퍼스널컬러','제품','얼굴형','체
 function side(){const cards=[...document.querySelectorAll('#vEdit details.card')];cards.forEach((c,i)=>c.id='sec'+(i+1));
   $('side').innerHTML=cards.map((c,i)=>{const st=c.querySelector('.st');return `<a href="#sec${i+1}"><span class="n">${i+1}</span><span>${SECN[i]}<small class="${st&&st.classList.contains('ok')?'ok':''}">${esc(st?st.textContent:'')||'&nbsp;'}</small></span></a>`}).join('');
   $('side').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));t.open=true;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})})}
-const _status=status;status=function(){_status();if($('side'))side()};
+const _status=status;status=function(){_status();if($('side')){side();const pc=/퍼스널컬러/.test((S&&S.values['리포트 종류'])||'');document.querySelectorAll('#side a').forEach((x,i)=>{if([1,4,5].includes(i))x.hidden=pc})}};
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+'report.html?c='+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;

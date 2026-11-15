@@ -183,7 +183,8 @@ function grey(v){
   const lo=Math.min(...tk),hi=Math.max(...tk);
   return `<div class="grey">${cols.map((c,i)=>`<i style="background:${c}" class="${tk.length&&cells[i]>=lo&&cells[i]<=hi?'on':''}"></i>`).join('')}</div><div class="glab"><span>고명도</span><span>중명도</span><span>저명도</span></div>`;
 }
-function colorTab(){
+let PCM=false,PC='전체';
+function colorRes(){
   const C=D.color||{};
   const rows=[['명도',C.value],['채도',C.chroma],['대비감',C.contrast],['피할 컬러',C.avoid],['액세서리 · 안경테',C.acc]].filter(r=>r[1]);
   const groups={};L(C.combos).forEach(p=>{const [a,b]=p.split('+').map(s=>s.trim());if(!a||!b)return;(groups[cname(a)]=groups[cname(a)]||[]).push([a,b])});
@@ -195,18 +196,25 @@ function colorTab(){
   (L(C.notes).length?`<div class="card"><p class="k">CONSULTANT NOTE</p>${ul(C.notes)}</div>`:'')+
   (tees.length?`<div class="card" id="teeCard"><p class="k">흑백 모드로 찾는 내 티셔츠 컬러</p><p class="desc">흑백으로 바꿔 봤을 때 밝기가 비슷하면 나에게 맞는 명도예요.</p>
    <div class="tog"><button class="on" data-m="c">컬러</button><button data-m="bw">흑백 모드</button></div>
-   <div class="tees">${tees.map(t=>`<figure><img src="${esc(t.img)}" alt="${esc(t.n)}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${esc(t.n)}</figcaption></figure>`).join('')}</div>${C.teeNote?`<p class="desc" style="margin-top:10px">${esc(C.teeNote)}</p>`:''}</div>`:'')+
-  head('','COLOR GUIDE','꼭 알아야 할 컬러 코디')+
+   <div class="tees">${tees.map(t=>`<figure><img src="${esc(t.img)}" alt="${esc(t.n)}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${esc(t.n)}</figcaption></figure>`).join('')}</div>${C.teeNote?`<p class="desc" style="margin-top:10px">${esc(C.teeNote)}</p>`:''}</div>`:'');
+}
+function colorGuide(){
+  const C=D.color||{};
+  const groups={};L(C.combos).forEach(p=>{const [a,b]=p.split('+').map(s=>s.trim());if(!a||!b)return;(groups[cname(a)]=groups[cname(a)]||[]).push([a,b])});
+  return head('','COLOR GUIDE','꼭 알아야 할 컬러 코디')+
   `<div class="card"><p class="k">MONOCHROME</p><p class="desc">상·하의를 같은 컬러로 입는 걸 모노크롬 룩이라고 해요.</p>
    <ul class="rule"><li>— 화이트와 블랙은 채도 없이 명도만 있는 무채색이에요. 어울리지 않는 컬러가 없어요.</li><li>— 블랙 + 블랙도 소재가 다르면 질감 때문에 다른 컬러로 보여요. 다른 컬러라고 생각하고 입으세요!</li></ul>
    ${Object.keys(groups).length?`<div class="combo">${Object.entries(groups).map(([g,ps])=>`<h4>${esc(g)} 조합</h4><div class="pairs">${ps.map(([a,b])=>`<div class="pair"><div><i style="background:${hex(a)}"></i><i style="background:${hex(b)}"></i></div>${esc(cname(a))} + ${esc(cname(b))}</div>`).join('')}</div>`).join('')}</div>`:''}</div>`+
   ((L(C.tit).length||L(C.tot).length)?`<div class="card"><p class="k">TONE IN TONE · TONE ON TONE</p>
    ${L(C.tit).length?`<h4 style="margin:8px 0 0;font-size:14px">톤인톤</h4><p class="desc" style="color:var(--muted);font-size:13px">색은 달라도 톤(밝기·선명함)을 맞추는 조합. 흑백 모드로 톤이 비슷한지 체크하세요.</p><div class="chips">${L(C.tit).map(c=>`<span><i style="background:${hex(c)}"></i>${esc(cname(c))}</span>`).join('')}</div>`:''}
    ${L(C.tot).length?`<h4 style="margin:16px 0 0;font-size:14px">톤온톤</h4><p class="desc" style="color:var(--muted);font-size:13px">같은 색 안에서 밝기만 달리하는 조합. 그라데이션을 떠올리면 쉬워요.</p><div class="chips">${L(C.tot).map(c=>`<span><i style="background:${hex(c)}"></i>${esc(cname(c))}</span>`).join('')}</div>`:''}
-   <p style="font-size:11px;color:var(--muted);margin:10px 0 0">* 색상 칩은 예시예요.</p></div>`:'')+
-  prodSec();
+   <p style="font-size:11px;color:var(--muted);margin:10px 0 0">* 색상 칩은 예시예요.</p></div>`:'');
 }
-let PC='전체';
+function colorTab(){
+  if(PCM)return colorRes();
+  return colorRes()+colorGuide()+prodSec();
+}
+
 function prodSec(){
   const P=D.products||[];if(!P.length)return '';
   const fem=/^여/.test(D.sex||'');
@@ -281,14 +289,31 @@ function shopperTab(){
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
 }
 const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,shopper:shopperTab};
+const SAMPLE2=window.SAMPLE2||{face:'sample_face.jpg',body:'sample_body.jpg'};
+function pcGuideTab(){return head('02','COLOR GUIDE','컬러 코디 가이드').replace(/^/,'')+colorGuide().replace(/<div class="sec-h">[\s\S]*?<\/div>/,'')+gallery(D.styles,s=>!/헤어|흑백/.test(s.sec))}
+function pcProdTab(){const fem=/^여/.test(D.sex||'');return prodSec().replace(/<div class="sec-h"><small>[^<]*<\/small><h2>/,`<div class="sec-h"><small>02 ${fem?'MAKEUP':'SKIN & BASE'}</small><h2>`)||head('02',fem?'MAKEUP':'SKIN CARE','추천 제품')+'<div class="card"><p class="desc">추천 제품을 준비하고 있어요.</p></div>'}
+function pcNextTab(){
+  const lock='<span class="lock">🔒 견본</span>';
+  return head('03','NEXT STEP','다음 단계 추천')+
+  `<p class="desc" style="margin:-4px 2px 14px;color:var(--muted)">퍼스널컬러에 얼굴형·체형 분석과 퍼스널쇼퍼를 더하면 이렇게 받아 보실 수 있어요. 실제 고객님 결과물이라 흐리게 처리했어요.</p>
+  <div class="card"><p class="k">BODY & FACE</p><p class="big ko" style="font-size:20px">얼굴형 · 체형 분석</p>
+   <p class="desc">얼굴 비율로 어울리는 헤어·안경을, 체형으로 잘 맞는 옷의 핏과 피해야 할 핏을 알려 드려요. 퍼스널컬러 결과와 함께 한 리포트로 받아 보실 수 있어요.</p>
+   <div class="blur2" style="grid-template-columns:1fr 1fr">${[SAMPLE2.face,SAMPLE2.body].map(u=>`<div class="bl"><img src="${u}" alt="" loading="lazy">${lock}</div>`).join('')}</div>
+   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">체형분석 문의하기 (카카오톡)</a></div>`+
+  shopperTab().replace(/<div class="sec-h">[\s\S]*?<\/div>\s*<p class="desc"[^>]*>[\s\S]*?<\/p>/,`<div class="sec-h"><small>PERSONAL SHOPPER</small><h2>퍼스널쇼퍼</h2></div>`);
+}
+Object.assign(TABS,{pcguide:pcGuideTab,pcprod:pcProdTab,pcnext:pcNextTab});
 function show(t){
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
   $('app').innerHTML=TABS[t]();window.scrollTo(0,0);
-  document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show('color');window.scrollTo(0,y)});
+  document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show(PCM?'pcprod':'color');window.scrollTo(0,y)});
   document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
 }
 function start(){
-  $('who').textContent=`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
+  PCM=/퍼스널컬러/.test(D.kind||'');
+  $('who').textContent=PCM?`${D.name||'고객'} 님의 퍼스널컬러 분석`:`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
+  if(PCM){document.querySelector('.cover h1').textContent='Personal Color Report';const fem=/^여/.test(D.sex||'');
+    document.querySelector('#nav div').innerHTML=`<button data-t="color" aria-current="true"><b>01</b>진단 결과</button><button data-t="pcprod"><b>02</b>${fem?'메이크업':'스킨케어'}</button><button data-t="pcnext"><b>03</b>다음 단계</button>`;}
   $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show('color');
 }
 (async()=>{
