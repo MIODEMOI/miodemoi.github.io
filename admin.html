@@ -139,6 +139,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
  <nav class="side" id="side"></nav>
  <div class="form">
  <h2 id="eTitle">새 고객</h2>
+ <div id="draftBox"></div>
 
  <details class="card" open><summary><span class="n">1</span>기본 정보<span class="st" id="st1"></span></summary>
   <div class="g2">
@@ -240,7 +241,9 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
 
  <details class="card" id="shopCard"><summary><span class="n">S</span>퍼스널쇼퍼 앱 <small style="font-weight:500;color:var(--muted);font-size:12px">오늘 뭐 입지</small><span class="st" id="stS"></span></summary>
   <label class="tog"><input type="checkbox" id="shopOn"> 퍼스널쇼퍼 고객이에요 (3시간 이상이면 '오늘 뭐 입지' 앱 제공)</label>
-  <p class="hint">켜고 저장하면 고객 앱 <b>ootd.html?c=코드</b>에 바로 나와요. 꺼 두고 저장하면 이미 넣은 퍼스널쇼퍼 내용은 그대로 남아요.</p>
+  <p class="hint">꺼 두고 저장하면 이미 넣은 퍼스널쇼퍼 내용은 그대로 남아요.</p>
+  <label class="tog" id="pubRow" style="margin-top:12px"><input type="checkbox" id="shopPub"> 고객에게 공개</label>
+  <p class="hint" id="pubHint">끄고 저장하면 중간 저장이에요. 고객 앱에는 '만드는 중'으로만 보이고, 다 만든 뒤 켜고 저장하면 그때 보여요.</p>
   <div id="shopBody">
    <h4 class="sh">프로그램</h4>
    <div class="g2">
@@ -440,7 +443,7 @@ const SITU=['출근','데이트','모임·약속','주말·나들이','격식 �
 const WX=['한여름 28°↑','여름 23~27°','간절기 17~22°','선선 12~16°','쌀쌀 5~11°','한겨울 4°↓'];
 const lst=v=>String(v||'').split(/[,，\/]/).map(x=>x.trim()).filter(Boolean);
 const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
-function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;
+function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
   S.sp={prog:(sp.prog||[]).map(x=>x==null?'':String(x)),items:sp.items||[],outfits:sp.outfits||[],
     book:(sp.book||[]).map(b=>({name:b.name||'',photos:String(b.photos||'').split(/\n/).map(x=>x.trim()).filter(Boolean).map(u=>({img:u})),tip:b.tip||'',sit:lst(b.sit),wx:wxFix(b.wx),round:String(b.round||'기존')})),
     shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||''}))};
@@ -450,7 +453,7 @@ const maxRound=()=>S.sp.book.concat(S.sp.shop).reduce((m,x)=>Math.max(m,+x.round
 const rounds=()=>Array.from({length:Math.max(10,maxRound()+1)},(_,k)=>String(k+1));
 const busyTag='<span class="up" style="position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.7);font-weight:700;color:#2f3d86;font-size:12px">올리는 중</span>';
 function renderShop(){
-  $('shopBody').hidden=!S.shopOn;const rs=rounds();
+  $('shopBody').hidden=!S.shopOn;$('pubRow').hidden=$('pubHint').hidden=!S.shopOn;const rs=rounds();
   $('bookCnt').textContent=S.sp.book.length?S.sp.book.length+'페이지':'';
   $('sBook').innerHTML=S.sp.book.map((b,i)=>`<div class="item"><div style="display:flex;gap:8px;align-items:center"><b style="color:var(--navy);flex:none">${i+1}</b><input type="text" placeholder="페이지 제목 (예: 월요일 출근룩)" value="${esc(b.name)}" data-bf2="name" data-bi2="${i}" style="font-weight:700">
      <select data-bf2="round" data-bi2="${i}" style="width:auto">${['기존'].concat(rs).map(r=>`<option value="${r}" ${b.round===r?'selected':''}>${r==='기존'?'기존 옷':r+'회차'}</option>`).join('')}</select>
@@ -468,6 +471,7 @@ function renderShop(){
   status();
 }
 $('shopOn').onchange=e=>{S.shopOn=e.target.checked;dirty=true;renderShop()};
+$('shopPub').onchange=e=>{S.pub=e.target.checked;dirty=true;status()};
 document.addEventListener('input',e=>{const t=e.target;if(!S||!S.sp)return;
   if(t.dataset.p!=null){S.sp.prog[+t.dataset.p]=t.value;dirty=true}
   if(t.dataset.bi2!=null&&t.tagName!=='SELECT'){S.sp.book[+t.dataset.bi2][t.dataset.bf2]=t.value;dirty=true}
@@ -491,7 +495,7 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
   else if(t.dataset.srm2!=null){e.preventDefault();S.sp.shop.splice(+t.dataset.srm2,1);dirty=true;renderShop()}
   else if(t.id==='addPage'){e.preventDefault();B.push({name:'',photos:[],tip:'',sit:[],wx:[],round:String(maxRound()||'기존')});dirty=true;renderShop();$('sBook').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(t.id==='addShopRow'){e.preventDefault();S.sp.shop.push({round:String(maxRound()||1),cat:'',items:'',url:'',note:'',name:'',img:''});dirty=true;renderShop()}});
-function shopPayload(){if(!S.shopOn)return null;return {prog:S.sp.prog,items:S.sp.items,outfits:S.sp.outfits,
+function shopPayload(){if(!S.shopOn)return null;return {pub:S.pub,prog:S.sp.prog,items:S.sp.items,outfits:S.sp.outfits,
   book:S.sp.book.map(b=>({name:b.name,photos:b.photos.map(p=>p.img).filter(Boolean).join('\n'),tip:b.tip,sit:b.sit.join(', '),wx:b.wx.join(', '),round:b.round})),
   shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img}))}}
 
@@ -504,7 +508,7 @@ function status(){
   f('st4',S.products.length>0,S.products.length+'개');
   f('st5',!!v['얼굴형'],v['얼굴형']||'');f('st6',!!v['체형'],v['체형']||'');
   if($('stB'))f('stB',S.shop.length>0,S.shop.length+'개');
-  if(S.sp)f('stS',S.shopOn&&S.sp.book.length>0,S.shopOn?('스타일링북 '+S.sp.book.length+' · 쇼핑 '+S.sp.shop.length):'');
+  if(S.sp)f('stS',S.shopOn&&S.pub&&S.sp.book.length>0,S.shopOn?((S.pub?'':'작업 중 · ')+'스타일링북 '+S.sp.book.length+' · 쇼핑 '+S.sp.shop.length):'');
   f('st7',S.secs.length>0,S.secs.length+'개 섹션 · '+S.secs.reduce((a,s)=>a+s.items.length,0)+'장');
 }
 
@@ -517,7 +521,7 @@ $('save').onclick=async()=>{
   try{
     const photos=[];S.secs.forEach(s=>{if(!s.items.length)photos.push({sec:s.sec,desc:s.desc,img:'',cap:''});s.items.forEach((it,j)=>photos.push({sec:s.sec,desc:j===0?s.desc:'',img:it.img,cap:it.cap}))});
     const j=await api({action:'save',code:S.code,name:S.name.trim(),values:S.values,products:S.products.concat(S.shop.map(b=>Object.assign({},b,{name:b.name||b.brand||'아이템'}))).map(({busy,local,...p})=>p),photos,reportOff:so,shopper:shopPayload()});
-    S.code=j.code;dirty=false;$('barMsg').textContent='저장됨 · 코드 '+S.code;$('preview').hidden=false;$('eTitle').textContent=S.name+' 리포트';
+    dropLocal('mio-draft-new');S.code=j.code;dropLocal();dirty=false;$('barMsg').textContent='저장됨 · 코드 '+S.code;$('preview').hidden=false;$('eTitle').textContent=S.name+' 리포트';
     const olink=SITE+'ootd.html?c='+S.code;
     const link=so?olink:SITE+'report.html?c='+S.code;
     const msg=so?`${S.values['앱 표시 이름']||S.name} 님 전용 '오늘 뭐 입지' 앱이에요 👉 ${link}\n\n오늘 날씨와 상황에 맞는 코디를 산 옷으로 골라 드려요.\n링크를 길게 눌러 아이폰은 'Safari로 열기', 갤럭시는 '다른 브라우저로 열기'를 누른 뒤 홈 화면에 추가해 주세요.\n링크는 다른 분께 공유하지 말아 주세요.`:`${S.values['앱 표시 이름']||S.name} 님의 퍼스널 이미지 리포트예요 👉 ${link}\n\n링크를 길게 눌러 아이폰은 'Safari로 열기', 갤럭시는 '다른 브라우저로 열기'를 누른 뒤 홈 화면에 추가해 주세요.\n링크는 다른 분께 공유하지 말아 주세요.`;
@@ -543,7 +547,17 @@ const _status=status;status=function(){_status();if($('side')){side();document.q
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;
-const _open=openEdit;openEdit=function(d){_open(d);if(wide())document.querySelectorAll('#vEdit details.card').forEach(c=>c.open=true);status();preview()};
+/* ---------- 이 컴퓨터에 자동 보관 (저장 전 작업) ---------- */
+const dkey=()=>'mio-draft-'+(S&&S.code||'new');
+function snapshot(){const photos=[];S.secs.forEach(s=>{if(!s.items.length)photos.push({sec:s.sec,desc:s.desc,img:'',cap:''});s.items.forEach((it,j)=>it.img&&photos.push({sec:s.sec,desc:j===0?s.desc:'',img:it.img,cap:it.cap}))});
+  const strip=({busy,local,fail,...p})=>p;return {code:S.code,name:S.name,values:S.values,products:S.products.concat(S.shop).map(strip),photos,shopper:S.shopOn?shopPayload():null,_t:Date.now()}}
+function keepLocal(){if(!S||!dirty)return;try{localStorage.setItem(dkey(),JSON.stringify(snapshot()))}catch(e){}}
+function dropLocal(k){try{localStorage.removeItem(k||dkey())}catch(e){}}
+setInterval(keepLocal,3000);window.addEventListener('beforeunload',keepLocal);
+const _open=openEdit;openEdit=function(d,restoring){_open(d);$('draftBox').innerHTML='';
+  if(!restoring){let L=null;try{L=JSON.parse(localStorage.getItem('mio-draft-'+(d.code||'new'))||'null')}catch(e){}
+    if(L&&(!d.code||L.code===d.code)){const t=new Date(L._t);$('draftBox').innerHTML=`<div class="done" style="background:#fff7e8;border-color:#f1dfb8"><b>저장하지 않은 작업이 있어요</b><p class="hint" style="margin:4px 0 10px">${t.getMonth()+1}월 ${t.getDate()}일 ${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}에 이 컴퓨터에 보관된 작업이에요.</p><div style="display:flex;gap:8px"><button class="btn sm" id="dlUse">이어서 하기</button><button class="btn sm ghost" id="dlDrop">버리기</button></div></div>`;
+      $('dlUse').onclick=()=>{$('draftBox').innerHTML='';openEdit(L,true);dirty=true;$('barMsg').textContent='이어서 작업 중 · 저장하기를 눌러야 시트에 저장돼요';toast('불러왔어요')};$('dlDrop').onclick=()=>{dropLocal('mio-draft-'+(d.code||'new'));$('draftBox').innerHTML=''}}}if(wide())document.querySelectorAll('#vEdit details.card').forEach(c=>c.open=true);status();preview()};
 document.addEventListener('dragover',e=>{const z=e.target.closest('#secs .item, #prods .ph');if(!z)return;e.preventDefault();document.querySelectorAll('.drop').forEach(x=>x!==z&&x.classList.remove('drop'));z.classList.add('drop')});
 document.addEventListener('dragleave',e=>{const z=e.target.closest('.drop');if(z&&!z.contains(e.relatedTarget))z.classList.remove('drop')});
 document.addEventListener('drop',e=>{const z=e.target.closest('#secs .item, #prods .ph');if(!z)return;e.preventDefault();z.classList.remove('drop');

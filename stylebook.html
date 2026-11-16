@@ -59,6 +59,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 $('pr').onclick=()=>window.print();
 function draw(D){
+  if(D.draft){$('pages').innerHTML='<p class="msg">스타일링북을 만들고 있어요. 완성되면 미오드모이가 알려 드릴게요.</p>';return}
   const P=(D.outfits||[]).filter(o=>o.photos),S=D.shop||[];
   const last=Math.max(0,...P.map(o=>+o.round||0),...S.map(x=>+x.round||0));
   const foot=n=>`<div class="foot"><span>MIO DE MOI</span><span>${n}</span></div>`;
