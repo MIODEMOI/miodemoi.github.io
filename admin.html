@@ -116,6 +116,8 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
 .pk button em{position:absolute;top:2px;right:2px;background:var(--navy);color:#fff;border-radius:50%;width:16px;height:16px;font:700 10px/16px sans-serif;font-style:normal}
 .mini{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.mini .chip{padding:5px 10px;font-size:12.5px}
 .item .btn.sm{white-space:nowrap;flex:none}
+.pz-on{outline:2.5px solid var(--teal);outline-offset:2px}
+.pz-on{position:relative}.pz-on::after{content:'Ctrl+V 붙여넣기';position:absolute;right:10px;bottom:-11px;background:var(--teal);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;pointer-events:none;z-index:3}
 </style>
 </head>
 <body>
@@ -264,10 +266,11 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
     <label class="f"><span>메모 <small>(나만 봄)</small></span><input type="text" data-p="9"></label>
    </div>
    <h4 class="sh">스타일링북 <small id="bookCnt"></small></h4>
-   <p class="hint" style="margin-top:0">PPT 한 장 = 한 페이지예요. 사진 여러 장 + 코멘트를 넣고 상황·날씨를 고르면, 고객 앱 '오늘 코디'와 스타일링북(PDF 저장 가능)에 그대로 나와요.</p>
+   <p class="hint" style="margin-top:0">PPT 한 장 = 한 페이지예요. 사진은 끌어다 놓거나, 칸을 한 번 누르고 Ctrl+V로 붙여넣어도 돼요. 사진 여러 장 + 코멘트를 넣고 상황·날씨를 고르면, 고객 앱 '오늘 코디'와 스타일링북(PDF 저장 가능)에 그대로 나와요.</p>
    <div id="sBook"></div>
    <button class="btn sm ghost" id="addPage" style="margin-top:10px">＋ 스타일링북 페이지 추가</button>
    <h4 class="sh">쇼핑 리스트</h4>
+   <div id="shopMk" style="margin-top:4px"></div>
    <div id="sShop"></div>
    <button class="btn sm ghost" id="addShopRow" style="margin-top:10px">＋ 쇼핑 리스트 추가</button>
   </div>
@@ -460,11 +463,14 @@ function renderShop(){
      <button class="btn sm ghost" data-bup="${i}" title="위로">▲</button><button class="btn sm del" data-brm="${i}">삭제</button></div>
    <div class="pics">${b.photos.map((ph,j)=>`<div class="pic"><div class="im">${ph.local||ph.img?`<img src="${esc(ph.local||thumb(ph.img))}" alt="">`:''}${ph.busy?busyTag:''}<button class="x" data-bpx="${i}:${j}">✕</button></div></div>`).join('')}
     <label class="add">＋ 사진 여러 장<br><small style="font-weight:400;color:#8a8e9c">선택 또는 끌어다 놓기</small><input type="file" accept="image/*" multiple data-badd2="${i}"></label></div>
+   ${S.sp.shop.some(x=>x.img)?`<p class="hint" style="margin:10px 0 0">쇼핑 리스트에서 넣기 <small>(눌러서 넣고 빼기)</small></p><div class="pk">${S.sp.shop.map((x,k)=>x.img?`<button type="button" class="${b.photos.some(p=>p.img===x.img)?'on':''}" data-bsp="${i}:${k}" title="${esc(x.name)}"><img src="${esc(x.local||thumb(x.img))}" alt=""><span>${esc((x.name||x.cat||'상품').slice(0,6))}</span>${b.photos.some(p=>p.img===x.img)?'<em>✓</em>':''}</button>`:'').join('')}</div>`:''}
    <textarea placeholder="코멘트 (한 줄에 하나: 셔츠는 앞만 넣어 입기 / 양말은 네이비 / 재킷 단추는 하나만)" style="margin-top:8px;min-height:84px" data-bf2="tip" data-bi2="${i}">${esc(b.tip)}</textarea>
    <div class="mini">${SITU.map(x=>`<button type="button" class="chip ${b.sit.includes(x)?'on':''}" data-bs="${i}">${x}</button>`).join('')}</div>
    <div class="mini">${WX.map(x=>`<button type="button" class="chip ${b.wx.includes(x)?'on':''}" data-bw="${i}">${x}</button>`).join('')}</div>
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
-  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진<br>추가'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
+  const ckn=S.sp.shop.filter(x=>x.ck).length;
+  $('shopMk').innerHTML=S.sp.shop.length?`<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
+  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><label class="tog" style="font-size:13px;margin-bottom:8px"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진<br>추가'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
    <textarea placeholder="코멘트 (사이즈, 입는 법)" style="margin-top:8px;min-height:56px" data-sf="note" data-si2="${i}">${esc(x.note)}</textarea></div>`).join('');
@@ -479,6 +485,7 @@ document.addEventListener('input',e=>{const t=e.target;if(!S||!S.sp)return;
 $('shopCard').addEventListener('change',async e=>{const t=e.target;
   if(t.dataset.p!=null&&t.tagName==='SELECT'){S.sp.prog[+t.dataset.p]=t.value;dirty=true;return}
   if(t.dataset.bi2!=null&&t.tagName==='SELECT'){S.sp.book[+t.dataset.bi2][t.dataset.bf2]=t.value;dirty=true;return}
+  if(t.dataset.sck!=null){S.sp.shop[+t.dataset.sck].ck=t.checked;renderShop();return}
   if(t.dataset.si2!=null&&t.tagName==='SELECT'){S.sp.shop[+t.dataset.si2][t.dataset.sf]=t.value;dirty=true;return}
   let its,files,label;
   if(t.dataset.badd2!=null){const b=S.sp.book[+t.dataset.badd2];files=[...t.files];its=files.map(()=>({img:'',busy:1}));b.photos.push(...its);label='스타일링북'}
@@ -493,12 +500,27 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
   else if(t.dataset.brm!=null){e.preventDefault();if(confirm('이 페이지를 지울까요?')){B.splice(+t.dataset.brm,1);dirty=true;renderShop()}}
   else if(t.dataset.bup!=null){e.preventDefault();const i=+t.dataset.bup;if(i>0){[B[i-1],B[i]]=[B[i],B[i-1]];dirty=true;renderShop()}}
   else if(t.dataset.srm2!=null){e.preventDefault();S.sp.shop.splice(+t.dataset.srm2,1);dirty=true;renderShop()}
+  else if(t.dataset.bsp){e.preventDefault();const [i,k]=t.dataset.bsp.split(':').map(Number);const b=B[i],x=S.sp.shop[k],j=b.photos.findIndex(p=>p.img===x.img);j>=0?b.photos.splice(j,1):b.photos.push({img:x.img,local:x.local});dirty=true;renderShop()}
+  else if(t.id==='mkPage'){e.preventDefault();const P=S.sp.shop.filter(x=>x.ck);const ph=P.filter(x=>x.img).map(x=>({img:x.img,local:x.local}));if(!ph.length)return toast('사진이 있는 상품을 골라 주세요');
+    B.push({name:'',photos:ph,tip:'',sit:[],wx:[],round:String(Math.max(...P.map(x=>+x.round||0))||'기존')});S.sp.shop.forEach(x=>delete x.ck);dirty=true;renderShop();toast('스타일링북 페이지를 만들었어요');$('sBook').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(t.id==='addPage'){e.preventDefault();B.push({name:'',photos:[],tip:'',sit:[],wx:[],round:String(maxRound()||'기존')});dirty=true;renderShop();$('sBook').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(t.id==='addShopRow'){e.preventDefault();S.sp.shop.push({round:String(maxRound()||1),cat:'',items:'',url:'',note:'',name:'',img:''});dirty=true;renderShop()}});
 function shopPayload(){if(!S.shopOn)return null;return {pub:S.pub,prog:S.sp.prog,items:S.sp.items,outfits:S.sp.outfits,
   book:S.sp.book.map(b=>({name:b.name,photos:b.photos.map(p=>p.img).filter(Boolean).join('\n'),tip:b.tip,sit:b.sit.join(', '),wx:b.wx.join(', '),round:b.round})),
   shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img}))}}
 
+
+/* ---------- 사진 붙여넣기 (Ctrl+V) ---------- */
+let pz=null;
+const ZONES='#prods .item, #secs .item, #brands .bcat, #sBook .item, #sShop .item';
+function zoneKey(z){const inp=z&&(z.querySelector('input[type=file][multiple]')||z.querySelector('input[type=file]'));if(!inp)return null;const a=[...inp.attributes].find(x=>x.name.startsWith('data-'));return a?`input[${a.name}="${a.value}"]`:(inp.id?'#'+inp.id:null)}
+function markZone(){document.querySelectorAll('.pz-on').forEach(x=>x.classList.remove('pz-on'));if(!pz)return;const i=document.querySelector(pz);const z=i&&i.closest(ZONES);if(z)z.classList.add('pz-on')}
+document.addEventListener('pointerdown',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){pz=zoneKey(z);markZone()}},true);
+document.addEventListener('focusin',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){pz=zoneKey(z);markZone()}});
+new MutationObserver(()=>{if(pz&&!document.querySelector('.pz-on'))markZone()}).observe(document.body,{childList:true,subtree:true});
+document.addEventListener('paste',e=>{if($('vEdit').hidden)return;const files=[...(e.clipboardData&&e.clipboardData.files||[])].filter(f=>/^image\//.test(f.type));if(!files.length)return;
+  e.preventDefault();const inp=pz&&document.querySelector(pz);if(!inp)return toast('사진을 넣을 칸을 먼저 한 번 눌러 주세요');
+  const dt=new DataTransfer();(inp.multiple?files:files.slice(0,1)).forEach(f=>dt.items.add(new File([f],'paste_'+Date.now()+'.png',{type:f.type})));inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}));toast('사진 '+dt.files.length+'장 붙여넣는 중');});
 /* ---------- status ---------- */
 function status(){
   const v=S.values,f=(id,ok,t)=>{$(id).textContent=t;$(id).classList.toggle('ok',ok)};
