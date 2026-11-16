@@ -470,10 +470,11 @@ function renderShop(){
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
   const ckn=S.sp.shop.filter(x=>x.ck).length;
   $('shopMk').innerHTML=S.sp.shop.length?`<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
-  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><label class="tog" style="font-size:13px;margin-bottom:8px"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진<br>추가'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
+  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><label class="tog" style="font-size:13px;margin-bottom:8px"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
-   <textarea placeholder="코멘트 (사이즈, 입는 법)" style="margin-top:8px;min-height:56px" data-sf="note" data-si2="${i}">${esc(x.note)}</textarea></div>`).join('');
+   <textarea placeholder="코멘트 (사이즈, 입는 법)" style="margin-top:8px;min-height:56px" data-sf="note" data-si2="${i}">${esc(x.note)}</textarea></div>`).join('')+
+   `<label class="badd shopadd" style="min-height:96px;margin-top:10px">＋ 상품 사진 붙여넣어 추가<br><small style="font-weight:400;color:#8a8e9c">여기에 마우스를 올리고 Ctrl+V · 끌어다 놓기도 돼요<br>사진 여러 장이면 상품 여러 개로 추가돼요</small><input type="file" accept="image/*" multiple data-shadd="1"></label>`;
   status();
 }
 $('shopOn').onchange=e=>{S.shopOn=e.target.checked;dirty=true;renderShop()};
@@ -489,10 +490,11 @@ $('shopCard').addEventListener('change',async e=>{const t=e.target;
   if(t.dataset.si2!=null&&t.tagName==='SELECT'){S.sp.shop[+t.dataset.si2][t.dataset.sf]=t.value;dirty=true;return}
   let its,files,label;
   if(t.dataset.badd2!=null){const b=S.sp.book[+t.dataset.badd2];files=[...t.files];its=files.map(()=>({img:'',busy:1}));b.photos.push(...its);label='스타일링북'}
-  else if(t.dataset.sph!=null){files=[t.files[0]];its=[S.sp.shop[+t.dataset.sph]];its[0].busy=1;label='쇼핑'}else return;
+  else if(t.dataset.sph!=null){files=[t.files[0]];its=[S.sp.shop[+t.dataset.sph]];its[0].busy=1;label='쇼핑'}
+  else if(t.dataset.shadd!=null){files=[...t.files];const r=String(maxRound()||1);its=files.map(()=>({round:r,cat:'',items:'',url:'',note:'',name:'',img:'',busy:1}));S.sp.shop.push(...its);label='쇼핑'}else return;
   renderShop();
   for(let n=0;n<files.length;n++){if(!files[n])continue;try{const r=await upload(files[n],label);its[n].img=r.url;its[n].local=r.local}catch(err){toast('사진 1장을 올리지 못했어요');its[n].fail=1}delete its[n].busy;renderShop()}
-  S.sp.book.forEach(b=>b.photos=b.photos.filter(x=>!x.fail));dirty=true;renderShop()});
+  S.sp.book.forEach(b=>b.photos=b.photos.filter(x=>!x.fail));S.sp.shop=S.sp.shop.filter(x=>!(x.fail&&!x.name&&!x.url));dirty=true;renderShop()});
 $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if(!t||!S.sp)return;const B=S.sp.book;
   if(t.dataset.bpx){e.preventDefault();const [i,j]=t.dataset.bpx.split(':');B[+i].photos.splice(+j,1);dirty=true;renderShop()}
   else if(t.dataset.bs!=null){e.preventDefault();const b=B[+t.dataset.bs],x=t.textContent;b.sit=b.sit.includes(x)?b.sit.filter(y=>y!==x):b.sit.concat(x);dirty=true;renderShop()}
@@ -512,15 +514,29 @@ function shopPayload(){if(!S.shopOn)return null;return {pub:S.pub,prog:S.sp.prog
 
 /* ---------- 사진 붙여넣기 (Ctrl+V) ---------- */
 let pz=null;
-const ZONES='#prods .item, #secs .item, #brands .bcat, #sBook .item, #sShop .item';
+const ZONES='#prods .item, #secs .item, #brands .bcat, #sBook .item, #sShop .item, #sShop .shopadd';
 function zoneKey(z){const inp=z&&(z.querySelector('input[type=file][multiple]')||z.querySelector('input[type=file]'));if(!inp)return null;const a=[...inp.attributes].find(x=>x.name.startsWith('data-'));return a?`input[${a.name}="${a.value}"]`:(inp.id?'#'+inp.id:null)}
 function markZone(){document.querySelectorAll('.pz-on').forEach(x=>x.classList.remove('pz-on'));if(!pz)return;const i=document.querySelector(pz);const z=i&&i.closest(ZONES);if(z)z.classList.add('pz-on')}
-document.addEventListener('pointerdown',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){pz=zoneKey(z);markZone()}},true);
+let hz=null;
+document.addEventListener('pointerover',e=>{const z=e.target.closest&&e.target.closest(ZONES);hz=z?zoneKey(z):null});
+document.addEventListener('pointerdown',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){const k=zoneKey(z);z.dataset.fresh=k!==pz?'1':'';pz=k;markZone()}},true);
+// 사진 칸을 처음 누르면 파일 창 대신 붙여넣기 대기. 한 번 더 누르면 파일 선택
+document.addEventListener('click',e=>{const l=e.target.closest&&e.target.closest('label.ph, label.add, label.badd, .bt label.im');if(!l)return;const z=l.closest(ZONES);if(z&&z.dataset.fresh==='1'){e.preventDefault();z.dataset.fresh='';toast('Ctrl+V로 사진 붙여넣기 · 파일에서 고르려면 한 번 더 누르세요')}},true);
 document.addEventListener('focusin',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){pz=zoneKey(z);markZone()}});
 new MutationObserver(()=>{if(pz&&!document.querySelector('.pz-on'))markZone()}).observe(document.body,{childList:true,subtree:true});
-document.addEventListener('paste',e=>{if($('vEdit').hidden)return;const files=[...(e.clipboardData&&e.clipboardData.files||[])].filter(f=>/^image\//.test(f.type));if(!files.length)return;
-  e.preventDefault();const inp=pz&&document.querySelector(pz);if(!inp)return toast('사진을 넣을 칸을 먼저 한 번 눌러 주세요');
-  const dt=new DataTransfer();(inp.multiple?files:files.slice(0,1)).forEach(f=>dt.items.add(new File([f],'paste_'+Date.now()+'.png',{type:f.type})));inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}));toast('사진 '+dt.files.length+'장 붙여넣는 중');});
+document.addEventListener('paste',async e=>{if($('vEdit').hidden)return;const cd=e.clipboardData;if(!cd)return;
+  let files=[...(cd.files||[])].filter(f=>/^image\//.test(f.type));
+  if(!files.length)files=[...(cd.items||[])].filter(it=>it.kind==='file'&&/^image\//.test(it.type)).map(it=>it.getAsFile()).filter(Boolean);
+  const key=hz||pz||(S&&S.shopOn&&$('shopCard').open?'input[data-shadd="1"]':null);const inp=key&&document.querySelector(key);
+  const html=cd.getData('text/html')||'',txt=(cd.getData('text/plain')||'').trim();
+  const src=!files.length&&((html.match(/<img[^>]+src=["']([^"']+)["']/i)||[])[1]||(/^https?:\/\/\S+\.(jpe?g|png|webp|gif)(\?\S*)?$/i.test(txt)?txt:''));
+  if(!files.length&&!src)return;   // 글자 붙여넣기는 그대로
+  const t=e.target;if(!files.length&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')&&!/<img/i.test(html))return;
+  e.preventDefault();if(!inp)return toast('사진 넣을 칸에 마우스를 올리고 다시 붙여넣어 주세요');
+  if(!files.length){toast('사진 가져오는 중...');try{let d=src;if(!/^data:/.test(d)){const j=await api({action:'fetchImage',url:new URL(src,location.href).href});d=j.data}
+      const bl=await (await fetch(d)).blob();files=[new File([bl],'paste.jpg',{type:bl.type||'image/jpeg'})]}
+    catch(err){return toast("이 사진은 가져오지 못했어요. 사진에서 오른쪽 클릭 → '이미지 복사' 후 붙여넣어 주세요")}}
+  const dt=new DataTransfer();(inp.multiple?files:files.slice(0,1)).forEach(f=>dt.items.add(new File([f],'paste_'+Date.now()+'.png',{type:f.type||'image/png'})));inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}));toast('사진 '+dt.files.length+'장 붙여넣는 중');});
 /* ---------- status ---------- */
 function status(){
   const v=S.values,f=(id,ok,t)=>{$(id).textContent=t;$(id).classList.toggle('ok',ok)};
