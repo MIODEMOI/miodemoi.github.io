@@ -38,6 +38,9 @@ h2 small{font-size:13px}
 .card h3{margin:6px 0 2px;font-size:21px;font-weight:800;letter-spacing:-.04em;line-height:1.35}
 .tags{display:flex;flex-wrap:wrap;gap:5px;font-size:0}
 .tags span{font-size:11.5px;font-weight:700;color:var(--teal);background:#e8f6f4;border-radius:6px;padding:3px 8px}
+.book{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.book img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;border:1px solid var(--line);background:#fff}.book.one{grid-template-columns:1fr}.book.one img{aspect-ratio:auto;max-height:70vh;object-fit:contain}
+.pg{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit;position:relative}.pg img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.pg div{padding:8px 10px;font-size:13.5px;font-weight:700;line-height:1.35}.pg .badge{top:8px;left:8px}
+.shimg{width:100%;max-width:240px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;margin:10px 0;border:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .grid.three{grid-template-columns:1fr 1fr 1fr}
 .it{background:none;border:0;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit}
@@ -88,7 +91,7 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
 <section id="t-closet" hidden>
  <h2>내 옷장 <small id="cnt" style="color:var(--muted);font-weight:400"></small></h2>
  <div class="chips" id="cf"></div>
- <p class="note">옷을 누르면 그 옷으로 만든 코디를 볼 수 있어요.</p>
+ <p class="note" id="cnote">옷을 누르면 그 옷으로 만든 코디를 볼 수 있어요.</p>
  <div id="closet"></div>
 </section>
 
@@ -151,6 +154,7 @@ function chips(){
 }
 
 function pick(){
+  if(focus&&focus.page)return{l:[focus.page],near:false};
   if(focus)return{l:D.outfits.filter(o=>o.items.includes(focus)),near:false};
   const bySit=D.outfits.filter(o=>sit==='전체'||o.sit.includes(sit));
   if(wxi==null)return{l:bySit,near:false};
@@ -164,7 +168,7 @@ function render(reshuffle){
   if($('wxn')&&wxi!=null)$('wxn').textContent=D.weather[wxi];
   const p=pick();
   if(reshuffle||list.length!==p.l.length||list.some((o,i)=>o!==p.l[i])){list=p.l.slice().sort(()=>Math.random()-.5);idx=0}
-  const fb=focus?`<div class="focus"><span>👕 ${esc(D.items[focus].name)} 코디 ${list.length}개</span><button id="unf">전체 보기</button></div>`:'';
+  const fb=focus?`<div class="focus"><span>${focus.page?'📖 '+esc(focus.page.name||'스타일링북'):'👕 '+esc(D.items[focus].name)+' 코디 '+list.length+'개'}</span><button id="unf">오늘 코디로</button></div>`:'';
   if(!list.length){$('out').innerHTML=fb+'<div class="card"><p class="msg">조건에 맞는 코디가 아직 없어요.<br>다른 상황을 골라 보시거나 미오드모이에 물어봐 주세요.</p></div>';bindUnf();return}
   const o=list[idx%list.length];
   const its=o.items.map(id=>[id,D.items[id]]).filter(x=>x[1]);
@@ -172,7 +176,7 @@ function render(reshuffle){
    <div class="tags">${o.sit.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
    <h3>${esc(o.name||'오늘의 코디')}</h3>
    ${p.near?'<p class="note">오늘 날씨와 딱 맞는 코디가 없어 가장 가까운 코디를 보여드려요.</p>':''}
-   <div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>
+   ${o.photos?`${o.round!=null?`<p class="note" style="margin:4px 0 0">${o.round===0?'기존 옷 코디':o.round===LATEST?'이번 쇼핑 코디':o.round+'회차 쇼핑 코디'}</p>`:''}<div class="book ${o.photos.length===1?'one':''}">${o.photos.map(u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer">`).join('')}</div>`:`<div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>`}
    ${String(o.tip||'').trim()?`<div class="tips"><p>STYLING TIP</p>${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<div class="tip"><i>✓</i><span>${esc(x)}</span></div>`).join('')}</div>`:''}
    ${list.length>1?`<button class="btn" id="next">다른 코디 보기 <small>${idx%list.length+1} / ${list.length}</small></button>`:''}
   </div>`;
@@ -183,6 +187,10 @@ function render(reshuffle){
 function bindUnf(){if($('unf'))$('unf').onclick=()=>{focus=null;render(true)}}
 
 function closet(){
+  if(D.book){const P=D.outfits.filter(o=>o.photos);const n=P.filter(o=>LATEST&&+o.round===LATEST).length;
+    document.querySelector('#t-closet h2').firstChild.textContent='스타일링북 ';$('cnt').textContent=`${P.length}페이지${n?' · 이번 쇼핑 '+n:''}`;$('cf').innerHTML='';$('cnote').textContent='페이지를 누르면 크게 볼 수 있어요.';
+    $('closet').innerHTML=`<div class="grid">${P.map((o,i)=>`<button class="pg" data-pg="${i}">${LATEST&&+o.round===LATEST?'<span class="badge new">NEW</span>':''}${o.photos[0]?`<img src="${esc(o.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}<div>${esc(o.name||'코디 '+(i+1))}</div></button>`).join('')}</div><a class="btn ghost" style="margin-top:16px" href="stylebook.html?c=${encodeURIComponent(code)}" target="_blank" rel="noopener">스타일링북 한 번에 보기 · PDF 저장</a>`;
+    $('closet').querySelectorAll('.pg').forEach(b=>b.onclick=()=>{focus={page:P[+b.dataset.pg]};tab('today');render(true)});return}
   const ids=Object.keys(D.items);
   const n=ids.filter(id=>isNew(D.items[id])).length;
   $('cnt').textContent=`${ids.length}벌 · 이번 쇼핑 ${n}벌`;
@@ -202,6 +210,7 @@ function shopList(){
   $('shop').innerHTML=rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
     return `<div class="card sh">${x.cat?`<div class="tags"><span>${esc(x.cat)}</span></div>`:''}
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
+    ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}
     ${String(x.note||'').trim()?`<p class="sh-note">${esc(x.note)}</p>`:''}
     ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
   $('shop').querySelectorAll('.sh-it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
@@ -219,7 +228,8 @@ function program(){
 }
 
 function start(){
-  LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd));
+  LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd),...(D.outfits||[]).filter(o=>o.photos).map(o=>+o.round||0));
+  if(D.book){document.querySelector('nav button[data-t=closet]').lastChild.textContent='스타일링북'}
   chips();closet();shopList();program();
   if(!(D.shop||[]).length)document.querySelector('nav button[data-t=shop]').hidden=true;
   if(D.title)$('ttl').textContent=D.title;

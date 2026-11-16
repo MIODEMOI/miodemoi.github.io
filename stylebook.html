@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="icon-192.png">
+<title>스타일링북 | 미오드모이</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#eceae4;--paper:#fff;--ink:#16181f;--muted:#6d7080;--navy:#2f3d86;--teal:#2ba59a;--line:#e7e5df}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all}
+.tool{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;display:flex;gap:10px;align-items:center;padding:12px 16px}
+.tool b{flex:1;font-size:14px}
+.tool button{border:0;border-radius:10px;background:#fff;color:var(--navy);font:inherit;font-weight:800;padding:9px 14px;cursor:pointer}
+.tool small{color:#c9cfee;font-size:12px}
+.pages{display:grid;gap:18px;padding:18px 12px 40px;justify-items:center}
+.page{width:100%;max-width:794px;background:var(--paper);border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:44px 46px;position:relative}
+.foot{position:absolute;left:46px;right:46px;bottom:18px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.2em;color:#a3a6b3}
+.cover{min-height:1000px;display:flex;flex-direction:column;justify-content:center;text-align:center;background:var(--navy);color:#fff}
+.cover .brand{font-weight:900;letter-spacing:.5em;font-size:15px}
+.cover h1{font-size:44px;font-weight:300;letter-spacing:.06em;margin:26px 0 8px}
+.cover p{margin:4px 0;color:#c9cfee}
+.cover .who{margin-top:34px;font-size:20px;color:#fff;font-weight:700}
+.eyebrow{font-size:11px;letter-spacing:.24em;color:var(--teal);font-weight:800}
+h2{margin:6px 0 4px;font-size:26px;font-weight:800;letter-spacing:-.03em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}.tags span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.tags span.r{background:var(--navy);border-color:var(--navy);color:#fff}
+.ph{display:grid;gap:10px;margin:20px 0 0;grid-template-columns:repeat(2,1fr)}
+.ph.n1{grid-template-columns:1fr}.ph.n3{grid-template-columns:repeat(3,1fr)}.ph.n4{grid-template-columns:repeat(2,1fr)}.ph.n5,.ph.n6{grid-template-columns:repeat(3,1fr)}
+.ph img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;background:#f4f3ef;display:block}
+.ph.n1 img{aspect-ratio:auto;max-height:620px;object-fit:contain}
+.cm{margin-top:22px;border-top:2px solid var(--ink);padding-top:14px}
+.cm p{margin:0 0 8px;display:flex;gap:10px}.cm p i{font-style:normal;color:var(--teal);font-weight:800}
+.shop{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.shop img{width:110px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;background:#f4f3ef}
+.shop b{display:block;font-size:16px}.shop small{color:var(--muted)}.shop a{color:var(--navy);font-size:13px;word-break:break-all}
+.msg{padding:60px 20px;text-align:center;color:var(--muted)}
+@media (max-width:600px){.page{padding:28px 20px 44px}.foot{left:20px;right:20px}.cover{min-height:560px}.cover h1{font-size:32px}.ph.n3,.ph.n5,.ph.n6{grid-template-columns:repeat(2,1fr)}}
+@page{size:A4;margin:0}
+@media print{
+ body{background:#fff}.tool{display:none}.pages{padding:0;gap:0;display:block}
+ .page{max-width:none;width:210mm;min-height:297mm;border-radius:0;box-shadow:none;padding:16mm 15mm 18mm;page-break-after:always;break-after:page}
+ .cover{min-height:297mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .tags span.r{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .foot{left:15mm;right:15mm;bottom:8mm}
+ .ph.n1 img{max-height:170mm}
+}
+</style>
+</head>
+<body>
+<div class="tool"><b>스타일링북</b><small>PDF는 '대상: PDF로 저장'을 고르세요</small><button id="pr">PDF로 저장</button></div>
+<div class="pages" id="pages"><p class="msg">스타일링북을 불러오고 있어요...</p></div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const code=new URLSearchParams(location.search).get('c')||'';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('pr').onclick=()=>window.print();
+function draw(D){
+  const P=(D.outfits||[]).filter(o=>o.photos),S=D.shop||[];
+  const last=Math.max(0,...P.map(o=>+o.round||0),...S.map(x=>+x.round||0));
+  const foot=n=>`<div class="foot"><span>MIO DE MOI</span><span>${n}</span></div>`;
+  let n=1,html=`<section class="page cover"><div class="brand">MIO DE MOI</div><h1>STYLING BOOK</h1><p>퍼스널쇼퍼 스타일링북</p>${D.name?`<p class="who">${esc(D.name)} 님</p>`:''}${D.program&&D.program.name?`<p>${esc(D.program.name)}</p>`:''}</section>`;
+  html+=P.map((o,i)=>{const r=+o.round||0;return `<section class="page"><div class="eyebrow">LOOK ${String(i+1).padStart(2,'0')}</div><h2>${esc(o.name||'스타일링')}</h2>
+   <div class="tags">${o.round!=null?`<span class="${r&&r===last?'r':''}">${r===0?'기존 옷':r+'회차 쇼핑'}</span>`:''}${(o.sit||[]).map(x=>`<span>${esc(x)}</span>`).join('')}${(o.wx||[]).map(w=>`<span>${esc((D.weather||[])[w]||'')}</span>`).join('')}</div>
+   <div class="ph n${Math.min(o.photos.length,6)}">${o.photos.map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`).join('')}</div>
+   ${String(o.tip||'').trim()?`<div class="cm">${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p><i>✓</i><span>${esc(x)}</span></p>`).join('')}</div>`:''}${foot(++n)}</section>`}).join('');
+  if(S.length){const rs=[...new Set(S.map(x=>+x.round||0))].sort((a,b)=>b-a);
+    html+=`<section class="page"><div class="eyebrow">SHOPPING LIST</div><h2>쇼핑 리스트</h2>${rs.map(r=>`<p class="eyebrow" style="margin-top:18px;color:var(--navy)">${r?r+'회차 쇼핑':'추천'}</p>`+S.filter(x=>(+x.round||0)===r).map(x=>`<div class="shop">${x.img?`<img src="${esc(x.img)}" alt="" referrerpolicy="no-referrer">`:'<span></span>'}<div>${x.cat?`<small>${esc(x.cat)}</small>`:''}<b>${esc(x.name||'')}</b>${x.note?`<p style="margin:6px 0">${esc(x.note)}</p>`:''}${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a>`:''}</div></div>`).join('')).join('')}${foot(++n)}</section>`}
+  if(!P.length&&!S.length)html+='<section class="page"><p class="msg">아직 스타일링북 페이지가 없어요.</p></section>';
+  $('pages').innerHTML=html;document.title=(D.name?D.name+' 님 ':'')+'스타일링북 | 미오드모이';
+}
+(async()=>{
+  if(window.DEMO)return draw(window.DEMO);
+  if(!code){$('pages').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
+  try{const j=await (await fetch(API+'?k='+encodeURIComponent(code))).json();if(j.error)throw 0;draw(j)}
+  catch(e){$('pages').innerHTML='<p class="msg">스타일링북을 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
+})();
+</script>
+</body>
+</html>
