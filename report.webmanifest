@@ -1,0 +1,19 @@
+{
+ "name": "미오드모이 이미지 리포트",
+ "short_name": "내 리포트",
+ "display": "standalone",
+ "background_color": "#efe9e1",
+ "theme_color": "#2f3d86",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

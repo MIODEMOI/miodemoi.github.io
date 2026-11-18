@@ -1,0 +1,19 @@
+{
+ "name": "미오드모이 오늘 뭐 입지",
+ "short_name": "오늘 뭐 입지",
+ "display": "standalone",
+ "background_color": "#f5e6ec",
+ "theme_color": "#2f3d86",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}
