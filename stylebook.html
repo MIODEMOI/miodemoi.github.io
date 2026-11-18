@@ -62,12 +62,13 @@ $('pr').onclick=()=>window.print();
 function draw(D){
   if(D.draft){$('pages').innerHTML='<p class="msg">스타일링북을 만들고 있어요. 완성되면 미오드모이가 알려 드릴게요.</p>';return}
   const P=(D.outfits||[]).filter(o=>o.photos),S=D.shop||[];
+  const UC={};P.forEach(o=>new Set(o.photos).forEach(u=>UC[u]=(UC[u]||0)+1));const ord=ph=>P.length>1?ph.slice().sort((a,b)=>(UC[a]>1?1:0)-(UC[b]>1?1:0)):ph;
   const last=Math.max(0,...P.map(o=>+o.round||0),...S.map(x=>+x.round||0));
   const foot=n=>`<div class="foot"><span>MIO DE MOI</span><span>${n}</span></div>`;
   let n=1,html=`<section class="page cover"><div class="brand">MIO DE MOI</div><h1>STYLING BOOK</h1><p>퍼스널쇼퍼 스타일링북</p>${D.name?`<p class="who">${esc(D.name)} 님</p>`:''}${D.program&&D.program.name?`<p>${esc(D.program.name)}</p>`:''}</section>`;
   html+=P.map((o,i)=>{const r=+o.round||0;return `<section class="page"><div class="eyebrow">LOOK ${String(i+1).padStart(2,'0')}</div><h2>${esc(o.name||'스타일링')}</h2>
    <div class="tags">${o.round!=null?`<span class="${r&&r===last?'r':''}">${r===0?'기존 옷':r+'회차 쇼핑'}</span>`:''}${szs(o.season)?`<span class="r" style="background:#e9ecf8;border-color:#e9ecf8;color:var(--navy)">${szs(o.season)}</span>`:''}${(o.sit||[]).map(x=>`<span>${esc(x)}</span>`).join('')}${(o.wx||[]).map(w=>`<span>${esc((D.weather||[])[w]||'')}</span>`).join('')}</div>
-   <div class="ph n${Math.min(o.photos.length,6)}">${o.photos.map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`).join('')}</div>
+   <div class="ph n${Math.min(o.photos.length,6)}">${ord(o.photos).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`).join('')}</div>
    ${String(o.tip||'').trim()?`<div class="cm">${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p><i>✓</i><span>${esc(x)}</span></p>`).join('')}</div>`:''}${foot(++n)}</section>`}).join('');
   if(S.length){const rs=[...new Set(S.map(x=>+x.round||0))].sort((a,b)=>b-a);
     html+=`<section class="page"><div class="eyebrow">SHOPPING LIST</div><h2>쇼핑 리스트</h2>${rs.map(r=>`<p class="eyebrow" style="margin-top:18px;color:var(--navy)">${r?r+'회차 쇼핑':'추천'}</p>`+S.filter(x=>(+x.round||0)===r).map(x=>`<div class="shop">${x.img?`<img src="${esc(x.img)}" alt="" referrerpolicy="no-referrer">`:'<span></span>'}<div>${x.cat?`<small>${esc(x.cat)}</small>`:''}<b>${esc(x.name||'')}</b>${szs(x.season)?`<small style="display:block;color:var(--navy);font-weight:700">입는 계절 · ${szs(x.season)}</small>`:''}${x.note?`<p style="margin:6px 0">${esc(x.note)}</p>`:''}${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a>`:''}</div></div>`).join('')).join('')}${foot(++n)}</section>`}
