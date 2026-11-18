@@ -31,7 +31,7 @@ h2{margin:6px 0 4px;font-size:26px;font-weight:800;letter-spacing:-.03em}
 .ph.n1{grid-template-columns:1fr}.ph.n3{grid-template-columns:repeat(3,1fr)}.ph.n4{grid-template-columns:repeat(2,1fr)}.ph.n5,.ph.n6{grid-template-columns:repeat(3,1fr)}
 .ph img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;background:#f4f3ef;display:block}
 .ph.n1 img{aspect-ratio:auto;max-height:620px;object-fit:contain}
-.cm{margin-top:22px;border-top:2px solid var(--ink);padding-top:14px}
+.cm{margin-top:16px;border-top:2px solid var(--ink);padding-top:12px}
 .cm p{margin:0 0 8px;display:flex;gap:10px}.cm p i{font-style:normal;color:var(--teal);font-weight:800}
 .shop{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
 .shop img{width:110px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;background:#f4f3ef}
@@ -71,8 +71,8 @@ function draw(D){
   let n=1,html=`<section class="page cover"><div class="brand">MIO DE MOI</div><h1>STYLING BOOK</h1><p>퍼스널쇼퍼 스타일링북</p>${D.name?`<p class="who">${esc(D.name)} 님</p>`:''}${D.program&&D.program.name?`<p>${esc(D.program.name)}</p>`:''}</section>`;
   html+=P.map((o,i)=>{const r=+o.round||0;return `<section class="page"><div class="eyebrow">LOOK ${String(i+1).padStart(2,'0')}</div><h2>${esc(o.name?((o.sit&&o.sit[0]&&!o.name.includes(o.sit[0]))?o.sit[0]+' · '+o.name:o.name):(keys(o).join(' + ')||'스타일링'))}</h2>${o.name&&keys(o).length?`<p style="margin:2px 0 0;color:var(--muted);font-weight:600">포인트 아이템 · ${keys(o).map(esc).join(' + ')}</p>`:''}
    <div class="tags">${o.round!=null?`<span class="${r&&r===last?'r':''}">${r===0?'기존 옷':r+'회차 쇼핑'}</span>`:''}${szs(o.season)?`<span class="r" style="background:#e9ecf8;border-color:#e9ecf8;color:var(--navy)">${szs(o.season)}</span>`:''}${(o.sit||[]).map(x=>`<span>${esc(x)}</span>`).join('')}${(o.wx||[]).map(w=>`<span>${esc((D.weather||[])[w]||'')}</span>`).join('')}</div>
-   <div class="ph n${Math.min(o.photos.length,6)}">${ord(o.photos).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`).join('')}</div>
-   ${String(o.tip||'').trim()?`<div class="cm">${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p><i>✓</i><span>${esc(x)}</span></p>`).join('')}</div>`:''}${foot(++n)}</section>`}).join('');
+   ${String(o.tip||'').trim()?`<div class="cm">${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<p><i>✓</i><span>${esc(x)}</span></p>`).join('')}</div>`:''}
+   <div class="ph n${Math.min(o.photos.length,6)}">${ord(o.photos).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer">`).join('')}</div>${foot(++n)}</section>`}).join('');
   if(S.length){const rs=[...new Set(S.map(x=>+x.round||0))].sort((a,b)=>b-a);
     html+=`<section class="page"><div class="eyebrow">SHOPPING LIST</div><h2>쇼핑 리스트</h2>${rs.map(r=>`<p class="eyebrow" style="margin-top:18px;color:var(--navy)">${r?r+'회차 쇼핑':'추천'}</p>`+S.filter(x=>(+x.round||0)===r).map(x=>`<div class="shop">${x.img?`<img src="${esc(x.img)}" alt="" referrerpolicy="no-referrer">`:'<span></span>'}<div>${x.cat?`<small>${esc(x.cat)}</small>`:''}<b>${esc(x.name||'')}</b>${szs(x.season)?`<small style="display:block;color:var(--navy);font-weight:700">입는 계절 · ${szs(x.season)}</small>`:''}${x.note?`<p style="margin:6px 0">${esc(x.note)}</p>`:''}${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a>`:''}</div></div>`).join('')).join('')}${foot(++n)}</section>`}
   if(!P.length&&!S.length)html+='<section class="page"><p class="msg">아직 스타일링북 페이지가 없어요.</p></section>';

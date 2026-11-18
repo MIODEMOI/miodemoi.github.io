@@ -41,6 +41,7 @@ h2 small{font-size:13px}
 .sz{display:inline-block;font-size:11.5px;font-weight:700;color:#2f3d86;background:#e9ecf8;border-radius:999px;padding:2px 9px;margin:4px 4px 0 0}
 .meta{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:6px}.meta .sz{margin:0}.tp{font-size:11.5px;font-weight:700;color:#b5532a;background:#fbeee6;border-radius:999px;padding:2px 9px}.rn{font-size:11.5px;font-weight:700;color:var(--muted);background:#f0efeb;border-radius:999px;padding:2px 9px}
 .pgt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tips{margin-bottom:12px}.tips .tb{max-height:5.4em;overflow:hidden}.tips.open .tb{max-height:none}.tips .more{border:0;background:none;color:var(--teal);font:inherit;font-size:13px;font-weight:800;padding:2px 0 8px;cursor:pointer}
 .key{margin:6px 0 0;display:flex;flex-direction:column;gap:2px}.key small{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--teal)}.key span{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bw{position:relative}.ar{position:absolute;top:calc(50% + 7px);transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(0,0,0,.18);color:var(--navy);font-size:30px;line-height:40px;font-weight:700;cursor:pointer;z-index:2;padding:0}.ar.l{left:-6px}.ar.r{right:-6px}.ar:disabled{opacity:0;pointer-events:none}.cnt{position:absolute;right:8px;top:22px;background:rgba(22,24,31,.72);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;z-index:2}
 .pager{display:flex;align-items:center;gap:10px;margin-top:12px}.pager span{flex:1;text-align:center;color:var(--muted);font-size:14px}.pager b{color:var(--ink)}.pv{flex:none;width:34%;border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:14px;padding:13px 0;font:inherit;font-weight:800;font-size:15px;cursor:pointer}.pv#next{background:var(--navy);color:#fff}.pv:disabled{opacity:.35;cursor:default}
@@ -188,13 +189,14 @@ function render(reshuffle){
    <div class="tags">${o.sit.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
    <h3>${esc(title(o,k))}</h3>${o.photos&&keys(o).length?`<div class="key"><small>포인트 아이템</small>${keys(o).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
    <div class="meta">${temp(o)}${szTag(o.season)}${o.photos&&o.round!=null?`<span class="rn">${o.round===0?'기존 옷':o.round===LATEST?'이번 쇼핑':o.round+'회차 쇼핑'}</span>`:''}</div>
+   ${String(o.tip||'').trim()?`<div class="tips"><p>STYLING TIP</p><div class="tb">${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<div class="tip"><i>✓</i><span>${esc(x)}</span></div>`).join('')}</div><button class="more" hidden>더 보기 ▾</button></div>`:''}
    ${o.photos?`<div class="bw"><div class="book ${o.photos.length===1?'one':''}">${ord(o.photos).map(u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer">`).join('')}</div>${list.length>1?`<button class="ar l" id="prev" aria-label="이전 코디" ${idx===0?'disabled':''}>‹</button><button class="ar r" id="next" aria-label="다음 코디" ${idx===list.length-1?'disabled':''}>›</button><span class="cnt">${idx+1} / ${list.length}</span>`:''}</div>`:`<div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>`}
-   ${String(o.tip||'').trim()?`<div class="tips"><p>STYLING TIP</p>${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<div class="tip"><i>✓</i><span>${esc(x)}</span></div>`).join('')}</div>`:''}
   </div>`};
   idx=Math.max(0,Math.min(idx,list.length-1));
   const nav=list.length>1&&!list[idx].photos?`<div class="pager"><button class="pv" id="prev" ${idx===0?'disabled':''}>◀ 이전</button><span><b>${idx+1}</b> / ${list.length}</span><button class="pv" id="next" ${idx===list.length-1?'disabled':''}>다음 ▶</button></div>`:'';
   $('out').innerHTML=fb+(p.near?'<p class="note" style="margin:0 2px 10px">오늘 기온과 딱 맞는 코디가 없어 가장 가까운 코디를 보여드려요.</p>':'')+(list.length>1?`<p class="note" style="margin:0 2px 10px">오늘 입기 좋은 코디 ${list.length}개 · 사진 양옆 화살표로 넘겨 보세요</p>`:'')+card(list[idx],idx)+nav;
   const go=d=>{idx+=d;render()};
+  $('out').querySelectorAll('.tips').forEach(t=>{const b=t.querySelector('.tb'),m=t.querySelector('.more');if(b.scrollHeight>b.clientHeight+4){m.hidden=false;m.onclick=()=>{const o=t.classList.toggle('open');m.textContent=o?'접기 ▴':'더 보기 ▾'}}});
   if($('prev'))$('prev').onclick=()=>go(-1);if($('next'))$('next').onclick=()=>go(1);
   $('out').querySelectorAll('.it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;render(true)});
   bindUnf();
