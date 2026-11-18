@@ -38,6 +38,7 @@ h2 small{font-size:13px}
 .card h3{margin:6px 0 2px;font-size:21px;font-weight:800;letter-spacing:-.04em;line-height:1.35}
 .tags{display:flex;flex-wrap:wrap;gap:5px;font-size:0}
 .tags span{font-size:11.5px;font-weight:700;color:var(--teal);background:#e8f6f4;border-radius:6px;padding:3px 8px}
+.sz{display:inline-block;font-size:11.5px;font-weight:700;color:#2f3d86;background:#e9ecf8;border-radius:999px;padding:2px 9px;margin:4px 4px 0 0}
 .book{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.book img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;border:1px solid var(--line);background:#fff}.book.one{grid-template-columns:1fr}.book.one img{aspect-ratio:auto;max-height:70vh;object-fit:contain}
 .pg{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit;position:relative}.pg img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.pg div{padding:8px 10px;font-size:13.5px;font-weight:700;line-height:1.35}.pg .badge{top:8px;left:8px}
 .shimg{width:100%;max-width:240px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;margin:10px 0;border:1px solid var(--line)}
@@ -116,6 +117,7 @@ const code=new URLSearchParams(location.search).get('c')||'';
 let D=window.DEMO||null,wxi=null,sit='전체',list=[],idx=0,focus=null,cf='전체';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SZN=['봄','여름','가을','겨울'];const szTag=a=>(a&&a.length)?`<span class="sz">${a.length===4?'사계절':SZN.filter(z=>a.includes(z)).join(' · ')}</span>`:'';
 const rnd=i=>i.round!=null?+i.round:(/구매|새|new/i.test(i.own||'')?1:0);
 let LATEST=0;
 const isNew=i=>LATEST>0&&rnd(i)===LATEST;
@@ -176,7 +178,7 @@ function render(reshuffle){
    <div class="tags">${o.sit.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
    <h3>${esc(o.name||'오늘의 코디')}</h3>
    ${p.near?'<p class="note">오늘 날씨와 딱 맞는 코디가 없어 가장 가까운 코디를 보여드려요.</p>':''}
-   ${o.photos?`${o.round!=null?`<p class="note" style="margin:4px 0 0">${o.round===0?'기존 옷 코디':o.round===LATEST?'이번 쇼핑 코디':o.round+'회차 쇼핑 코디'}</p>`:''}<div class="book ${o.photos.length===1?'one':''}">${o.photos.map(u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer">`).join('')}</div>`:`<div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>`}
+   ${o.photos?`${o.round!=null?`<p class="note" style="margin:4px 0 0">${o.round===0?'기존 옷 코디':o.round===LATEST?'이번 쇼핑 코디':o.round+'회차 쇼핑 코디'}</p>`:''}${szTag(o.season)}<div class="book ${o.photos.length===1?'one':''}">${o.photos.map(u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer">`).join('')}</div>`:`<div class="grid ${its.length>4?'three':''}">${its.map(([id,i])=>tile(id,i)).join('')}</div>`}
    ${String(o.tip||'').trim()?`<div class="tips"><p>STYLING TIP</p>${String(o.tip).split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>`<div class="tip"><i>✓</i><span>${esc(x)}</span></div>`).join('')}</div>`:''}
    ${list.length>1?`<button class="btn" id="next">다른 코디 보기 <small>${idx%list.length+1} / ${list.length}</small></button>`:''}
   </div>`;
@@ -189,7 +191,7 @@ function bindUnf(){if($('unf'))$('unf').onclick=()=>{focus=null;render(true)}}
 function closet(){
   if(D.book){const P=D.outfits.filter(o=>o.photos);const n=P.filter(o=>LATEST&&+o.round===LATEST).length;
     document.querySelector('#t-closet h2').firstChild.textContent='스타일링북 ';$('cnt').textContent=`${P.length}페이지${n?' · 이번 쇼핑 '+n:''}`;$('cf').innerHTML='';$('cnote').textContent='페이지를 누르면 크게 볼 수 있어요.';
-    $('closet').innerHTML=`<div class="grid">${P.map((o,i)=>`<button class="pg" data-pg="${i}">${LATEST&&+o.round===LATEST?'<span class="badge new">NEW</span>':''}${o.photos[0]?`<img src="${esc(o.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}<div>${esc(o.name||'코디 '+(i+1))}</div></button>`).join('')}</div><a class="btn ghost" style="margin-top:16px" href="stylebook.html?c=${encodeURIComponent(code)}" target="_blank" rel="noopener">스타일링북 한 번에 보기 · PDF 저장</a>`;
+    $('closet').innerHTML=`<div class="grid">${P.map((o,i)=>`<button class="pg" data-pg="${i}">${LATEST&&+o.round===LATEST?'<span class="badge new">NEW</span>':''}${o.photos[0]?`<img src="${esc(o.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}<div>${esc(o.name||'코디 '+(i+1))}${szTag(o.season)}</div></button>`).join('')}</div><a class="btn ghost" style="margin-top:16px" href="stylebook.html?c=${encodeURIComponent(code)}" target="_blank" rel="noopener">스타일링북 한 번에 보기 · PDF 저장</a>`;
     $('closet').querySelectorAll('.pg').forEach(b=>b.onclick=()=>{focus={page:P[+b.dataset.pg]};tab('today');render(true)});return}
   const ids=Object.keys(D.items);
   const n=ids.filter(id=>isNew(D.items[id])).length;
@@ -210,7 +212,7 @@ function shopList(){
   $('shop').innerHTML=rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
     return `<div class="card sh">${x.cat?`<div class="tags"><span>${esc(x.cat)}</span></div>`:''}
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
-    ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}
+    ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
     ${String(x.note||'').trim()?`<p class="sh-note">${esc(x.note)}</p>`:''}
     ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
   $('shop').querySelectorAll('.sh-it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
