@@ -446,6 +446,7 @@ $('brands').addEventListener('change',async e=>{const t=e.target;let its,files;
 const SITU=['출근','데이트','모임·약속','주말·나들이','격식 있는 자리','여행'];
 const WX=['한여름 28°↑','여름 23~27°','간절기 17~22°','선선 12~16°','쌀쌀 5~11°','한겨울 4°↓'];
 const SEASONS=['봄','여름','가을','겨울'];
+const MOODS=['단정하게','세련되게','고급스럽게','편안하게','캐주얼하게','포멀하게','따뜻하게','여성스럽게','귀엽게','트렌디하게'];
 const lst=v=>String(v||'').split(/[,，\/]/).map(x=>x.trim()).filter(Boolean);
 const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
 function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
@@ -460,13 +461,14 @@ const busyTag='<span class="up" style="position:absolute;inset:0;display:grid;pl
 function renderShop(){
   $('shopBody').hidden=!S.shopOn;$('pubRow').hidden=$('pubHint').hidden=!S.shopOn;const rs=rounds();
   $('bookCnt').textContent=S.sp.book.length?S.sp.book.length+'페이지':'';
-  $('sBook').innerHTML=S.sp.book.map((b,i)=>`<div class="item"><div style="display:flex;gap:8px;align-items:center"><b style="color:var(--navy);flex:none">${i+1}</b><input type="text" placeholder="페이지 제목 (예: 월요일 출근룩)" value="${esc(b.name)}" data-bf2="name" data-bi2="${i}" style="font-weight:700">
+  $('sBook').innerHTML=S.sp.book.map((b,i)=>`<div class="item"><div style="display:flex;gap:8px;align-items:center"><b style="color:var(--navy);flex:none">${i+1}</b><input type="text" placeholder="제목 · 아래 '느낌'을 누르면 자동으로 들어가요 (직접 적어도 돼요)" value="${esc(b.name)}" data-bf2="name" data-bi2="${i}" style="font-weight:700">
      <select data-bf2="round" data-bi2="${i}" style="width:auto">${['기존'].concat(rs).map(r=>`<option value="${r}" ${b.round===r?'selected':''}>${r==='기존'?'기존 옷':r+'회차'}</option>`).join('')}</select>
      <button class="btn sm ghost" data-bup="${i}" title="위로">▲</button><button class="btn sm del" data-brm="${i}">삭제</button></div>
    <div class="pics">${b.photos.map((ph,j)=>`<div class="pic"><div class="im">${ph.local||ph.img?`<img src="${esc(ph.local||thumb(ph.img))}" alt="">`:''}${ph.busy?busyTag:''}<button class="x" data-bpx="${i}:${j}">✕</button>${j===0?'<span class="cov">대표</span>':`<button class="mv" data-bcv="${i}:${j}" title="대표 사진으로">★ 대표로</button>`}</div></div>`).join('')}
     <label class="add">＋ 사진 여러 장<br><small style="font-weight:400;color:#8a8e9c">선택 또는 끌어다 놓기</small><input type="file" accept="image/*" multiple data-badd2="${i}"></label></div>
    ${S.sp.shop.some(x=>x.img)?`<p class="hint" style="margin:10px 0 0">쇼핑 리스트에서 넣기 <small>(눌러서 넣고 빼기)</small></p><div class="pk">${S.sp.shop.map((x,k)=>x.img?`<button type="button" class="${b.photos.some(p=>p.img===x.img)?'on':''}" data-bsp="${i}:${k}" title="${esc(x.name)}"><img src="${esc(x.local||thumb(x.img))}" alt=""><span>${esc((x.name||x.cat||'상품').slice(0,6))}</span>${b.photos.some(p=>p.img===x.img)?'<em>✓</em>':''}</button>`:'').join('')}</div>`:''}
    <textarea placeholder="코멘트 (한 줄에 하나: 셔츠는 앞만 넣어 입기 / 양말은 네이비 / 재킷 단추는 하나만)" style="margin-top:8px;min-height:84px" data-bf2="tip" data-bi2="${i}">${esc(b.tip)}</textarea>
+   <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">느낌</b>${MOODS.map(x=>`<button type="button" class="chip ${b.name===x?'on':''}" data-bmd="${i}">${x}</button>`).join('')}</div>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">계절</b>${SEASONS.map(x=>`<button type="button" class="chip ${b.season.includes(x)?'on':''}" data-bse="${i}">${x}</button>`).join('')}</div>
    <div class="mini">${SITU.map(x=>`<button type="button" class="chip ${b.sit.includes(x)?'on':''}" data-bs="${i}">${x}</button>`).join('')}</div>
    <div class="mini">${WX.map(x=>`<button type="button" class="chip ${b.wx.includes(x)?'on':''}" data-bw="${i}">${x}</button>`).join('')}</div>
@@ -503,6 +505,7 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
   if(t.dataset.bcv){e.preventDefault();const [i,j]=t.dataset.bcv.split(':').map(Number);const ph=B[i].photos.splice(j,1)[0];B[i].photos.unshift(ph);dirty=true;renderShop()}
   else if(t.dataset.bpx){e.preventDefault();const [i,j]=t.dataset.bpx.split(':');B[+i].photos.splice(+j,1);dirty=true;renderShop()}
   else if(t.dataset.bs!=null){e.preventDefault();const b=B[+t.dataset.bs],x=t.textContent;b.sit=b.sit.includes(x)?b.sit.filter(y=>y!==x):b.sit.concat(x);dirty=true;renderShop()}
+  else if(t.dataset.bmd!=null){e.preventDefault();const b=B[+t.dataset.bmd],x=t.textContent;b.name=b.name===x?'':x;dirty=true;renderShop()}
   else if(t.dataset.bse!=null){e.preventDefault();const b=B[+t.dataset.bse],x=t.textContent;b.season=b.season.includes(x)?b.season.filter(y=>y!==x):b.season.concat(x);dirty=true;renderShop()}
   else if(t.dataset.sse!=null){e.preventDefault();const o=S.sp.shop[+t.dataset.sse],x=t.textContent;o.season=o.season.includes(x)?o.season.filter(y=>y!==x):o.season.concat(x);dirty=true;renderShop()}
   else if(t.dataset.bw!=null){e.preventDefault();const b=B[+t.dataset.bw],x=t.textContent;b.wx=b.wx.includes(x)?b.wx.filter(y=>y!==x):b.wx.concat(x);dirty=true;renderShop()}
