@@ -276,7 +276,7 @@ function bodyTab(){
   ((L(B.good).length||L(B.avoid).length)?`<div class="card"><div class="cols">${L(B.good).length?`<div><h4>잘 어울리는 스타일</h4><ul>${L(B.good).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}${L(B.avoid).length?`<div><h4>피하면 좋은 핏</h4><ul>${L(B.avoid).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}</div></div>`:'');
 }
 function gallery(list,f){
-  return (list||[]).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:20px">${esc(s.sec)}</p>${s.desc?`<p class="desc">${esc(s.desc)}</p>`:''}
+  return (list||[]).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:20px">${esc(s.sec)}</p>${s.desc?`<p class="desc" style="white-space:pre-line">${esc(s.desc)}</p>`:''}
   <div class="gal${(s.items||[]).some(i=>String(i.cap||'').length>14)?' two':''}">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
 }
 function styleTab(){
@@ -337,8 +337,14 @@ function show(t){
   document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show(PCM?'pcprod':'color');window.scrollTo(0,y)});
   document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
 }
+const FIXED_F=[
+ {sec:'퍼스널컬러 활용 예',desc:'',items:[['w_fixed_1_1.jpg','BEFORE'],['w_fixed_1_2.jpg','AFTER'],['w_fixed_1_3.jpg','BEFORE'],['w_fixed_1_4.jpg','AFTER']]},
+ {sec:'자켓 허리선의 중요성',desc:'WORST · 자켓이 허리라인을 가림, 자켓의 단추가 허리선보다 밑이라 이 자켓에는 자켓과 비슷한 길이의 스커트나 쇼츠를 입는 것이 좋음\nBEST · 자켓의 첫 단추가 내 허리선보다 살짝 높고, 루즈한 핏이라 슬림한 핏의 스커트와 입기 좋음',items:[['w_fixed_2_1.jpg','WORST'],['w_fixed_2_2.jpg','BEST'],['w_fixed_2_3.jpg','BEST']]},
+ {sec:'팬츠 고르는 방법',desc:'왼쪽 사진: 어깨와 골반에 있는 선은 같은 길이입니다. 이렇게 상하체 밸런스를 맞춰 주시고\n오른쪽 사진을 보시면, 사다리꼴이 그려지죠? 이런 핏의 팬츠를 입으세요. 슬랙스에서도 찾으실 수 있어요!',items:[['w_fixed_3_1.jpg','BEST'],['w_fixed_3_2.jpg','BEST']]}];
+function addFixed(){if(!D||!/^여/.test(D.sex||''))return;D.styles=D.styles||[];
+ FIXED_F.filter(f=>!PCM||/퍼스널컬러/.test(f.sec)).forEach(f=>{const m=D.styles.find(x=>x.sec===f.sec);if(m&&(m.items||[]).length)return;const g={sec:f.sec,desc:(m&&m.desc)||f.desc,items:f.items.map(([img,cap])=>({img,cap}))};if(m)Object.assign(m,g);else D.styles.push(g)})}
 function start(){
-  PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));
+  PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));addFixed();
   $('who').textContent=PCM?`${D.name||'고객'} 님의 퍼스널컬러 분석`:`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
   if(FC){document.querySelector('.cover h1').textContent='Fashion Consulting Report';$('who').textContent=`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 · 브랜드 컨설팅`;
     document.querySelector('#nav div').innerHTML=['color:퍼스널컬러','face:얼굴형','body:체형','style:스타일','brand:브랜드','shopper:퍼스널쇼퍼'].map((x,i)=>{const [t,n]=x.split(':');return `<button data-t="${t}"${i?'':' aria-current="true"'}><b>0${i+1}</b>${n}</button>`}).join('');}

@@ -432,7 +432,7 @@ let TPL=null;
 async function tplGet(){if(TPL)return TPL;const j=await api({action:'list'});const t=j.list.find(c=>isTpl(c.name)&&!/남/.test(c.name));if(!t)return TPL={none:1};return TPL=await api({action:'get',code:t.code})}
 async function tplFill(){
   if(!S||sex()!=='여'||isTpl(S.name))return;
-  try{const t=await tplGet();if(t.none){toast("'기본자료 여성' 고객이 없어 고정 페이지를 넣지 못했어요");return}
+  try{const t=await tplGet();if(t.none)return;
     const got=[],add=[];
     (t.photos||[]).forEach(p=>{if(!p.sec)return;let g=add.find(x=>x.sec===p.sec);if(!g){g={sec:p.sec,desc:'',items:[]};add.push(g)}if(p.desc&&!g.desc)g.desc=p.desc;if(p.img)g.items.push({img:p.img,cap:p.cap||''})});
     add.forEach(g=>{const m=S.secs.find(x=>x.sec===g.sec);if(m&&m.items.length)return;if(m){m.desc=m.desc||g.desc;m.items=g.items}else S.secs.push(g);got.push(g.sec)});
