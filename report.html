@@ -151,6 +151,8 @@ h1,h2,h3,h4,.big,.sec-h h2,.prod b,.cover p{text-wrap:balance}
 .gal.two figure{flex:0 0 calc((100% - 14px)/2)}
 .gal img,.tees img,.prod img{object-position:center}
 .gal figcaption{margin-top:6px;line-height:1.5}
+.gal .lb{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.14em;padding:3px 10px;border-radius:999px}.gal .lb.b{background:#ecebe7;color:#8a8478}.gal .lb.g{background:var(--accent);color:#fff}
+.gal.two figure:has(.lb){text-align:center}
 .tees{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .tees figure{flex:0 0 calc((100% - 20px)/3)}
 .pairs{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -275,9 +277,10 @@ function bodyTab(){
   (L(B.notes).length?`<div class="card"><p class="k">ANALYSIS</p>${ul(B.notes)}</div>`:'')+
   ((L(B.good).length||L(B.avoid).length)?`<div class="card"><div class="cols">${L(B.good).length?`<div><h4>잘 어울리는 스타일</h4><ul>${L(B.good).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}${L(B.avoid).length?`<div><h4>피하면 좋은 핏</h4><ul>${L(B.avoid).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}</div></div>`:'');
 }
+function galCls(it){const n=it.length,caps=it.map(i=>String(i.cap||'').trim().toUpperCase());if(caps.some(c=>c.length>14))return ' two';if(caps.includes('BEFORE')||n===2||n===4||(n>=6&&n%2===0&&n%3!==0)||n===8)return ' two';return ''}
 function gallery(list,f){
   return (list||[]).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:20px">${esc(s.sec)}</p>${s.desc?`<p class="desc" style="white-space:pre-line">${esc(s.desc)}</p>`:''}
-  <div class="gal${(s.items||[]).some(i=>String(i.cap||'').length>14)?' two':''}">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
+  <div class="gal${galCls(s.items||[])}">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${/^(BEFORE|AFTER|WORST|BEST)$/i.test(i.cap.trim())?`<span class="lb ${/AFTER|BEST/i.test(i.cap)?'g':'b'}">${esc(i.cap.trim().toUpperCase())}</span>`:esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
 }
 function styleTab(){
   return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어|퍼스널컬러|컬러 코디/.test(s.sec))+
