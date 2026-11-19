@@ -339,8 +339,8 @@ function show(t){
 }
 const FIXED_F=[
  {sec:'퍼스널컬러 활용 예',desc:'',items:[['w_fixed_1_1.jpg?v=2','BEFORE'],['w_fixed_1_2.jpg?v=2','AFTER'],['w_fixed_1_3.jpg?v=2','BEFORE'],['w_fixed_1_4.jpg?v=2','AFTER']]},
- {sec:'자켓 허리선의 중요성',desc:'WORST · 자켓이 허리라인을 가림, 자켓의 단추가 허리선보다 밑이라 이 자켓에는 자켓과 비슷한 길이의 스커트나 쇼츠를 입는 것이 좋음\nBEST · 자켓의 첫 단추가 내 허리선보다 살짝 높고, 루즈한 핏이라 슬림한 핏의 스커트와 입기 좋음',items:[['w_fixed_2_1.jpg','WORST'],['w_fixed_2_2.jpg','BEST'],['w_fixed_2_3.jpg','BEST']]},
- {sec:'팬츠 고르는 방법',desc:'왼쪽 사진: 어깨와 골반에 있는 선은 같은 길이입니다. 이렇게 상하체 밸런스를 맞춰 주시고\n오른쪽 사진을 보시면, 사다리꼴이 그려지죠? 이런 핏의 팬츠를 입으세요. 슬랙스에서도 찾으실 수 있어요!',items:[['w_fixed_3_1.jpg','BEST'],['w_fixed_3_2.jpg','BEST']]}];
+ {sec:'자켓 허리선의 중요성',desc:'WORST · 자켓이 허리라인을 가림, 자켓의 단추가 허리선보다 밑이라 이 자켓에는 자켓과 비슷한 길이의 스커트나 쇼츠를 입는 것이 좋음\nBEST · 자켓의 첫 단추가 내 허리선보다 살짝 높고, 루즈한 핏이라 슬림한 핏의 스커트와 입기 좋음',items:[['w_fixed_2_1.jpg?v=2','WORST'],['w_fixed_2_2.jpg?v=2','BEST'],['w_fixed_2_3.jpg?v=2','BEST']]},
+ {sec:'팬츠 고르는 방법',desc:'왼쪽 사진: 어깨와 골반에 있는 선은 같은 길이입니다. 이렇게 상하체 밸런스를 맞춰 주시고\n오른쪽 사진을 보시면, 사다리꼴이 그려지죠? 이런 핏의 팬츠를 입으세요. 슬랙스에서도 찾으실 수 있어요!',items:[['w_fixed_3_1.jpg?v=2','BEST'],['w_fixed_3_2.jpg?v=2','BEST'],['w_fixed_3_3.jpg','BEST'],['w_fixed_3_4.jpg','BEST'],['w_fixed_3_5.jpg','BEST']]}];
 function addFixed(){if(!D||!/^여/.test(D.sex||''))return;D.styles=D.styles||[];
  FIXED_F.filter(f=>!PCM||/퍼스널컬러/.test(f.sec)).forEach(f=>{const m=D.styles.find(x=>x.sec===f.sec);if(m&&(m.items||[]).length)return;const g={sec:f.sec,desc:(m&&m.desc)||f.desc,items:f.items.map(([img,cap])=>({img,cap}))};if(m)Object.assign(m,g);else D.styles.push(g)})}
 function start(){
