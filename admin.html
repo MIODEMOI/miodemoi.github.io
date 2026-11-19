@@ -638,6 +638,12 @@ const _status=status;status=function(){_status();if($('side')){side();document.q
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;
+/* ---------- 다시 그릴 때 화면 위치 고정 ---------- */
+(()=>{let lock=0;const keep=fn=>function(){const y=window.scrollY,ae=document.activeElement;lock=y;const r=fn.apply(this,arguments);
+  if(Math.abs(window.scrollY-y)>2)window.scrollTo({top:y,behavior:'instant'});return r};
+  renderProds=keep(renderProds);renderSecs=keep(renderSecs);renderBrands=keep(renderBrands);renderShop=keep(renderShop);
+  document.addEventListener('focusin',e=>{if(e.target.type==='file')e.target.focus({preventScroll:true})},true);})();
+document.documentElement.style.overflowAnchor='none';
 /* ---------- 이 컴퓨터에 자동 보관 (저장 전 작업) ---------- */
 const dkey=()=>'mio-draft-'+(S&&S.code||'new');
 function snapshot(){const photos=[];S.secs.forEach(s=>{if(!s.items.length)photos.push({sec:s.sec,desc:s.desc,img:'',cap:''});s.items.forEach((it,j)=>it.img&&photos.push({sec:s.sec,desc:j===0?s.desc:'',img:it.img,cap:it.cap}))});
