@@ -633,7 +633,7 @@ const SECN=['기본 정보','치수','퍼스널컬러','제품','얼굴형','체
 function side(){const cards=[...document.querySelectorAll('#vEdit details.card')];cards.forEach((c,i)=>{if(!c.id||/^sec\d/.test(c.id))c.id='sec'+(i+1)});
   $('side').innerHTML=cards.map((c,i)=>{const st=c.querySelector('.st');return `<a href="#${c.id}"><span class="n">${c.id==='brandCard'?'★':c.id==='shopCard'?'S':(i<7?i+1:i-1)}</span><span>${SECN[i]}<small class="${st&&st.classList.contains('ok')?'ok':''}">${esc(st?st.textContent:'')||'&nbsp;'}</small></span></a>`}).join('');
   $('side').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));t.open=true;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})})}
-function cardHidden(i){const k=(S&&S.values['리포트 종류'])||'',pc=/퍼스널컬러/.test(k),fc=/패션컨설팅/.test(k),so=/퍼스널쇼퍼만/.test(k);return (pc&&[1,4,5].includes(i))||(i===7&&!fc)||(so&&((i>=1&&i<=7)||i===9))}
+function cardHidden(i){if(i===2||i===5)return true;const k=(S&&S.values['리포트 종류'])||'',pc=/퍼스널컬러/.test(k),fc=/패션컨설팅/.test(k),so=/퍼스널쇼퍼만/.test(k);return (pc&&[1,4,5].includes(i))||(i===7&&!fc)||(so&&((i>=1&&i<=7)||i===9))}
 const _status=status;status=function(){_status();if($('side')){side();document.querySelectorAll('#side a').forEach((x,i)=>x.hidden=cardHidden(i))}};
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
