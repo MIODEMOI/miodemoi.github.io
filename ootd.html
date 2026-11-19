@@ -124,7 +124,13 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
  <button data-t="prog"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14.5l2.5 2.5 5-5"/></svg>내 프로그램</button>
 </div></nav>
 <script>
-const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const SB="https://faewczlsnpsrfitptmmr.supabase.co";
+const SBKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhZXdjemxzbnBzcmZpdHB0bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNjIzNTYsImV4cCI6MjExMDYzODM1Nn0.q1-A-oWbYziiRZbM9K-KkaOQ66o7zIkipk08oTAHFlQ";
+const sbGet=async(code,app)=>{
+  const u=SB+'/rest/v1/rpc/public_payload?p_code='+encodeURIComponent(code)+(app?'&p_app='+app:'');
+  const r=await fetch(u,{headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY}});
+  return await r.text();
+};
 const KAKAO="http://pf.kakao.com/_ESuxln";
 const BUCKET=t=>t>=28?0:t>=23?1:t>=17?2:t>=12?3:t>=5?4:5;
 const KINDS=['아우터','상의','원피스','하의','신발','양말','가방','액세서리'];
@@ -254,7 +260,7 @@ function start(){
   const CK='mio-ootd-'+code;let cached=null;
   try{cached=localStorage.getItem(CK);if(cached){D=JSON.parse(cached);start()}}catch(e){cached=null}
   try{
-    const r=await fetch(API+'?k='+encodeURIComponent(code));const txt=await r.text();const j=JSON.parse(txt);
+    const txt=await sbGet(code);const j=JSON.parse(txt);
     if(j.error){if(!cached)$('out').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
     try{localStorage.setItem(CK,txt)}catch(e){}
     if(txt!==cached){const keep=idx;D=j;start();if(cached){idx=Math.min(keep,Math.max(0,list.length-1));render()}}

@@ -62,7 +62,13 @@ h2{margin:6px 0 4px;font-size:26px;font-weight:800;letter-spacing:-.03em}
 <div class="tool"><b>스타일링북</b><small>PDF는 '대상: PDF로 저장'을 고르세요</small><button id="pr">PDF로 저장</button></div>
 <div class="pages" id="pages"><p class="msg">스타일링북을 불러오고 있어요...</p></div>
 <script>
-const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const SB="https://faewczlsnpsrfitptmmr.supabase.co";
+const SBKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhZXdjemxzbnBzcmZpdHB0bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNjIzNTYsImV4cCI6MjExMDYzODM1Nn0.q1-A-oWbYziiRZbM9K-KkaOQ66o7zIkipk08oTAHFlQ";
+const sbGet=async(code,app)=>{
+  const u=SB+'/rest/v1/rpc/public_payload?p_code='+encodeURIComponent(code)+(app?'&p_app='+app:'');
+  const r=await fetch(u,{headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY}});
+  return await r.text();
+};
 const code=new URLSearchParams(location.search).get('c')||'';
 const $=id=>document.getElementById(id);
 const SZN=['봄','여름','가을','겨울'];const szs=a=>(a&&a.length)?(a.length===4?'사계절':SZN.filter(z=>a.includes(z)).join(' · ')):'';
@@ -90,7 +96,7 @@ function draw(D){
 (async()=>{
   if(window.DEMO)return draw(window.DEMO);
   if(!code){$('pages').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
-  try{const j=await (await fetch(API+'?k='+encodeURIComponent(code))).json();if(j.error)throw 0;draw(j)}
+  try{const j=JSON.parse(await sbGet(code));if(j.error)throw 0;draw(j)}
   catch(e){$('pages').innerHTML='<p class="msg">스타일링북을 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
 })();
 </script>

@@ -181,7 +181,13 @@ footer{text-align:center;font-size:12px;color:var(--muted);margin:30px 0 10px;li
 <button data-t="shopper"><b>05</b>퍼스널쇼퍼</button>
 </div></nav>
 <script>
-const API="https://script.google.com/macros/s/AKfycbzC3uMvHpAVhUxZLuyWoBnlHcssbV4aX4yrd1lBHf6Lc60PP9bxy-RVViKOVaoUUIjcNQ/exec";
+const SB="https://faewczlsnpsrfitptmmr.supabase.co";
+const SBKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhZXdjemxzbnBzcmZpdHB0bW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwNjIzNTYsImV4cCI6MjExMDYzODM1Nn0.q1-A-oWbYziiRZbM9K-KkaOQ66o7zIkipk08oTAHFlQ";
+const sbGet=async(code,app)=>{
+  const u=SB+'/rest/v1/rpc/public_payload?p_code='+encodeURIComponent(code)+(app?'&p_app='+app:'');
+  const r=await fetch(u,{headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY}});
+  return await r.text();
+};
 const code=new URLSearchParams(location.search).get('c')||'';
 const $=id=>document.getElementById(id);
 const tidy=s=>/^\s*(data:|https?:|tel:|mailto:|#|ootd\.html|shopper_)/.test(String(s??''))?String(s??''):String(s??'').replace(/[ \t]+([,.!?)])/g,'$1').replace(/\(\s+/g,'(').replace(/[ \t]{2,}/g,' ').replace(/,(?=[^\s\d])/g,', ');
@@ -360,7 +366,7 @@ function start(){
 (async()=>{
   if(D){start();return}
   if(!code){$('app').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
-  try{const j=await (await fetch(API+'?app=report&k='+encodeURIComponent(code))).json();
+  try{const j=JSON.parse(await sbGet(code,'report'));
     if(j.error){$('app').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
     D=j;start()}catch(e){$('app').innerHTML='<p class="msg">리포트를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
 })();
