@@ -11,6 +11,15 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>오늘 뭐 입지 | 미오드모이</title>
+<meta name="description" content="미오드모이 퍼스널쇼퍼가 고객님 옷장으로 짠 오늘의 코디. 상황별 코디와 스타일링북을 확인하세요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MIO DE MOI 미오드모이">
+<meta property="og:title" content="오늘 뭐 입지? · MIO DE MOI">
+<meta property="og:description" content="미오드모이 퍼스널쇼퍼가 고객님 옷장으로 짠 오늘의 코디. 상황별 코디와 스타일링북을 확인하세요.">
+<meta property="og:image" content="https://miodemoi.github.io/og_ootd.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{--bg:#f4f3ef;--paper:#fff;--ink:#16181f;--muted:#6d7080;--navy:#2f3d86;--teal:#2ba59a;--line:#e7e5df;--soft:#f4f3ef;--new:#2f3d86;--old:#9a9cab}
@@ -43,11 +52,11 @@ h2 small{font-size:13px}
 .pgt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tips{margin-bottom:12px}.tips .tb{max-height:5.4em;overflow:hidden}.tips.open .tb{max-height:none}.tips .more{border:0;background:none;color:var(--teal);font:inherit;font-size:13px;font-weight:800;padding:2px 0 8px;cursor:pointer}
 .key{margin:6px 0 0;display:flex;flex-direction:column;gap:2px}.key small{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--teal)}.key span{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bw{position:relative}.ar{position:absolute;top:calc(50% + 7px);transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(0,0,0,.18);color:var(--navy);font-size:30px;line-height:40px;font-weight:700;cursor:pointer;z-index:2;padding:0}.ar.l{left:-6px}.ar.r{right:-6px}.ar:disabled{opacity:0;pointer-events:none}.cnt{position:absolute;right:8px;top:22px;background:rgba(22,24,31,.72);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;z-index:2}
+.bw{position:relative}.ar{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(0,0,0,.18);color:var(--navy);font-size:30px;line-height:40px;font-weight:700;cursor:pointer;z-index:2;padding:0}.ar.l{left:max(6px,calc(50% - 234px))}.ar.r{right:max(6px,calc(50% - 234px))}.ar:disabled{opacity:0;pointer-events:none}.cnt{position:absolute;right:8px;top:22px;background:rgba(22,24,31,.72);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;z-index:2}
 .pager{display:flex;align-items:center;gap:10px;margin-top:12px}.pager span{flex:1;text-align:center;color:var(--muted);font-size:14px}.pager b{color:var(--ink)}.pv{flex:none;width:34%;border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:14px;padding:13px 0;font:inherit;font-weight:800;font-size:15px;cursor:pointer}.pv#next{background:var(--navy);color:#fff}.pv:disabled{opacity:.35;cursor:default}
-.book{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.book img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;border:1px solid var(--line);background:#fff}.book.one{grid-template-columns:1fr}.book.one img{aspect-ratio:auto;max-height:70vh;object-fit:contain}
-.pg{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit;position:relative}.pg img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.pg div{padding:8px 10px;font-size:13.5px;font-weight:700;line-height:1.35}.pg .badge{top:8px;left:8px}
-.shimg{width:100%;max-width:240px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block;margin:10px 0;border:1px solid var(--line)}
+.book{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.book img{width:100%;aspect-ratio:3/4;object-fit:contain;padding:8px;box-sizing:border-box;border-radius:14px;display:block;border:1px solid var(--line);background:#fff}.book.one{grid-template-columns:1fr}.book.one img{width:70%;margin:0 auto;aspect-ratio:3/4}
+.pg{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit;position:relative}.pg img{width:100%;aspect-ratio:3/4;object-fit:contain;padding:8px;box-sizing:border-box;background:#fff;display:block}.pg div{padding:8px 10px;font-size:13.5px;font-weight:700;line-height:1.35}.pg .badge{top:8px;left:8px}
+.shimg{width:100%;max-width:240px;aspect-ratio:3/4;object-fit:contain;padding:8px;box-sizing:border-box;background:#fff;border-radius:12px;display:block;margin:10px 0;border:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .grid.three{grid-template-columns:1fr 1fr 1fr}
 .it{background:none;border:0;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;padding:0;font:inherit;text-align:left;color:inherit}
@@ -87,7 +96,7 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
 <body>
 <div class="wrap">
 <header><div class="logo">MIO DE MOI <em>BEYOND TRENDS</em></div><h1 id="ttl">오늘 뭐 입지?</h1><p id="sub">내 옷장 속 옷으로 미오드모이가 짜 둔 코디예요.</p><p class="only">퍼스널쇼퍼 3시간 이상 이용 고객님 전용 앱입니다.</p>
- <div class="wx" id="wx"><b>…</b><span>오늘 날씨를 확인하고 있어요</span></div></header>
+ </header>
 
 <section id="t-today">
  <h2>오늘 어디 가세요?</h2>
@@ -141,21 +150,6 @@ function tab(t){
   window.scrollTo(0,0);
 }
 
-async function weather(){
-  const get=async(lat,lon,where)=>{
-    if(where!=='내 위치'&&mine)return;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`);
-    const d=(await r.json()).daily;
-    if(where!=="내 위치"&&mine)return;
-    const feel=(d.apparent_temperature_max[0]+d.apparent_temperature_min[0])/2;
-    wxi=BUCKET(feel);
-    $('wx').innerHTML=`<b>${Math.round(d.temperature_2m_min[0])}° / ${Math.round(d.temperature_2m_max[0])}°</b><span>${where} · 체감 ${Math.round(feel)}°<br><span id="wxn"></span> 날씨에 맞춘 코디예요</span>`;
-    render();
-  };
-  let mine=false;
-  get(35.18,129.08,'부산 기준').catch(()=>{if(!mine){$('wx').innerHTML='<span>날씨를 불러오지 못해 모든 코디를 보여드려요</span>';render()}});
-  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{mine=true;get(p.coords.latitude.toFixed(2),p.coords.longitude.toFixed(2),'내 위치').catch(()=>{})},()=>{},{timeout:8000,maximumAge:3600000});
-}
 
 function chips(){
   const used=new Set();D.outfits.forEach(o=>o.sit.forEach(s=>used.add(s)));
@@ -176,7 +170,6 @@ function pick(){
 
 function render(reshuffle){
   if(!D)return;
-  if($('wxn')&&wxi!=null)$('wxn').textContent=D.weather[wxi];
   const p=pick();
   if(reshuffle||list.length!==p.l.length||list.some((o,i)=>o!==p.l[i])){list=p.l.slice();idx=0}
   const fb=focus?`<div class="focus"><span>${focus.page?'📖 '+esc(focus.page.name||'스타일링북'):'👕 '+esc(D.items[focus].name)+' 코디 '+list.length+'개'}</span><button id="unf">오늘 코디로</button></div>`:'';
@@ -196,6 +189,7 @@ function render(reshuffle){
   const nav=list.length>1&&!list[idx].photos?`<div class="pager"><button class="pv" id="prev" ${idx===0?'disabled':''}>◀ 이전</button><span><b>${idx+1}</b> / ${list.length}</span><button class="pv" id="next" ${idx===list.length-1?'disabled':''}>다음 ▶</button></div>`:'';
   $('out').innerHTML=fb+(p.near?'<p class="note" style="margin:0 2px 10px">오늘 기온과 딱 맞는 코디가 없어 가장 가까운 코디를 보여드려요.</p>':'')+(list.length>1?`<p class="note" style="margin:0 2px 10px">오늘 입기 좋은 코디 ${list.length}개 · 사진 양옆 화살표로 넘겨 보세요</p>`:'')+card(list[idx],idx)+nav;
   const go=d=>{idx+=d;render()};
+  [list[idx+1],list[idx-1]].forEach(n=>n&&n.photos&&n.photos.forEach(u=>{const im=new Image();im.referrerPolicy='no-referrer';im.src=u}));
   $('out').querySelectorAll('.tips').forEach(t=>{const b=t.querySelector('.tb'),m=t.querySelector('.more');if(b.scrollHeight>b.clientHeight+4){m.hidden=false;m.onclick=()=>{const o=t.classList.toggle('open');m.textContent=o?'접기 ▴':'더 보기 ▾'}}});
   if($('prev'))$('prev').onclick=()=>go(-1);if($('next'))$('next').onclick=()=>go(1);
   $('out').querySelectorAll('.it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;render(true)});
@@ -255,20 +249,28 @@ function start(){
 }
 
 (async()=>{
-  weather();
   if(D){start();return}
   if(!code){$('out').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
+  const CK='mio-ootd-'+code;let cached=null;
+  try{cached=localStorage.getItem(CK);if(cached){D=JSON.parse(cached);start()}}catch(e){cached=null}
   try{
-    const j=await (await fetch(API+'?k='+encodeURIComponent(code))).json();
-    if(j.error){$('out').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
-    D=j;start();
-  }catch(e){$('out').innerHTML='<p class="msg">코디를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
+    const r=await fetch(API+'?k='+encodeURIComponent(code));const txt=await r.text();const j=JSON.parse(txt);
+    if(j.error){if(!cached)$('out').innerHTML='<p class="msg">링크가 올바르지 않아요.<br>미오드모이에서 받은 링크를 다시 눌러 주세요.</p>';return}
+    try{localStorage.setItem(CK,txt)}catch(e){}
+    if(txt!==cached){const keep=idx;D=j;start();if(cached){idx=Math.min(keep,Math.max(0,list.length-1));render()}}
+  }catch(e){if(!cached)$('out').innerHTML='<p class="msg">코디를 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
 })();
 </script>
 <script>
 (function(){
   var K='mio-ootd';
   try{var q=new URLSearchParams(location.search).get('c');if(q)localStorage.setItem(K,q);else{var s=localStorage.getItem(K);if(s){location.replace(location.pathname+'?c='+encodeURIComponent(s));return}}}catch(e){}
+  var ua=navigator.userAgent;
+  if(/KAKAOTALK/i.test(ua)){var kd=document.createElement('div');kd.className='a2hs kk';var iosK=/iphone|ipad|ipod/i.test(ua);
+    kd.innerHTML='<img src="icon-180.png" alt=""><div style="flex:1"><b>카카오톡 안에서 열렸어요</b>'+(iosK?'사파리로':'크롬으로')+' 열어 홈 화면에 추가하면, 다음부터 카톡에서 링크를 찾지 않아도 바로 열려요.<button class="go" style="margin-top:8px;display:block">'+(iosK?'사파리로':'크롬으로')+' 열기</button><small style="display:block;margin-top:6px;opacity:.8">안 넘어가면 화면의 ⋯ 또는 공유 버튼 → \''+(iosK?'Safari로 열기':'다른 브라우저로 열기')+'\'</small></div><button class="x" aria-label="닫기">✕</button>';
+    document.body.appendChild(kd);kd.querySelector('.x').onclick=function(){kd.remove()};
+    kd.querySelector('.go').onclick=function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href)};
+    return}
   var standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   var seen=false;try{seen=localStorage.getItem(K+'-a2hs')==='1'}catch(e){}
   if(standalone||seen||!new URLSearchParams(location.search).get('c'))return;

@@ -11,6 +11,15 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>Personal Image Report | 미오드모이</title>
+<meta name="description" content="퍼스널컬러 · 얼굴형 · 체형 분석 결과가 도착했어요. 눌러서 확인하세요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MIO DE MOI 미오드모이">
+<meta property="og:title" content="퍼스널 이미지 리포트 · MIO DE MOI">
+<meta property="og:description" content="퍼스널컬러 · 얼굴형 · 체형 분석 결과가 도착했어요. 눌러서 확인하세요.">
+<meta property="og:image" content="https://miodemoi.github.io/og_report.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
 <style>
@@ -349,6 +358,12 @@ function start(){
 (function(){
   var K='mio-report';
   try{var q=new URLSearchParams(location.search).get('c');if(q)localStorage.setItem(K,q);else{var s=localStorage.getItem(K);if(s){location.replace(location.pathname+'?c='+encodeURIComponent(s));return}}}catch(e){}
+  var ua=navigator.userAgent;
+  if(/KAKAOTALK/i.test(ua)){var kd=document.createElement('div');kd.className='a2hs kk';var iosK=/iphone|ipad|ipod/i.test(ua);
+    kd.innerHTML='<img src="icon-180.png" alt=""><div style="flex:1"><b>카카오톡 안에서 열렸어요</b>'+(iosK?'사파리로':'크롬으로')+' 열어 홈 화면에 추가하면, 다음부터 카톡에서 링크를 찾지 않아도 바로 열려요.<button class="go" style="margin-top:8px;display:block">'+(iosK?'사파리로':'크롬으로')+' 열기</button><small style="display:block;margin-top:6px;opacity:.8">안 넘어가면 화면의 ⋯ 또는 공유 버튼 → \''+(iosK?'Safari로 열기':'다른 브라우저로 열기')+'\'</small></div><button class="x" aria-label="닫기">✕</button>';
+    document.body.appendChild(kd);kd.querySelector('.x').onclick=function(){kd.remove()};
+    kd.querySelector('.go').onclick=function(){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href)};
+    return}
   var standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   var seen=false;try{seen=localStorage.getItem(K+'-a2hs')==='1'}catch(e){}
   if(standalone||seen||!new URLSearchParams(location.search).get('c'))return;
