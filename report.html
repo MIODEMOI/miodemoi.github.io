@@ -184,7 +184,7 @@ const code=new URLSearchParams(location.search).get('c')||'';
 const $=id=>document.getElementById(id);
 const tidy=s=>/^\s*(data:|https?:|tel:|mailto:|#|ootd\.html|shopper_)/.test(String(s??''))?String(s??''):String(s??'').replace(/[ \t]+([,.!?)])/g,'$1').replace(/\(\s+/g,'(').replace(/[ \t]{2,}/g,' ').replace(/,(?=[^\s\d])/g,', ');
 const esc=s=>tidy(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const HEX={'화이트':'#ffffff','오프화이트':'#f7f4ec','아이보리':'#f5efdf','크림':'#f1e7cf','라이트베이지':'#e8dcc7','베이지':'#d8c4a3','카멜':'#b8895a','브라운':'#6b4a35','다크브라운':'#4a3326','카키':'#7a7457','올리브':'#6e6b3d','라이트그레이':'#d5d5d5','그레이':'#9b9b9b','차콜':'#4a4a4c','차콜그레이':'#56575a','블랙':'#151515','네이비':'#1f2a44','라이트블루':'#c9daee','스카이블루':'#a6c8e8','블루':'#5b86c0','코발트블루':'#2f5aa8','핑크':'#f1c3cd','라이트핑크':'#f7dde2','로즈':'#d98a9b','라벤더':'#d8cfec','퍼플':'#8c6bb1','민트':'#cfeadf','그린':'#5f8f6a','레드':'#c0392b','와인':'#6d2232','버건디':'#7a1f2b','옐로우':'#f3dc7a','레몬':'#f6eb9c','오렌지':'#e8964a','코랄':'#f08a7a','실버':'#c9cbd0','골드':'#c9a85a'};
+const HEX={'화이트':'#ffffff','오프화이트':'#f7f4ec','아이보리':'#f5efdf','크림':'#f1e7cf','라이트베이지':'#e8dcc7','베이지':'#d8c4a3','카멜':'#b8895a','브라운':'#6b4a35','다크브라운':'#4a3326','카키':'#7a7457','올리브':'#6e6b3d','라이트그레이':'#d5d5d5','그레이':'#9b9b9b','차콜':'#4a4a4c','차콜그레이':'#56575a','블랙':'#151515','네이비':'#1f2a44','라이트블루':'#c9daee','스카이블루':'#a6c8e8','스카이':'#adc4e0','블루':'#5b86c0','코발트블루':'#2f5aa8','핑크':'#f1c3cd','라이트핑크':'#f7dde2','로즈':'#d98a9b','라벤더':'#d8cfec','퍼플':'#8c6bb1','민트':'#cfeadf','그린':'#5f8f6a','레드':'#c0392b','와인':'#6d2232','버건디':'#7a1f2b','옐로우':'#f3dc7a','레몬':'#f6eb9c','오렌지':'#e8964a','코랄':'#f08a7a','실버':'#c9cbd0','골드':'#c9a85a'};
 const hex=n=>{n=String(n).trim();const m=n.match(/#[0-9a-f]{3,6}/i);return m?m[0]:(HEX[n.replace(/\s/g,'')]||'#cccccc')};
 const cname=n=>String(n).replace(/[:：]?\s*#[0-9a-f]{3,6}/i,'').trim();
 const L=a=>(Array.isArray(a)?a:String(a||'').split(/\n/)).map(x=>String(x).trim()).filter(Boolean).reduce((o,x)=>{if(o.length&&/^[,.!?)~]/.test(x))o[o.length-1]+=x;else o.push(x);return o},[]);
@@ -214,11 +214,11 @@ function colorRes(){
    <div class="tees">${tees.map(t=>`<figure><img src="${esc(t.img)}" alt="${esc(t.n)}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${esc(t.n)}</figcaption></figure>`).join('')}</div>${C.teeNote?`<p class="desc" style="margin-top:10px">${esc(C.teeNote)}</p>`:''}</div>`:'');
 }
 function colorGuide(){
-  const C=D.color||{};
+  const C0=D.color||{},C=Object.assign({},C0,{combos:L(C0.combos).length?C0.combos:DEF_COMBOS,tit:L(C0.tit).length?C0.tit:['라이트블루','라이트핑크','라벤더','민트'],tot:L(C0.tot).length?C0.tot:['라이트블루','스카이','블루','네이비']});
   const groups={};L(C.combos).forEach(p=>{const [a,b]=p.split('+').map(s=>s.trim());if(!a||!b)return;(groups[cname(a)]=groups[cname(a)]||[]).push([a,b])});
   return head('','COLOR GUIDE','꼭 알아야 할 컬러 코디')+
   `<div class="card"><p class="k">MONOCHROME</p><p class="desc">상·하의를 같은 컬러로 입는 걸 모노크롬 룩이라고 해요.</p>
-   <ul class="rule"><li>— 화이트와 블랙은 채도 없이 명도만 있는 무채색이에요. 어울리지 않는 컬러가 없어요.</li><li>— 블랙 + 블랙도 소재가 다르면 질감 때문에 다른 컬러로 보여요. 다른 컬러라고 생각하고 입으세요!</li></ul>
+   <ul class="rule"><li>— 화이트와 블랙은 채도 없이 명도만 있는 무채색이에요. 어울리지 않는 컬러가 없어요.</li><li>— 무채색과 컬러의 코디는 톤인톤 · 톤온톤으로 분류하지 않아요.</li><li>— 블랙 + 블랙도 소재가 다르면 질감 때문에 다른 컬러로 보여요. 다른 컬러라고 생각하고 입으세요!</li></ul>
    ${Object.keys(groups).length?`<div class="combo">${Object.entries(groups).map(([g,ps])=>`<h4>${esc(g)} 조합</h4><div class="pairs">${ps.map(([a,b])=>`<div class="pair"><div><i style="background:${hex(a)}"></i><i style="background:${hex(b)}"></i></div>${esc(cname(a))} + ${esc(cname(b))}</div>`).join('')}</div>`).join('')}</div>`:''}</div>`+
   ((L(C.tit).length||L(C.tot).length)?`<div class="card"><p class="k">TONE IN TONE · TONE ON TONE</p>
    ${L(C.tit).length?`<h4 style="margin:8px 0 0;font-size:14px">톤인톤</h4><p class="desc" style="color:var(--muted);font-size:13px">색은 달라도 톤(밝기·선명함)을 맞추는 조합. 흑백 모드로 톤이 비슷한지 체크하세요.</p><div class="chips">${L(C.tit).map(c=>`<span><i style="background:${hex(c)}"></i>${esc(cname(c))}</span>`).join('')}</div>`:''}
@@ -227,7 +227,7 @@ function colorGuide(){
 }
 function colorTab(){
   if(PCM)return colorRes();
-  return colorRes()+colorGuide()+gallery(D.styles,s=>/퍼스널컬러/.test(s.sec))+prodSec();
+  return colorRes()+colorGuide()+gallery(D.styles,s=>/퍼스널컬러|컬러 코디/.test(s.sec))+prodSec();
 }
 
 function prodSec(){
@@ -280,7 +280,7 @@ function gallery(list,f){
   <div class="gal${(s.items||[]).some(i=>String(i.cap||'').length>14)?' two':''}">${(s.items||[]).length?s.items.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${esc(i.cap)}</figcaption>`:''}</figure>`).join(''):(window.DEMO?'<div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div>':'')}</div></div>`).join('');
 }
 function styleTab(){
-  return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어|퍼스널컬러/.test(s.sec))+
+  return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어|퍼스널컬러|컬러 코디/.test(s.sec))+
   `<div class="outro"><h3>Thank you</h3><p>${esc(D.outro||'고객님의 가장 좋은 모습을 찾는 데 도움이 되길 바랍니다.')}</p><p>쇼핑이 필요하시면 퍼스널쇼퍼 프로그램을 이용해 주세요.</p>
   <button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show(FC?'brand':'shopper')">${FC?'추천 브랜드 보기':'퍼스널쇼퍼 가격 · 견본 보기'} →</button><a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
 }
@@ -337,12 +337,14 @@ function show(t){
   document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show(PCM?'pcprod':'color');window.scrollTo(0,y)});
   document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
 }
+const DEF_COMBOS=['화이트+화이트','화이트+베이지','화이트+라이트블루','화이트+블랙','화이트+네이비','핑크+아이보리','핑크+라이트베이지','핑크+라이트그레이','핑크+차콜그레이','핑크+브라운','라이트그레이+화이트','라이트그레이+크림','라이트그레이+라이트블루','라이트그레이+블랙','라이트그레이+차콜그레이'];
 const FIXED_F=[
+ {sec:'컬러 코디 예시',desc:'',items:[['w_fixed_4_1.jpg',''],['w_fixed_4_2.jpg','상,하의를 화이트로 맞춤'],['w_fixed_4_3.jpg','상의를 블랙으로 맞춤'],['w_fixed_4_4.jpg','상의를 블랙으로 맞춤'],['w_fixed_4_5.jpg',''],['w_fixed_4_6.jpg',''],['w_fixed_4_7.jpg','톤온톤 코디'],['w_fixed_4_8.jpg','톤온톤 코디']]},
  {sec:'퍼스널컬러 활용 예',desc:'',items:[['w_fixed_1_1.jpg?v=2','BEFORE'],['w_fixed_1_2.jpg?v=2','AFTER'],['w_fixed_1_3.jpg?v=2','BEFORE'],['w_fixed_1_4.jpg?v=2','AFTER']]},
  {sec:'자켓 허리선의 중요성',desc:'WORST · 자켓이 허리라인을 가림, 자켓의 단추가 허리선보다 밑이라 이 자켓에는 자켓과 비슷한 길이의 스커트나 쇼츠를 입는 것이 좋음\nBEST · 자켓의 첫 단추가 내 허리선보다 살짝 높고, 루즈한 핏이라 슬림한 핏의 스커트와 입기 좋음',items:[['w_fixed_2_1.jpg?v=2','WORST'],['w_fixed_2_2.jpg?v=2','BEST'],['w_fixed_2_3.jpg?v=2','BEST']]},
  {sec:'팬츠 고르는 방법',desc:'왼쪽 사진: 어깨와 골반에 있는 선은 같은 길이입니다. 이렇게 상하체 밸런스를 맞춰 주시고\n오른쪽 사진을 보시면, 사다리꼴이 그려지죠? 이런 핏의 팬츠를 입으세요. 슬랙스에서도 찾으실 수 있어요!',items:[['w_fixed_3_1.jpg?v=2','BEST'],['w_fixed_3_2.jpg?v=2','BEST'],['w_fixed_3_3.jpg','BEST'],['w_fixed_3_4.jpg','BEST'],['w_fixed_3_5.jpg','BEST']]}];
 function addFixed(){if(!D||!/^여/.test(D.sex||''))return;D.styles=D.styles||[];
- FIXED_F.filter(f=>!PCM||/퍼스널컬러/.test(f.sec)).forEach(f=>{const m=D.styles.find(x=>x.sec===f.sec);if(m&&(m.items||[]).length)return;const g={sec:f.sec,desc:(m&&m.desc)||f.desc,items:f.items.map(([img,cap])=>({img,cap}))};if(m)Object.assign(m,g);else D.styles.push(g)})}
+ FIXED_F.filter(f=>!PCM||/퍼스널컬러|컬러 코디/.test(f.sec)).forEach(f=>{const m=D.styles.find(x=>x.sec===f.sec);if(m&&(m.items||[]).length)return;const g={sec:f.sec,desc:(m&&m.desc)||f.desc,items:f.items.map(([img,cap])=>({img,cap}))};if(m)Object.assign(m,g);else D.styles.push(g)})}
 function start(){
   PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));addFixed();
   $('who').textContent=PCM?`${D.name||'고객'} 님의 퍼스널컬러 분석`:`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
