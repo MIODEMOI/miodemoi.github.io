@@ -183,7 +183,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
   </div>
   <datalist id="dlTone"></datalist>
   <div class="f"><span>명도 <small>(범위면 두 개 선택)</small></span><div class="chips" data-range="명도"><button class="chip">고명도</button><button class="chip">중고명도</button><button class="chip">중명도</button><button class="chip">중저명도</button><button class="chip">저명도</button></div></div>
-  <div class="f"><span>채도</span><div class="chips" data-one="채도"><button class="chip">고채도</button><button class="chip">중채도</button><button class="chip">저채도</button></div></div>
+  <div class="f"><span>채도</span><div class="chips" data-one="채도"><button class="chip">고채도</button><button class="chip">중고채도</button><button class="chip">중채도</button><button class="chip">중저채도</button><button class="chip">저채도</button></div></div>
   <div class="f"><span>대비감</span><div class="chips" data-one="대비감"><button class="chip">강한 대비감</button><button class="chip">중간 대비감</button><button class="chip">약한 대비감</button></div></div>
   <div class="g2">
    <label class="f"><span>피할 컬러</span><input type="text" data-k="피할 컬러"></label>
@@ -200,7 +200,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
  </details>
 
  <details class="card"><summary><span class="n">4</span><span id="prodTitle">제품 추천</span><span class="st" id="st4"></span></summary>
-  <div class="libbar" id="libBar"><button class="btn sm ghost" id="libLoad">↻ 같은 톤 고객 제품 불러오기</button><small id="libMsg">퍼스널컬러 메인을 입력하면 비어 있을 때 자동으로 채워져요</small></div>
+  <div class="libbar" id="libBar"><button class="btn sm ghost" id="libLoad">↻ 같은 톤 고객 자료 불러오기</button><small id="libMsg">퍼스널컬러 메인을 입력하면 제품 · 톤인톤 · 톤온톤 · 컬러 코디 예시 · 자켓 WORST &amp; BEST 중 빈 칸이 자동으로 채워져요</small></div>
   <div id="prods"></div>
   <button class="btn ghost full" id="addProd" style="margin-top:10px">＋ 제품 추가</button>
  </details>
@@ -400,26 +400,31 @@ $('prods').addEventListener('change',async e=>{if(e.target.type!=='file')return;
 
 
 /* ---------- 같은 톤 제품 자동 채우기 ---------- */
-const LIB={};
+const LIB={},LIBK=['톤인톤 컬러','톤온톤 컬러'],LIBS=['컬러 코디 예시','자켓 WORST & BEST'];
+function libExtra(d){const got=[];
+  LIBK.forEach(k=>{const v=(d.values||{})[k];if(v&&!String(S.values[k]||'').trim()){S.values[k]=v;const el=document.querySelector(`[data-k="${k}"]`);if(el)el.value=v;got.push(k.replace(' 컬러',''))}});
+  LIBS.forEach(sec=>{const mine=S.secs.find(x=>x.sec===sec);if(mine&&mine.items.length)return;const ph=(d.photos||[]).filter(p=>p.sec===sec);if(!ph.length)return;
+    let t=mine;if(!t){t={sec,desc:'',items:[]};S.secs.push(t)}t.desc=t.desc||(ph.find(p=>p.desc)||{}).desc||'';ph.forEach(p=>{if(p.img)t.items.push({img:p.img,cap:p.cap||''})});got.push(sec)});
+  if(got.length){dirty=true;renderSecs();calc();status()}return got}
 function toneScore(a,b){a=String(a||'').trim();b=String(b||'').trim();if(!a||!b)return 0;if(a===b)return 3;const x=a.split(/\s+/),y=b.split(/\s+/);if(x[0]===y[0]&&x[1]&&x[1]===y[1])return 2;return x[0]===y[0]?1:0}
 async function libFind(){
   const tone=S.values['퍼스널컬러 메인'],sx=sex();if(!tone)throw new Error('퍼스널컬러 메인을 먼저 입력해 주세요');
   const j=await api({action:'list'});
   const cand=j.list.filter(c=>c.code!==S.code&&c.kind!=='퍼스널쇼퍼만'&&(sx==='남'?/^남/.test(c.sex||''):!/^남/.test(c.sex||''))).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,15);
   const ds=await Promise.all(cand.map(c=>LIB[c.code]?Promise.resolve(LIB[c.code]):api({action:'get',code:c.code}).then(d=>LIB[c.code]=d).catch(()=>null)));
-  let best=null,bs=0;ds.forEach(d=>{if(!d)return;const pr=(d.products||[]).filter(p=>!isB(p)&&(p.name||p.img));if(!pr.length)return;const sc=toneScore(tone,(d.values||{})['퍼스널컬러 메인']);if(sc>bs){bs=sc;best={d,pr}}});
+  let best=null,bs=0;ds.forEach(d=>{if(!d)return;const pr=(d.products||[]).filter(p=>!isB(p)&&(p.name||p.img));if(!pr.length&&!LIBK.some(k=>(d.values||{})[k])&&!(d.photos||[]).some(x=>LIBS.includes(x.sec)))return;const sc=toneScore(tone,(d.values||{})['퍼스널컬러 메인']);if(sc>bs){bs=sc;best={d,pr}}});
   if(!best)throw new Error('같은 톤으로 제품을 넣은 고객이 아직 없어요');
-  return {name:best.d.name,tone:best.d.values['퍼스널컬러 메인'],exact:bs===3,pr:best.pr.map(p=>({cat:p.cat||'',name:p.name||'',brand:p.brand||'',shade:p.shade||'',how:p.how||'',url:p.url||'',img:p.img||''}))};
+  return {name:best.d.name,tone:best.d.values['퍼스널컬러 메인'],exact:bs===3,d:best.d,pr:best.pr.map(p=>({cat:p.cat||'',name:p.name||'',brand:p.brand||'',shade:p.shade||'',how:p.how||'',url:p.url||'',img:p.img||''}))};
 }
 async function libFill(auto){
-  if(S.products.length&&(auto||!confirm('지금 있는 제품을 같은 톤 고객 제품으로 바꿀까요?')))return;
+  const keep=S.products.length&&(auto||!confirm('지금 있는 제품을 같은 톤 고객 제품으로 바꿀까요? (취소하면 제품은 그대로, 빈 칸만 채워요)'));
   $('libMsg').textContent='찾는 중...';
-  try{const r=await libFind();S.products=r.pr;dirty=true;renderProds();
-    $('libMsg').textContent=`${r.name||'이전 고객'} 님(${r.tone}) 제품 ${r.pr.length}개를 넣었어요. 고객에 맞게 빼거나 고쳐 주세요.`;if(!r.exact)toast('완전히 같은 톤이 없어 가장 가까운 톤에서 가져왔어요');}
+  try{const r=await libFind();if(keep)r.pr=S.products;else{S.products=r.pr;dirty=true;renderProds()}r.got=libExtra(r.d);
+    $('libMsg').textContent=`${r.name||'이전 고객'} 님(${r.tone})에게서 제품 ${r.pr.length}개${r.got&&r.got.length?', '+r.got.join(' · '):''}를 가져왔어요. 비어 있던 칸만 채웠으니 고객에 맞게 고쳐 주세요.`;if(!r.exact)toast('완전히 같은 톤이 없어 가장 가까운 톤에서 가져왔어요');}
   catch(e){$('libMsg').textContent=e.message}
 }
 $('libLoad').onclick=()=>libFill(false);
-document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.k==='퍼스널컬러 메인'&&!S.products.length&&e.target.value.trim())libFill(true)});
+document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.k==='퍼스널컬러 메인'&&e.target.value.trim())libFill(true)});
 /* ---------- reference sections ---------- */
 function renderSecs(){
   $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';
