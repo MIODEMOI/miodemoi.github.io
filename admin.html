@@ -200,7 +200,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
  </details>
 
  <details class="card"><summary><span class="n">4</span><span id="prodTitle">제품 추천</span><span class="st" id="st4"></span></summary>
-  <div class="libbar" id="libBar"><button class="btn sm ghost" id="libLoad">↻ 같은 톤 고객 자료 불러오기</button><small id="libMsg">퍼스널컬러 메인을 입력하면 제품 · 톤인톤 · 톤온톤 · 컬러 코디 예시 · 자켓 WORST &amp; BEST 중 빈 칸이 자동으로 채워져요</small></div>
+  <div class="libbar" id="libBar"><button class="btn sm ghost" id="libLoad">↻ 같은 톤 고객 자료 불러오기</button><small id="libMsg">퍼스널컬러 메인을 입력하면 제품 · 톤인톤 · 톤온톤 · 컬러 코디 예시 중 빈 칸이 자동으로 채워져요</small></div>
   <div id="prods"></div>
   <button class="btn ghost full" id="addProd" style="margin-top:10px">＋ 제품 추가</button>
  </details>
@@ -299,7 +299,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const BODY={여:['역삼각형','직사각형','라운드형','삼각형','모래시계형','8자형'],남:['직사각형','삼각형','사다리꼴형','타원형','역삼각형','모래시계형']};
 const CATS={여:['베이스','아이','브로우','립','블러셔','스킨케어','선케어','클렌징'],남:['클렌징','스킨케어','선케어','베이스','립케어','헤어']};
-const SECS=['흑백 티셔츠','추천 헤어스타일','팬츠 스타일링','아우터 스타일링','셔츠 스타일링','원피스 스타일링','스커트 스타일링','데님 스타일링','자켓 WORST & BEST','컬러 코디 예시'];
+const SECS=['퍼스널컬러 활용 예','자켓 허리선의 중요성','팬츠 고르는 방법','흑백 티셔츠','추천 헤어스타일','팬츠 스타일링','아우터 스타일링','셔츠 스타일링','원피스 스타일링','스커트 스타일링','데님 스타일링','자켓 WORST & BEST','컬러 코디 예시'];
 const LEVELS=['고명도','중고명도','중명도','중저명도','저명도'];
 let PW='',S=null,dirty=false;
 try{PW=localStorage.getItem('mio-admin-pw')||''}catch(e){}
@@ -330,7 +330,7 @@ function openEdit(d){
   document.querySelectorAll('[data-k]').forEach(el=>el.value=S.values[el.dataset.k]||'');
   shopInit(d);syncChips();renderBody();renderProds();renderSecs();renderBrands();calc();status();
   $('doneBox').innerHTML='';$('preview').hidden=!S.code;$('barMsg').textContent=S.code?'코드 '+S.code:'저장 전이에요';dirty=false;
-  view('vEdit');
+  view('vEdit');tplFill();
 }
 function sex(){return /^남/.test(S.values['성별']||'')?'남':'여'}
 function set(k,v){S.values[k]=v;dirty=true;$('barMsg').textContent='저장하지 않은 변경이 있어요'}
@@ -345,7 +345,7 @@ function syncChips(){
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
-  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands()}status()}
+  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands();tplFill()}status()}
   else if(g.dataset.range){e.preventDefault();b.classList.toggle('on');const on=[...g.querySelectorAll('.chip')].map((x,i)=>x.classList.contains('on')?i:-1).filter(i=>i>=0);
     set(g.dataset.range,on.length?(on.length===1?LEVELS[on[0]]:LEVELS[on[0]]+' ~ '+LEVELS[on[on.length-1]]):'');syncChips();status()}
 });
@@ -400,7 +400,7 @@ $('prods').addEventListener('change',async e=>{if(e.target.type!=='file')return;
 
 
 /* ---------- 같은 톤 제품 자동 채우기 ---------- */
-const LIB={},LIBK=['톤인톤 컬러','톤온톤 컬러'],LIBS=['컬러 코디 예시','자켓 WORST & BEST'];
+const LIB={},LIBK=['톤인톤 컬러','톤온톤 컬러'],LIBS=['컬러 코디 예시'];
 function libExtra(d){const got=[];
   LIBK.forEach(k=>{const v=(d.values||{})[k];if(v&&!String(S.values[k]||'').trim()){S.values[k]=v;const el=document.querySelector(`[data-k="${k}"]`);if(el)el.value=v;got.push(k.replace(' 컬러',''))}});
   LIBS.forEach(sec=>{const mine=S.secs.find(x=>x.sec===sec);if(mine&&mine.items.length)return;const ph=(d.photos||[]).filter(p=>p.sec===sec);if(!ph.length)return;
@@ -410,7 +410,7 @@ function toneScore(a,b){a=String(a||'').trim();b=String(b||'').trim();if(!a||!b)
 async function libFind(){
   const tone=S.values['퍼스널컬러 메인'],sx=sex();if(!tone)throw new Error('퍼스널컬러 메인을 먼저 입력해 주세요');
   const j=await api({action:'list'});
-  const cand=j.list.filter(c=>c.code!==S.code&&c.kind!=='퍼스널쇼퍼만'&&(sx==='남'?/^남/.test(c.sex||''):!/^남/.test(c.sex||''))).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,15);
+  const cand=j.list.filter(c=>c.code!==S.code&&!isTpl(c.name)&&c.kind!=='퍼스널쇼퍼만'&&(sx==='남'?/^남/.test(c.sex||''):!/^남/.test(c.sex||''))).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,15);
   const ds=await Promise.all(cand.map(c=>LIB[c.code]?Promise.resolve(LIB[c.code]):api({action:'get',code:c.code}).then(d=>LIB[c.code]=d).catch(()=>null)));
   let best=null,bs=0;ds.forEach(d=>{if(!d)return;const pr=(d.products||[]).filter(p=>!isB(p)&&(p.name||p.img));if(!pr.length&&!LIBK.some(k=>(d.values||{})[k])&&!(d.photos||[]).some(x=>LIBS.includes(x.sec)))return;const sc=toneScore(tone,(d.values||{})['퍼스널컬러 메인']);if(sc>bs){bs=sc;best={d,pr}}});
   if(!best)throw new Error('같은 톤으로 제품을 넣은 고객이 아직 없어요');
@@ -425,6 +425,20 @@ async function libFill(auto){
 }
 $('libLoad').onclick=()=>libFill(false);
 document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.k==='퍼스널컬러 메인'&&e.target.value.trim())libFill(true)});
+
+/* ---------- 여성 고정 페이지: '기본자료 여성' 고객에서 자동으로 넣기 ---------- */
+const isTpl=n=>/^기본자료/.test(String(n||'').replace(/\s/g,''));
+let TPL=null;
+async function tplGet(){if(TPL)return TPL;const j=await api({action:'list'});const t=j.list.find(c=>isTpl(c.name)&&!/남/.test(c.name));if(!t)return TPL={none:1};return TPL=await api({action:'get',code:t.code})}
+async function tplFill(){
+  if(!S||sex()!=='여'||isTpl(S.name))return;
+  try{const t=await tplGet();if(t.none){toast("'기본자료 여성' 고객이 없어 고정 페이지를 넣지 못했어요");return}
+    const got=[],add=[];
+    (t.photos||[]).forEach(p=>{if(!p.sec)return;let g=add.find(x=>x.sec===p.sec);if(!g){g={sec:p.sec,desc:'',items:[]};add.push(g)}if(p.desc&&!g.desc)g.desc=p.desc;if(p.img)g.items.push({img:p.img,cap:p.cap||''})});
+    add.forEach(g=>{const m=S.secs.find(x=>x.sec===g.sec);if(m&&m.items.length)return;if(m){m.desc=m.desc||g.desc;m.items=g.items}else S.secs.push(g);got.push(g.sec)});
+    if(got.length){dirty=true;renderSecs();status();toast('여성 고정 페이지를 넣었어요: '+got.join(' · '))}
+  }catch(e){}
+}
 /* ---------- reference sections ---------- */
 function renderSecs(){
   $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';
