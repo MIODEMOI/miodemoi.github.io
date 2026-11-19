@@ -119,6 +119,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
 .pz-on{outline:2.5px solid var(--teal);outline-offset:2px}
 .pz-on{position:relative}.pz-on::after{content:'Ctrl+V 붙여넣기';position:absolute;right:10px;bottom:-11px;background:var(--teal);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;pointer-events:none;z-index:3}
 .pic .cov{position:absolute;left:5px;top:5px;background:var(--navy);color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px}.pic .mv{position:absolute;left:5px;bottom:5px;border:0;background:rgba(255,255,255,.92);color:var(--navy);font:inherit;font-size:11px;font-weight:800;border-radius:6px;padding:3px 7px;cursor:pointer}
+.libbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}.libbar small{color:#8a8d99;font-size:12px}
 </style>
 </head>
 <body>
@@ -199,6 +200,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
  </details>
 
  <details class="card"><summary><span class="n">4</span><span id="prodTitle">제품 추천</span><span class="st" id="st4"></span></summary>
+  <div class="libbar" id="libBar"><button class="btn sm ghost" id="libLoad">↻ 같은 톤 고객 제품 불러오기</button><small id="libMsg">퍼스널컬러 메인을 입력하면 비어 있을 때 자동으로 채워져요</small></div>
   <div id="prods"></div>
   <button class="btn ghost full" id="addProd" style="margin-top:10px">＋ 제품 추가</button>
  </details>
@@ -396,6 +398,28 @@ $('prods').addEventListener('click',e=>{const t=e.target;
 $('prods').addEventListener('change',async e=>{if(e.target.type!=='file')return;const i=+e.target.dataset.pi,f=e.target.files[0];if(!f)return;const p=S.products[i];p.busy=1;renderProds();
   try{const r=await upload(f,'제품');p.img=r.url;p.local=r.local;dirty=true}catch(err){toast('사진을 올리지 못했어요: '+err.message)}delete p.busy;renderProds()});
 
+
+/* ---------- 같은 톤 제품 자동 채우기 ---------- */
+const LIB={};
+function toneScore(a,b){a=String(a||'').trim();b=String(b||'').trim();if(!a||!b)return 0;if(a===b)return 3;const x=a.split(/\s+/),y=b.split(/\s+/);if(x[0]===y[0]&&x[1]&&x[1]===y[1])return 2;return x[0]===y[0]?1:0}
+async function libFind(){
+  const tone=S.values['퍼스널컬러 메인'],sx=sex();if(!tone)throw new Error('퍼스널컬러 메인을 먼저 입력해 주세요');
+  const j=await api({action:'list'});
+  const cand=j.list.filter(c=>c.code!==S.code&&c.kind!=='퍼스널쇼퍼만'&&(sx==='남'?/^남/.test(c.sex||''):!/^남/.test(c.sex||''))).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,15);
+  const ds=await Promise.all(cand.map(c=>LIB[c.code]?Promise.resolve(LIB[c.code]):api({action:'get',code:c.code}).then(d=>LIB[c.code]=d).catch(()=>null)));
+  let best=null,bs=0;ds.forEach(d=>{if(!d)return;const pr=(d.products||[]).filter(p=>!isB(p)&&(p.name||p.img));if(!pr.length)return;const sc=toneScore(tone,(d.values||{})['퍼스널컬러 메인']);if(sc>bs){bs=sc;best={d,pr}}});
+  if(!best)throw new Error('같은 톤으로 제품을 넣은 고객이 아직 없어요');
+  return {name:best.d.name,tone:best.d.values['퍼스널컬러 메인'],exact:bs===3,pr:best.pr.map(p=>({cat:p.cat||'',name:p.name||'',brand:p.brand||'',shade:p.shade||'',how:p.how||'',url:p.url||'',img:p.img||''}))};
+}
+async function libFill(auto){
+  if(S.products.length&&(auto||!confirm('지금 있는 제품을 같은 톤 고객 제품으로 바꿀까요?')))return;
+  $('libMsg').textContent='찾는 중...';
+  try{const r=await libFind();S.products=r.pr;dirty=true;renderProds();
+    $('libMsg').textContent=`${r.name||'이전 고객'} 님(${r.tone}) 제품 ${r.pr.length}개를 넣었어요. 고객에 맞게 빼거나 고쳐 주세요.`;if(!r.exact)toast('완전히 같은 톤이 없어 가장 가까운 톤에서 가져왔어요');}
+  catch(e){$('libMsg').textContent=e.message}
+}
+$('libLoad').onclick=()=>libFill(false);
+document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.k==='퍼스널컬러 메인'&&!S.products.length&&e.target.value.trim())libFill(true)});
 /* ---------- reference sections ---------- */
 function renderSecs(){
   $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';
