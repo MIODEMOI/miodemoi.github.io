@@ -178,12 +178,13 @@ function tab(t){
   noti();
 }
 
-/* 상단 3개월 정리 안내 (미구입 아이템이 있을 때만) */
+/* 상단 3개월 정리 안내 (미구입 아이템이 있을 때만). NOTI_SKIP = 자동 정리 대상에서 제외한 고객(김경미님) */
+const NOTI_SKIP=['nbvc8rkq'];
 function noti(){
   const el=$('noti');if(!el)return;
   const hide=()=>{el.hidden=true;el.innerHTML=''};
   if(!D||!Array.isArray(D.bought)||!(D.shop||[]).length)return hide();
-  if(code==='nbvc8rkq')return hide();
+  if(NOTI_SKIP.includes(code))return hide();
   if(!$('t-shop').hidden)return hide();
   try{if(sessionStorage.getItem('mio-noti-x-'+code)==='1')return hide()}catch(e){}
   loadBought();
