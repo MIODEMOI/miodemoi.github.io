@@ -497,7 +497,7 @@ const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
 function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
   S.sp={prog:(sp.prog||[]).map(x=>x==null?'':String(x)),items:sp.items||[],outfits:sp.outfits||[],
     book:(sp.book||[]).map(b=>({name:b.name||'',photos:String(b.photos||'').split(/\n/).map(x=>x.trim()).filter(Boolean).map(u=>({img:u})),tip:b.tip||'',sit:lst(b.sit),wx:wxFix(b.wx),round:String(b.round||'기존'),season:lst(b.season)})),
-    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',season:lst(x.season),added:x.added||''}))};S.bought=Array.isArray(sp.bought)?sp.bought:(Array.isArray(d.bought)?d.bought:null);
+    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',season:lst(x.season),added:x.added||''}))};S.bought=Array.isArray(sp.bought)?sp.bought:(Array.isArray(d.bought)?d.bought:null);S.exempt=sp.purge_exempt===true||d.purge_exempt===true;
   while(S.sp.prog.length<11)S.sp.prog.push('');
   $('shopOn').checked=S.shopOn;document.querySelectorAll('[data-p]').forEach(el=>el.value=S.sp.prog[+el.dataset.p]||'');renderShop()}
 const maxRound=()=>S.sp.book.concat(S.sp.shop).reduce((m,x)=>Math.max(m,+x.round||0),0);
@@ -519,7 +519,7 @@ function renderShop(){
    <div class="mini">${WX.map(x=>`<button type="button" class="chip ${b.wx.includes(x)?'on':''}" data-bw="${i}">${x}</button>`).join('')}</div>
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
   const ckn=S.sp.shop.filter(x=>x.ck).length;const HB=Array.isArray(S.bought),BG=new Set(S.bought||[]),nNo=HB?S.sp.shop.filter(x=>!BG.has(shopKey(x))).length:0;
-  $('shopMk').innerHTML=S.sp.shop.length?`${!HB?'':`<p class="hint" style="margin:0 0 8px">고객 구입 체크 · 구입 ${S.sp.shop.length-nNo}개 / 미구입 ${nNo}개 ${nNo?`<button class="btn sm del" id="rmNo" style="margin-left:6px">미구입 ${nNo}개 삭제</button>`:''}${PURGE_EXEMPT.includes(S.code)?'<br><small>이 고객은 자동 삭제 제외예요.</small>':`<br><small>미구입은 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디 페이지와 함께 자동 삭제돼요.</small>`}</p>`}<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
+  $('shopMk').innerHTML=S.sp.shop.length?`${!HB?'':`<p class="hint" style="margin:0 0 8px">고객 구입 체크 · 구입 ${S.sp.shop.length-nNo}개 / 미구입 ${nNo}개 ${nNo?`<button class="btn sm del" id="rmNo" style="margin-left:6px">미구입 ${nNo}개 삭제</button>`:''}${S.exempt?'<br><small>이 고객은 자동 삭제 제외예요.</small>':`<br><small>미구입은 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디 페이지와 함께 자동 삭제돼요.</small>`}</p>`}<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
   $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
@@ -642,8 +642,12 @@ const _status=status;status=function(){_status();if($('side')){side();document.q
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;
-const PURGE_EXEMPT=['nbvc8rkq'];/* Supabase public.purge_exempt_customers 와 같게 유지 */
-const dLeft=a=>{if(PURGE_EXEMPT.includes(S&&S.code))return '';if(!a)return '';const t=new Date(String(a).slice(0,10)+'T04:00:00+09:00');if(isNaN(t))return '';const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?' · '+n+'일 뒤 삭제':' · 곧 삭제'};
+/* 정리 시점 = SQL과 같은 규칙: 매일 04:00 KST에 (오늘 - 3개월, 월말 보정) >= added 이면 삭제 */
+const purgeAt=a=>{const m=String(a||'').match(/^(\d{4})-(\d{2})-(\d{2})/);if(!m)return null;const A=Date.UTC(+m[1],+m[2]-1,+m[3]);
+  const sub3=(y,mo,d)=>{let ty=y,tm=mo-3;while(tm<0){tm+=12;ty--}const dim=new Date(Date.UTC(ty,tm+1,0)).getUTCDate();return Date.UTC(ty,tm,Math.min(d,dim))};
+  for(let k=80;k<100;k++){const D=new Date(A+k*864e5);if(sub3(D.getUTCFullYear(),D.getUTCMonth(),D.getUTCDate())>=A)return new Date(Date.UTC(D.getUTCFullYear(),D.getUTCMonth(),D.getUTCDate())-5*36e5)}return null};
+const daysTo=a=>{const e=purgeAt(a);if(!e)return null;return Math.ceil((e-Date.now())/864e5)};
+const dLeft=a=>{if(S&&S.exempt)return '';const n=daysTo(a);if(n==null)return '';return n>0?' · '+n+'일 뒤 삭제':' · 곧 삭제'};
 const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,500);
 document.addEventListener('click',e=>{if(e.target.id!=='rmNo')return;const BG=new Set(S.bought||[]),no=S.sp.shop.filter(x=>!BG.has(shopKey(x)));
   if(!confirm(`고객이 체크하지 않은 미구입 ${no.length}개를 쇼핑 리스트에서 지울까요?\n(저장해야 반영돼요)`))return;S.sp.shop=S.sp.shop.filter(x=>BG.has(shopKey(x)));dirty=true;renderShop();status()});
