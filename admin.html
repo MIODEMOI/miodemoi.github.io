@@ -120,6 +120,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
 .pz-on{position:relative}.pz-on::after{content:'Ctrl+V 붙여넣기';position:absolute;right:10px;bottom:-11px;background:var(--teal);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;pointer-events:none;z-index:3}
 .pic .cov{position:absolute;left:5px;top:5px;background:var(--navy);color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px}.pic .mv{position:absolute;left:5px;bottom:5px;border:0;background:rgba(255,255,255,.92);color:var(--navy);font:inherit;font-size:11px;font-weight:800;border-radius:6px;padding:3px 7px;cursor:pointer}
 .libbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}.libbar small{color:#8a8d99;font-size:12px}
+.bgt{font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#f1efe9;color:#9a8f80}.bgt.on{background:#2ba59a;color:#fff}
 </style>
 </head>
 <body>
@@ -496,7 +497,7 @@ const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
 function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
   S.sp={prog:(sp.prog||[]).map(x=>x==null?'':String(x)),items:sp.items||[],outfits:sp.outfits||[],
     book:(sp.book||[]).map(b=>({name:b.name||'',photos:String(b.photos||'').split(/\n/).map(x=>x.trim()).filter(Boolean).map(u=>({img:u})),tip:b.tip||'',sit:lst(b.sit),wx:wxFix(b.wx),round:String(b.round||'기존'),season:lst(b.season)})),
-    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',season:lst(x.season)}))};
+    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',season:lst(x.season),added:x.added||''}))};S.bought=Array.isArray(sp.bought)?sp.bought:(Array.isArray(d.bought)?d.bought:null);
   while(S.sp.prog.length<11)S.sp.prog.push('');
   $('shopOn').checked=S.shopOn;document.querySelectorAll('[data-p]').forEach(el=>el.value=S.sp.prog[+el.dataset.p]||'');renderShop()}
 const maxRound=()=>S.sp.book.concat(S.sp.shop).reduce((m,x)=>Math.max(m,+x.round||0),0);
@@ -517,9 +518,9 @@ function renderShop(){
    <div class="mini">${SITU.map(x=>`<button type="button" class="chip ${b.sit.includes(x)?'on':''}" data-bs="${i}">${x}</button>`).join('')}</div>
    <div class="mini">${WX.map(x=>`<button type="button" class="chip ${b.wx.includes(x)?'on':''}" data-bw="${i}">${x}</button>`).join('')}</div>
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
-  const ckn=S.sp.shop.filter(x=>x.ck).length;
-  $('shopMk').innerHTML=S.sp.shop.length?`<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
-  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><label class="tog" style="font-size:13px;margin-bottom:8px"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
+  const ckn=S.sp.shop.filter(x=>x.ck).length;const HB=Array.isArray(S.bought),BG=new Set(S.bought||[]),nNo=HB?S.sp.shop.filter(x=>!BG.has(shopKey(x))).length:0;
+  $('shopMk').innerHTML=S.sp.shop.length?`${!HB?'':`<p class="hint" style="margin:0 0 8px">고객 구입 체크 · 구입 ${S.sp.shop.length-nNo}개 / 미구입 ${nNo}개 ${nNo?`<button class="btn sm del" id="rmNo" style="margin-left:6px">미구입 ${nNo}개 삭제</button>`:''}<br><small>미구입은 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디 페이지와 함께 자동 삭제돼요.</small></p>`}<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
+  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">입는 계절</b>${SEASONS.map(z=>`<button type="button" class="chip ${x.season.includes(z)?'on':''}" data-sse="${i}">${z}</button>`).join('')}</div>
@@ -563,7 +564,7 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
   else if(t.id==='addShopRow'){e.preventDefault();S.sp.shop.push({round:String(maxRound()||1),cat:'',items:'',url:'',note:'',name:'',img:'',season:[]});dirty=true;renderShop()}});
 function shopPayload(){if(!S.shopOn)return null;return {pub:S.pub,prog:S.sp.prog,items:S.sp.items,outfits:S.sp.outfits,
   book:S.sp.book.map(b=>({name:b.name,photos:b.photos.map(p=>p.img).filter(Boolean).join('\n'),tip:b.tip,sit:b.sit.join(', '),wx:b.wx.join(', '),round:b.round,season:SEASONS.filter(z=>b.season.includes(z)).join(', ')})),
-  shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img,season:SEASONS.filter(z=>x.season.includes(z)).join(', ')}))}}
+  shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img,added:x.added||'',season:SEASONS.filter(z=>x.season.includes(z)).join(', ')}))}}
 
 
 /* ---------- 사진 붙여넣기 (Ctrl+V) ---------- */
@@ -639,6 +640,10 @@ const _status=status;status=function(){_status();if($('side')){side();document.q
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;
+const dLeft=a=>{if(!a)return '';const t=new Date(a);if(isNaN(t))return '';const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?' · '+n+'일 뒤 삭제':' · 곧 삭제'};
+const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,500);
+document.addEventListener('click',e=>{if(e.target.id!=='rmNo')return;const BG=new Set(S.bought||[]),no=S.sp.shop.filter(x=>!BG.has(shopKey(x)));
+  if(!confirm(`고객이 체크하지 않은 미구입 ${no.length}개를 쇼핑 리스트에서 지울까요?\n(저장해야 반영돼요)`))return;S.sp.shop=S.sp.shop.filter(x=>BG.has(shopKey(x)));dirty=true;renderShop();status()});
 /* ---------- 다시 그릴 때 화면 위치 고정 ---------- */
 (()=>{let lock=0;const keep=fn=>function(){const y=window.scrollY,ae=document.activeElement;lock=y;const r=fn.apply(this,arguments);
   if(Math.abs(window.scrollY-y)>2)window.scrollTo({top:y,behavior:'instant'});return r};

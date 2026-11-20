@@ -89,6 +89,10 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
 .shop-r{margin:22px 0 -4px;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--navy)}
 .sh-row{display:flex;gap:10px;margin-top:12px;overflow-x:auto;scrollbar-width:none}.sh-row::-webkit-scrollbar{display:none}
 .sh-it{flex:0 0 31%;border:0;background:none;padding:0;font:inherit;text-align:left;cursor:pointer;color:inherit}.sh-it img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px}.sh-it span{display:block;font-size:12.5px;font-weight:600;margin-top:6px;line-height:1.35}
+.buyhint{font-size:14px;color:var(--sub,#666);margin:0 0 10px}.buyhint b{color:var(--navy,#2f3d86)}
+.buy{flex:none;border:1.5px solid var(--line,#ddd);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;color:#666;cursor:pointer}.buy.on{background:var(--teal,#2ba59a);border-color:var(--teal,#2ba59a);color:#fff}
+.nobuy{font-size:12px;color:#9a8f80;white-space:nowrap}.buyhint small{color:#999;font-size:12px}
+.card.sh.got{box-shadow:0 0 0 2px var(--teal,#2ba59a) inset}
 .sh-note{white-space:pre-line;font-size:14px;line-height:1.6;margin:12px 0 0;background:var(--soft);border-radius:12px;padding:10px 12px}
 .btn.sm{padding:12px;font-size:14px;margin-top:12px}
 .a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}</style>
@@ -131,6 +135,13 @@ const sbGet=async(code,app)=>{
   const r=await fetch(u,{headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY}});
   return await r.text();
 };
+const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,500);
+let BOUGHT=new Set();
+function loadBought(){BOUGHT=new Set(D.bought||[])}
+const dLeft=a=>{if(!a)return '';const t=new Date(a);if(isNaN(t))return '';const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?' · '+n+'일 뒤 정리':''};
+async function setBought(k,on){on?BOUGHT.add(k):BOUGHT.delete(k);D.bought=[...BOUGHT];
+  try{const r=await fetch(SB+'/rest/v1/rpc/set_purchase',{method:'POST',headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY,'Content-Type':'application/json'},body:JSON.stringify({p_code:code,p_key:k,p_on:on})});if(!r.ok)throw 0}
+  catch(e){toast('체크가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.')}}
 const KAKAO="http://pf.kakao.com/_ESuxln";
 const BUCKET=t=>t>=28?0:t>=23?1:t>=17?2:t>=12?3:t>=5?4:5;
 const KINDS=['아우터','상의','원피스','하의','신발','양말','가방','액세서리'];
@@ -221,16 +232,18 @@ function closet(){
 }
 
 function shopList(){
-  const L=D.shop||[];if(!L.length)return;
+  const L=D.shop||[];if(!L.length)return;loadBought();
   const rounds=[...new Set(L.map(x=>+x.round||0))].sort((a,b)=>b-a);
-  $('scnt').textContent=L.length+'개';
-  $('shop').innerHTML=rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
-    return `<div class="card sh">${x.cat?`<div class="tags"><span>${esc(x.cat)}</span></div>`:''}
+  $('scnt').textContent=L.length+'개';const nb=L.filter(x=>BOUGHT.has(shopKey(x))).length;
+  const HB=Array.isArray(D.bought);
+  $('shop').innerHTML=(HB?`<p class="buyhint">구입했거나 구입할 옷에 체크해 주세요. <b>${nb}/${L.length}</b><br><small>체크하지 않은 옷은 미구입으로 표시되고, 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디와 함께 정리돼요.</small></p>`:'')+rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
+    const bk=shopKey(x),on=BOUGHT.has(bk);return `<div class="card sh${on?' got':''}"><div style="display:flex;align-items:center;gap:8px">${x.cat?`<div class="tags" style="flex:1;margin:0"><span>${esc(x.cat)}</span></div>`:'<span style="flex:1"></span>'}${HB?`${on?'':`<span class="nobuy">미구입${dLeft(x.added)}</span>`}<button class="buy${on?' on':''}" data-bk="${esc(bk)}">${on?'✓ 구입 · 구입 예정':'구입 체크'}</button>`:''}</div>
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
     ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
     ${String(x.note||'').trim()?`<p class="sh-note">${esc(x.note)}</p>`:''}
     ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
   $('shop').querySelectorAll('.sh-it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
+  $('shop').querySelectorAll('.buy').forEach(b=>b.onclick=()=>{const k=b.dataset.bk,on=!BOUGHT.has(k);setBought(k,on);shopList()});
 }
 
 function program(){
