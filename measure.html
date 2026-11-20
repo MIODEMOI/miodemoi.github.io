@@ -10,13 +10,15 @@
 :root{--bg:#f7f2cf;--ink:#111;--muted:#55494f;--line:#111;--accent:#8a6a12;--yellow:#ffe27a;--dark:#23252c}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg)}
-body{color:var(--ink);font:15px/1.65 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all}
-.wrap{max-width:460px;margin:auto;padding:44px max(16px,env(safe-area-inset-right,0px)) 72px max(16px,env(safe-area-inset-left,0px));display:grid;gap:26px}
+body{color:var(--ink);font:15px/1.65 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.02em;word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:460px;width:100%;margin:auto;padding:44px max(16px,env(safe-area-inset-right,0px)) 72px max(16px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+.wrap>*{min-width:0}
 .tag{display:inline-block;width:max-content;border:1px solid #111;padding:5px 10px;font-size:12px;font-weight:700}
 h1{font-size:clamp(28px,7vw,36px);line-height:1.3;font-weight:900;letter-spacing:-.04em;margin:16px 0 0}
 mark{background:var(--dark);color:#fff;padding:0 8px}
 .lead{margin:0;font-size:15px;line-height:1.75}
-.box{background:#fff;padding:22px 18px;display:grid;gap:16px}
+.box{background:#fff;padding:22px 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.box>*{min-width:0}
 h2{display:inline-block;width:max-content;background:var(--dark);color:#fff;font-size:17px;font-weight:700;margin:0;padding:4px 10px}
 .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
 .full{grid-column:1/-1}
@@ -26,7 +28,8 @@ input,select{font:16px "Pretendard",sans-serif;color:var(--ink);background:#fffd
 input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
 .hint{margin:0;font-size:13px;color:var(--muted)}.cond{background:#111;color:#fff;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6}.cond p{margin:0}.cond p+p{margin-top:6px;color:#e8d9df}.cond b{color:#fff}.refbtn{position:relative;display:block;border:1.5px dashed #111;border-radius:12px;padding:13px;text-align:center;font-weight:700;font-size:14px;cursor:pointer;background:#fff}.refbtn small{font-weight:400;color:var(--muted)}.refbtn input{position:absolute;inset:0;opacity:0;cursor:pointer}.refprev{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}.refprev img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}#memo{width:100%;box-sizing:border-box;border:1.5px solid #111;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;resize:vertical}.howto{background:#fff;border:1.5px solid #111;border-radius:16px;margin:0 0 16px;overflow:hidden}.howto summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:13px 16px;font-weight:800;font-size:15px}.howto summary::-webkit-details-marker{display:none}.howto summary em{margin-left:auto;font-style:normal;font-weight:600;font-size:12px;color:#bf5b82}.howto summary em:after{content:" ▾"}.howto[open] summary em:after{content:" ▴"}.howin{padding:0 16px 16px;border-top:1px solid #eee}.rules{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.rules span{font-size:12px;background:#fbf3f6;color:#55494f;border-radius:999px;padding:5px 10px}.seg{display:flex;background:#f3eef0;border-radius:12px;padding:4px;margin-bottom:6px}.seg button{flex:1;border:0;background:none;padding:9px;border-radius:9px;font:inherit;font-weight:700;color:#6b5c63;cursor:pointer}.seg button.on{background:#111;color:#fff}.fig{width:100%;max-width:300px;display:block;margin:8px auto 4px}.fig.tall{max-width:200px}.mlist{list-style:none;margin:0;padding:0}.mlist li{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid #f0e6ea}.mlist i{flex:none;width:24px;height:24px;border-radius:50%;background:#bf5b82;color:#fff;font-style:normal;font-weight:800;font-size:12px;display:grid;place-items:center;margin-top:1px}.mlist b{display:block;font-size:14px}.mlist span{display:block;font-size:13px;color:#6b5c63;line-height:1.5}ol.hint{padding-left:18px;margin:6px 0 0}ol.hint li{margin:3px 0}h3{font-size:14px;margin:14px 0 8px}
 .miss{border-color:#b23a3a;background:#fff1f1}
-.send{background:var(--dark);color:#fff;padding:24px 18px;display:grid;gap:12px}
+.send{background:var(--dark);color:#fff;padding:24px 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.send>*{min-width:0}
 .send h2{background:var(--yellow);color:#111}
 .send p{margin:0;font-size:14px;line-height:1.75;color:#e9e4d6}
 button{font:700 16px "Pretendard",sans-serif;border:0;border-radius:0;padding:15px;cursor:pointer;width:100%}

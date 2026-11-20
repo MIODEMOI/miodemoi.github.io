@@ -45,9 +45,10 @@ input:focus,textarea:focus{outline:none;border-color:var(--navy)}
 .btn.del{background:#fff;color:var(--red);border:1.5px solid #f0d5cf}
 .btn.full{width:100%}
 .list .row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer}
+.list .row>div{min-width:0}
 .list .row:first-child{border-top:0}
 .list .row b{font-size:15.5px}.list .row small{color:var(--muted);font-size:12.5px;display:block}
-.list .row .go{margin-left:auto;color:var(--navy);font-weight:700;font-size:13px}
+.list .row .go{margin-left:auto;color:var(--navy);font-weight:700;font-size:13px;white-space:nowrap;flex:0 0 auto}
 .item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:var(--soft)}
 .item .top{display:flex;gap:12px;align-items:flex-start}
 .ph{width:84px;height:84px;border-radius:12px;background:#fff;border:1.5px dashed #c9c6be;display:grid;place-items:center;flex:none;position:relative;overflow:hidden;cursor:pointer;font-size:12px;color:var(--muted);text-align:center}
