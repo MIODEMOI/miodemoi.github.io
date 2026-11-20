@@ -46,6 +46,12 @@ h2{margin:6px 0 4px;font-size:26px;font-weight:800;letter-spacing:-.03em}
 .shop img{width:110px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;background:#f4f3ef}
 .shop b{display:block;font-size:16px}.shop small{color:var(--muted)}.shop a{color:var(--navy);font-size:13px;word-break:break-all}
 .msg{padding:60px 20px;text-align:center;color:var(--muted)}
+.appp{background:#f7f6f1}
+.appp .card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:24px 22px 20px;margin-top:20px}
+.appp .lead{margin:0 0 14px;font-size:16.5px;font-weight:800;line-height:1.62}
+.appp p{margin:0 0 10px;color:var(--muted)}
+.appp .cta{display:inline-block;margin-top:8px;background:var(--navy);color:#fff;border-radius:10px;padding:11px 18px;font-weight:800;text-decoration:none;font-size:14px}
+.appp .fine{margin:16px 0 0;font-size:12px;color:#8a8e9c;line-height:1.7}
 @media (max-width:600px){.page{padding:28px 20px 44px}.foot{left:20px;right:20px}.cover{min-height:560px}.cover h1{font-size:32px}.ph.n3,.ph.n5,.ph.n6{grid-template-columns:repeat(2,1fr)}}
 @page{size:A4;margin:0}
 @media print{
@@ -55,6 +61,9 @@ h2{margin:6px 0 4px;font-size:26px;font-weight:800;letter-spacing:-.03em}
  .tags span.r{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  .foot{left:15mm;right:15mm;bottom:8mm}
  .ph.n1 img{max-height:none}
+ .appp{background:#f7f6f1;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .appp .card{border-color:#dedbd2}
+ .appp .cta{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -77,6 +86,19 @@ function mkKeys(P,S){const UC={},NM={};P.forEach(o=>new Set(o.photos).forEach(u=
   const ord=ph=>ph.slice().sort((a,b)=>(UC[a]||0)-(UC[b]||0));const keys=o=>ord(o.photos).map(u=>NM[u]).filter(Boolean).slice(0,2);return {ord,keys}}
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 $('pr').onclick=()=>window.print();
+const KAKAO='https://pf.kakao.com/_ESuxln';
+// 이미 '오늘 뭐 입지' 앱을 쓰고 계신 고객이면 앱 안내를 다시 붙이지 않는다
+const appUser=D=>!!(D.app&&D.app.published===true&&D.app.given!==false);
+function appPage(D){
+  if(appUser(D))return '';
+  const who=(D.name||'').replace(/\s*님$/,'');
+  return `<section class="page appp"><div class="eyebrow">NEXT</div><h2>매일의 코디는 앱에서</h2>
+   <p>${who?esc(who)+' 님, ':''}이 스타일링북은 지금 옷장에 있는 옷으로 고른 코디예요.<br>옷이 늘거나 날씨가 바뀌면 앱에서 그날그날 다시 골라 드려요.</p>
+   <div class="card"><p class="lead">퍼스널쇼퍼 3시간(3회) 이상 이용 시, 내 옷과 코디를 매일 관리해 주는 전용 웹앱('오늘 뭐 입지')을 제공해 드려요.</p>
+    <p>기온과 상황에 맞춰 오늘 입을 코디를 앱이 골라 주고, 산 옷과 옷장이 계속 쌓여요.</p>
+    <a class="cta" href="${KAKAO}" target="_blank" rel="noopener">카카오톡으로 문의하기</a>
+    <p class="fine">이 스타일링북은 위의 'PDF로 저장'을 눌러 보관하실 수 있어요.<br>앱·추가 프로그램 문의는 카카오톡 채널 '미오드모이'로 주세요.</p></div><div class="foot"><span>MIO DE MOI</span><span>miodemoi.shop</span></div></section>`;
+}
 function draw(D){
   if(D.draft){$('pages').innerHTML='<p class="msg">스타일링북을 만들고 있어요. 완성되면 미오드모이가 알려 드릴게요.</p>';return}
   const P=(D.outfits||[]).filter(o=>o.photos),S=D.shop||[];
@@ -91,12 +113,13 @@ function draw(D){
   if(S.length){const rs=[...new Set(S.map(x=>+x.round||0))].sort((a,b)=>b-a);
     html+=`<section class="page"><div class="eyebrow">SHOPPING LIST</div><h2>쇼핑 리스트</h2>${rs.map(r=>`<p class="eyebrow" style="margin-top:18px;color:var(--navy)">${r?r+'회차 쇼핑':'추천'}</p>`+S.filter(x=>(+x.round||0)===r).map(x=>`<div class="shop">${x.img?`<img src="${esc(x.img)}" alt="" referrerpolicy="no-referrer">`:'<span></span>'}<div>${x.cat?`<small>${esc(x.cat)}</small>`:''}<b>${esc(x.name||'')}</b>${szs(x.season)?`<small style="display:block;color:var(--navy);font-weight:700">입는 계절 · ${szs(x.season)}</small>`:''}${x.note?`<p style="margin:6px 0">${esc(x.note)}</p>`:''}${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a>`:''}</div></div>`).join('')).join('')}${foot(++n)}</section>`}
   if(!P.length&&!S.length)html+='<section class="page"><p class="msg">아직 스타일링북 페이지가 없어요.</p></section>';
+  html+=appPage(D);
   $('pages').innerHTML=html;document.title=(D.name?D.name+' 님 ':'')+'스타일링북 | 미오드모이';
 }
 (async()=>{
   if(window.DEMO)return draw(window.DEMO);
   if(!code){$('pages').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
-  try{const j=JSON.parse(await sbGet(code));if(j.error)throw 0;draw(j)}
+  try{const j=JSON.parse(await sbGet(code,'stylebook'));if(j.error)throw 0;draw(j)}
   catch(e){$('pages').innerHTML='<p class="msg">스타일링북을 불러오지 못했어요. 잠시 후 다시 열어 주세요.</p>'}
 })();
 </script>
