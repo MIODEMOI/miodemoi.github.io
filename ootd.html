@@ -147,12 +147,13 @@ const sbGet=async(code,app)=>{
 const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,500);
 let BOUGHT=new Set();
 function loadBought(){BOUGHT=new Set(D.bought||[])}
-const leftDays=a=>{if(!a)return null;const t=new Date(a);if(isNaN(t))return null;const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?n:null};
+const leftDays=a=>{if(!a)return null;const t=new Date(String(a).slice(0,10)+'T04:00:00+09:00');if(isNaN(t))return null;const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?n:null};
 const EXEMPT=()=>['nbvc8rkq'].includes(code);/* Supabase purge_exempt_customers 와 같게 */
 const dLeft=a=>{if(EXEMPT())return '';const n=leftDays(a);return n?' · '+n+'일 뒤 정리':''};
 async function setBought(k,on){on?BOUGHT.add(k):BOUGHT.delete(k);D.bought=[...BOUGHT];
-  try{const r=await fetch(SB+'/rest/v1/rpc/set_purchase',{method:'POST',headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY,'Content-Type':'application/json'},body:JSON.stringify({p_code:code,p_key:k,p_on:on})});if(!r.ok)throw 0}
-  catch(e){toast('체크가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.')}}
+  try{const r=await fetch(SB+'/rest/v1/rpc/set_purchase',{method:'POST',headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY,'Content-Type':'application/json'},body:JSON.stringify({p_code:code,p_key:k,p_on:on})});if(!r.ok)throw 0;const j=await r.json().catch(()=>null);if(!j||j.ok!==true)throw 0}
+  catch(e){on?BOUGHT.delete(k):BOUGHT.add(k);D.bought=[...BOUGHT];shopList();if(typeof noti==='function')try{noti()}catch(_){}toast('체크가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.')}}
+function toast(m){let t=document.getElementById('mtoast');if(!t){t=document.createElement('div');t.id='mtoast';t.style.cssText='position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#16181f;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:99;max-width:90vw;text-align:center;transition:opacity .3s';document.body.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2600)}
 const KAKAO="http://pf.kakao.com/_ESuxln";
 const BUCKET=t=>t>=28?0:t>=23?1:t>=17?2:t>=12?3:t>=5?4:5;
 const KINDS=['아우터','상의','원피스','하의','신발','양말','가방','액세서리'];

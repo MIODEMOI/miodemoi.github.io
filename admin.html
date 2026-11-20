@@ -643,7 +643,7 @@ const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
 $('pvR').onclick=preview;
 const PURGE_EXEMPT=['nbvc8rkq'];/* Supabase public.purge_exempt_customers 와 같게 유지 */
-const dLeft=a=>{if(PURGE_EXEMPT.includes(S&&S.code))return '';if(!a)return '';const t=new Date(a);if(isNaN(t))return '';const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?' · '+n+'일 뒤 삭제':' · 곧 삭제'};
+const dLeft=a=>{if(PURGE_EXEMPT.includes(S&&S.code))return '';if(!a)return '';const t=new Date(String(a).slice(0,10)+'T04:00:00+09:00');if(isNaN(t))return '';const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?' · '+n+'일 뒤 삭제':' · 곧 삭제'};
 const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,500);
 document.addEventListener('click',e=>{if(e.target.id!=='rmNo')return;const BG=new Set(S.bought||[]),no=S.sp.shop.filter(x=>!BG.has(shopKey(x)));
   if(!confirm(`고객이 체크하지 않은 미구입 ${no.length}개를 쇼핑 리스트에서 지울까요?\n(저장해야 반영돼요)`))return;S.sp.shop=S.sp.shop.filter(x=>BG.has(shopKey(x)));dirty=true;renderShop();status()});
