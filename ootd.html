@@ -148,7 +148,8 @@ const shopKey=x=>String(x.img||x.url||((+x.round||0)+'|'+(x.name||''))).slice(0,
 let BOUGHT=new Set();
 function loadBought(){BOUGHT=new Set(D.bought||[])}
 const leftDays=a=>{if(!a)return null;const t=new Date(a);if(isNaN(t))return null;const e=new Date(t);e.setMonth(e.getMonth()+3);const n=Math.ceil((e-Date.now())/864e5);return n>0?n:null};
-const dLeft=a=>{const n=leftDays(a);return n?' · '+n+'일 뒤 정리':''};
+const EXEMPT=()=>['nbvc8rkq'].includes(code);/* Supabase purge_exempt_customers 와 같게 */
+const dLeft=a=>{if(EXEMPT())return '';const n=leftDays(a);return n?' · '+n+'일 뒤 정리':''};
 async function setBought(k,on){on?BOUGHT.add(k):BOUGHT.delete(k);D.bought=[...BOUGHT];
   try{const r=await fetch(SB+'/rest/v1/rpc/set_purchase',{method:'POST',headers:{apikey:SBKEY,authorization:'Bearer '+SBKEY,'Content-Type':'application/json'},body:JSON.stringify({p_code:code,p_key:k,p_on:on})});if(!r.ok)throw 0}
   catch(e){toast('체크가 저장되지 않았어요. 잠시 후 다시 눌러 주세요.')}}
@@ -268,7 +269,7 @@ function shopList(){
   const rounds=[...new Set(L.map(x=>+x.round||0))].sort((a,b)=>b-a);
   $('scnt').textContent=L.length+'개';const nb=L.filter(x=>BOUGHT.has(shopKey(x))).length;
   const HB=Array.isArray(D.bought);
-  $('shop').innerHTML=(HB?`<p class="buyhint">구입했거나 구입할 옷에 체크해 주세요. <b>${nb}/${L.length}</b><br><small>체크하지 않은 옷은 미구입으로 표시되고, 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디와 함께 정리돼요.</small></p>`:'')+rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
+  $('shop').innerHTML=(HB?`<p class="buyhint">구입했거나 구입할 옷에 체크해 주세요. <b>${nb}/${L.length}</b><br>${EXEMPT()?'':`<small>체크하지 않은 옷은 미구입으로 표시되고, 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디와 함께 정리돼요.</small>`}</p>`:'')+rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
     const bk=shopKey(x),on=BOUGHT.has(bk);return `<div class="card sh${on?' got':''}"><div style="display:flex;align-items:center;gap:8px">${x.cat?`<div class="tags" style="flex:1;margin:0"><span>${esc(x.cat)}</span></div>`:'<span style="flex:1"></span>'}${HB?`${on?'':`<span class="nobuy">미구입${dLeft(x.added)}</span>`}<button class="buy${on?' on':''}" data-bk="${esc(bk)}">${on?'✓ 구입 · 구입 예정':'구입 체크'}</button>`:''}</div>
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
     ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
