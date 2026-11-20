@@ -321,7 +321,8 @@ function perkCard(){
     when=exp?`혜택 기간이 끝났어요 · ${ymd(end)}까지`:`${ymd(end)}까지${days===0?' · 오늘까지':` · D-${days}`}`;
     note=`리포트 발급일 ${ymd(rd)} 기준 3개월`;
   }
-  return `<div class="card perk${exp?' exp':''}"><p class="k">MEMBERS BENEFIT</p><p class="perk-t">다른 프로그램 이용 시 <em>10%</em> 할인</p><p class="perk-d">퍼스널컬러 · 얼굴형 · 체형분석 · 퍼스널쇼퍼 중 아직 받지 않으신 프로그램을 이어서 이용하시면 결제 금액의 10%를 할인해 드려요.</p><p class="perk-when">${when}${note?`<small>${note}</small>`:''}</p></div>`;
+  const desc=exp?'리포트를 받으신 뒤 3개월 동안 드리는 혜택이에요. 지금은 혜택 기간이 지났어요.':'퍼스널컬러 · 얼굴형 · 체형분석 · 퍼스널쇼퍼 중 아직 받지 않으신 프로그램을 이어서 이용하시면 결제 금액의 10%를 할인해 드려요.';
+  return `<div class="card perk${exp?' exp':''}"><p class="k">MEMBERS BENEFIT</p><p class="perk-t">다른 프로그램 이용 시 <em>10%</em> 할인</p><p class="perk-d">${desc}</p><p class="perk-when">${when}${note?`<small>${note}</small>`:''}</p></div>`;
 }
 function styleTab(){
   return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어|퍼스널컬러/.test(s.sec))+
