@@ -80,10 +80,16 @@ h2 small{font-size:13px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--teal));border-radius:99px}
 .done{color:var(--teal);font-weight:800}
 nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav div{display:flex;max-width:480px;width:100%}
-nav button{flex:1;border:0;background:none;padding:9px 0 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+/* 하단 메뉴는 어떤 폭에서도 1줄 — 넘치면 가로 스크롤, 절대 줄바꿈하지 않습니다 */
+nav div{display:flex;flex-wrap:nowrap;max-width:480px;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+nav div::-webkit-scrollbar{display:none}
+/* 넘칠 때 오른쪽 끝을 살짝 어둡게 해서 더 있다는 걸 알 수 있게 */
+nav div.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%)}
+nav button{flex:1 0 auto;white-space:nowrap;min-width:58px;border:0;background:none;padding:9px 9px 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button:first-child{margin-left:auto}nav button:last-child{margin-right:auto}
 nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button[aria-current="true"]{color:var(--navy)}
+@media(min-width:620px){nav div{max-width:860px}}
 footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-height:1.6}
 [hidden]{display:none!important}
 .shop-r{margin:22px 0 -4px;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--navy)}
@@ -106,8 +112,11 @@ html.embed header,html.embed .a2hs{display:none!important}html.embed body{paddin
 /* 리포트 안에 들어갈 때: 탭은 리포트 것 하나만 — 앱 탭바는 숨기고 오늘 코디만 보여줍니다 */
 html.embed nav{display:none!important}
 html.embed .wrap{padding-top:12px}
+/* 분석 항목을 보고 있을 때: 파란 헤더와 구입 체크 배너를 감추고 분석 내용만 위에서부터 */
+html.sec header,html.sec .noti{display:none!important}
+html.sec .wrap{padding-top:14px}
 .noti .nb{margin-left:auto;border:0;background:var(--navy);color:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}nav button[hidden]{display:none!important}
-.repwrap{margin:4px -4px 10px;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08)}.repwrap iframe{display:block;width:100%;height:calc(100svh - 130px);min-height:420px;border:0}.repopen{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--navy);padding:6px 0 14px;text-decoration:none}
+.repwrap{margin:4px -4px 10px;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08)}.repwrap iframe{display:block;width:100%;height:70svh;min-height:360px;border:0}.repopen{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--navy);padding:6px 0 14px;text-decoration:none}
 </style>
 </head>
 <body>
@@ -133,17 +142,16 @@ html.embed .wrap{padding-top:12px}
 
 <section id="t-shop" hidden><h2>쇼핑 리스트 <small id="scnt" style="color:var(--muted);font-weight:400"></small></h2><p class="note" style="margin-top:-4px">미오드모이가 골라 드린 아이템이에요. 링크를 누르면 상품 페이지로 이동해요.</p><div id="shop"></div></section>
 
-<section id="t-rep" hidden><div class="repwrap"><iframe id="repf" title="내 분석 리포트"></iframe></div><a class="repopen" id="repo" target="_blank" rel="noopener">새 창으로 크게 보기 →</a></section>
+<section id="t-sec" hidden><div class="repwrap"><iframe id="repf" title="내 분석"></iframe></div><a class="repopen" id="repo" target="_blank" rel="noopener">새 창으로 크게 보기 →</a></section>
 
 <section id="t-prog" hidden><div id="prog"></div></section>
 
 <footer>© 미오드모이(MIO DE MOI). 고객님 전용 페이지예요.<br>링크를 다른 분께 공유하지 말아 주세요.</footer>
 </div>
-<nav><div>
+<nav><div id="navrow">
  <button data-t="today" aria-current="true"><svg viewBox="0 0 24 24"><path d="M8 3l4 3 4-3 5 3-2 5-3-1v11H8V10l-3 1-2-5z"/></svg>오늘 코디</button>
  <button data-t="closet"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9.5 11v2M14.5 11v2"/></svg>내 옷장</button>
  <button data-t="shop"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.5H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>쇼핑 리스트</button>
- <button data-t="rep" hidden><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h5"/></svg>내 분석</button>
  <button data-t="prog"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14.5l2.5 2.5 5-5"/></svg>내 프로그램</button>
 </div></nav>
 <script>
@@ -187,11 +195,19 @@ const grp=i=>rnd(i)===0?'기존 옷':isNew(i)?'이번 쇼핑':'지난 쇼핑';
 const lab=i=>rnd(i)===0?'기존':isNew(i)?'NEW':rnd(i)+'회차';
 const tile=(id,i)=>`<button class="it" data-id="${esc(id)}"><span class="badge ${isNew(i)?'new':rnd(i)?'past':''}">${lab(i)}</span><img src="${esc(i.img)}" alt="${esc(i.name)}" loading="lazy" referrerpolicy="no-referrer"><div>${esc(i.name)}<em>${esc(i.kind)}</em></div></button>`;
 
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
-function tab(t){
-  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
-  ['today','closet','shop','rep','prog'].forEach(x=>$('t-'+x).hidden=x!==t);
-  if(t==='rep'&&!$('repf').src){const u='report.html?c='+encodeURIComponent(code);$('repf').src=u+'&embed=1';$('repo').href=u}
+$('navrow').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.sec)tab('sec',b.dataset.sec);else if(b.dataset.t)tab(b.dataset.t)});
+function navHint(){const r=$('navrow');if(r)r.classList.toggle('more',r.scrollWidth>r.clientWidth+2&&r.scrollLeft+r.clientWidth<r.scrollWidth-2)}
+$('navrow').addEventListener('scroll',navHint,{passive:true});addEventListener('resize',navHint);
+function tab(t,s){
+  if(t==='sec')s=s||sec||(SECS[0]&&SECS[0].k);
+  document.querySelectorAll('nav button').forEach(b=>{
+    const on=t==='sec'?b.dataset.sec===s:b.dataset.t===t;
+    if(on)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');
+  });
+  ['today','closet','shop','sec','prog'].forEach(x=>$('t-'+x).hidden=x!==t);
+  document.documentElement.classList.toggle('sec',t==='sec');
+  if(t==='sec')showSec(s);
   window.scrollTo(0,0);
   noti();
 }
@@ -295,6 +311,60 @@ function shopList(){
   $('shop').querySelectorAll('.buy').forEach(b=>b.onclick=()=>{const k=b.dataset.bk,on=!BOUGHT.has(k);setBought(k,on);shopList()});
 }
 
+/* ---- 분석 항목: 이 고객 리포트(p_app=report)에 실제로 있는 섹션만 하단 메뉴 한 줄에 넣습니다 ---- */
+let REP=null,SECS=[],sec='';
+const ICON={
+ color:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9.5" r="1.3"/><circle cx="15" cy="9.5" r="1.3"/><circle cx="8.6" cy="14.6" r="1.3"/><circle cx="14.4" cy="15.4" r="1.3"/></svg>',
+ face:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.8 10.4h.01M15.2 10.4h.01M9.2 14.8c1.6 1.5 4 1.5 5.6 0"/></svg>',
+ body:'<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><path d="M12 7.4v6.2m0 0-2.6 6.2M12 13.6l2.6 6.2M6.6 10.2h10.8"/></svg>',
+ style:'<svg viewBox="0 0 24 24"><path d="M12 3.6a2 2 0 0 1 1 3.75V9l7 7v3.4H4V16l7-7V7.35A2 2 0 0 1 12 3.6z"/></svg>',
+ brand:'<svg viewBox="0 0 24 24"><path d="M4 10.2V4.6h5.6L20.6 15.6l-5 5z"/><circle cx="7.6" cy="7.8" r="1.2"/></svg>',
+ pcprod:'<svg viewBox="0 0 24 24"><path d="M10 4h4v5.5H10z"/><path d="M7 9.5h10l1.5 10.5h-13z"/></svg>'};
+const nz=v=>Array.isArray(v)?v.some(x=>String(x??'').trim()):!!String(v??'').trim();
+const hasC=R=>{const C=R.color||{};return nz(C.main)||nz(C.value)||nz(C.chroma)||nz(C.contrast)||nz(C.notes)||nz(C.combos)||nz(C.tit)||nz(C.tot)||(C.tees||[]).some(t=>t&&t.img)};
+const hasF=R=>{const F=R.face||{};return nz(F.type)||(F.f||[]).length>0||nz(F.hair)||nz(F.avoid)||nz(F.notes)||nz(F.balance)||nz(F.glasses)};
+const hasB=R=>{const B=R.body||{};return nz(B.type)||Object.keys(B.m||{}).length>0||nz(B.notes)||nz(B.good)||nz(B.avoid)||nz(B.summary)};
+const SHOPC=['OUTER','INNER','PANTS','ACCESSORIES','DRESS','SKIRT'];
+function sections(R){
+  const out=[];if(!R||R.error||/퍼스널쇼퍼만/.test(R.kind||''))return out;
+  const pcm=/퍼스널컬러/.test(R.kind||''),fc=!pcm&&/패션컨설팅/.test(R.kind||''),fem=/^여/.test(R.sex||'');
+  if(pcm){out.push({k:'color',n:'퍼스널컬러'});if((R.products||[]).length)out.push({k:'pcprod',n:fem?'메이크업':'스킨케어'});return out}
+  if(hasC(R))out.push({k:'color',n:'퍼스널컬러'});
+  if(hasF(R))out.push({k:'face',n:'얼굴형'});
+  if(hasB(R))out.push({k:'body',n:'체형'});
+  if((R.styles||[]).some(s=>(s.items||[]).length)||fem)out.push({k:'style',n:'스타일'});
+  if(fc&&(R.products||[]).some(p=>SHOPC.includes(p.cat)))out.push({k:'brand',n:'브랜드'});
+  return out;
+}
+function buildNav(){
+  const row=$('navrow');if(!row)return;
+  row.querySelectorAll('button[data-sec]').forEach(b=>b.remove());
+  SECS=sections(REP);
+  const prog=row.querySelector('button[data-t="prog"]');
+  SECS.forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.sec=s.k;
+    b.innerHTML=(ICON[s.k]||'')+s.n;if(prog)row.insertBefore(b,prog);else row.appendChild(b)});
+  if(sec&&!SECS.some(s=>s.k===sec)){sec='';if($('t-sec')&&!$('t-sec').hidden)tab('today')}
+  navHint();
+}
+function showSec(k){
+  sec=k;const f=$('repf');if(!f)return;
+  const u='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(k);
+  $('repo').href='report.html?c='+encodeURIComponent(code)+(k?'&sec='+encodeURIComponent(k):'');
+  if(!f.dataset.on){f.dataset.on='1';f.src=u}
+  else{f.style.height='';try{f.contentWindow.postMessage({t:'mio-report-show',sec:k},'*')}catch(e){}}
+}
+async function loadRep(){
+  if(!code)return;
+  const K='mio-rep-'+code;let c=null;
+  try{c=localStorage.getItem(K);if(c){REP=JSON.parse(c);buildNav()}}catch(e){}
+  try{const t=await sbGet(code,'report');const j=JSON.parse(t);
+    const ok=j&&!j.error&&j.kind&&!/퍼스널쇼퍼만/.test(j.kind);
+    if(ok){REP=j;try{localStorage.setItem(K,t)}catch(e){}}
+    else{REP=null;try{localStorage.removeItem(K)}catch(e){}}
+    buildNav();
+  }catch(e){}
+}
+
 function program(){
   const P=D.program;if(!P){$('prog').innerHTML='<p class="msg">프로그램 정보가 아직 없어요.</p>';return}
   const part=(label,x)=>{if(!x||!x.total)return'';const left=x.total-x.used;return`<div class="row"><b>${esc(label)}</b><span class="${left?'':'done'}">${left?`${left}${esc(x.unit)} 남음`:'완료 ✓'} <small style="color:var(--muted)">(${x.used}/${x.total}${esc(x.unit)})</small></span></div><div class="bar"><i style="width:${Math.min(100,x.used/x.total*100)}%"></i></div>`};
@@ -317,8 +387,9 @@ function start(){
 }
 
 (async()=>{
-  if(D){start();return}
   if(!code){$('out').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
+  loadRep();
+  if(D){start();return}
   const CK='mio-ootd-'+code;let cached=null;
   try{cached=localStorage.getItem(CK);if(cached){D=JSON.parse(cached);start()}}catch(e){cached=null}
   try{
@@ -354,7 +425,7 @@ function start(){
 <script>if(document.documentElement.classList.contains('embed')){document.querySelector('nav').hidden=true}
 /* 리포트는 탭 없이 한 페이지로 열리고, 자기 높이를 알려 줍니다 — 그 높이에 맞춰 iframe을 늘려 한 번에 스크롤 */
 addEventListener('message',function(e){var d=e.data;if(!d||d.t!=='mio-report-height')return;var f=document.getElementById('repf');if(!f||e.source!==f.contentWindow)return;var h=Math.ceil(+d.h||0);if(h>0)f.style.height=Math.max(420,Math.min(30000,h))+'px'})</script>
-<script>(function(){if(document.documentElement.classList.contains('embed'))return;var c=new URLSearchParams(location.search).get('c');if(!c)return;
-  sbGet(c,'report').then(function(t){var j=JSON.parse(t);if(j&&!j.error&&j.kind&&!/퍼스널쇼퍼만/.test(j.kind)){var b=document.querySelector('nav button[data-t="rep"]');if(b)b.hidden=false}}).catch(function(){})})();</script>
+<script>/* 분석 섹션 iframe이 늦게 뜬 경우: 지금 보고 있는 섹션으로 한 번 더 맞춰 줍니다 */
+(function(){var f=document.getElementById('repf');if(!f)return;f.addEventListener('load',function(){try{var u=new URL(f.src,location.href).searchParams.get('sec')||'';if(sec&&sec!==u)f.contentWindow.postMessage({t:'mio-report-show',sec:sec},'*')}catch(e){}})})();</script>
 </body>
 </html>
