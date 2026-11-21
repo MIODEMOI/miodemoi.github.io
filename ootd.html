@@ -87,7 +87,7 @@ nav div::-webkit-scrollbar{display:none}
 nav div.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%)}
 nav button{flex:1 0 auto;white-space:nowrap;min-width:58px;border:0;background:none;padding:9px 9px 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button:first-child{margin-left:auto}nav button:last-child{margin-right:auto}
-nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 nav button[aria-current="true"]{color:var(--navy)}
 @media(min-width:620px){nav div{max-width:860px}}
 footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-height:1.6}
@@ -149,10 +149,10 @@ html.sec .wrap{padding-top:14px}
 <footer>© 미오드모이(MIO DE MOI). 고객님 전용 페이지예요.<br>링크를 다른 분께 공유하지 말아 주세요.</footer>
 </div>
 <nav><div id="navrow">
- <button data-t="today" aria-current="true"><svg viewBox="0 0 24 24"><path d="M8 3l4 3 4-3 5 3-2 5-3-1v11H8V10l-3 1-2-5z"/></svg>오늘 코디</button>
- <button data-t="closet"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9.5 11v2M14.5 11v2"/></svg>내 옷장</button>
- <button data-t="shop"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.5H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>쇼핑 리스트</button>
- <button data-t="prog"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14.5l2.5 2.5 5-5"/></svg>내 프로그램</button>
+ <button data-t="today" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9.6V8.2a2.1 2.1 0 1 0-2.1-2.1"/><path d="M12 9.6 3.6 16.7a1.3 1.3 0 0 0 .8 2.3h15.2a1.3 1.3 0 0 0 .8-2.3L12 9.6Z"/></svg>오늘 코디</button>
+ <button data-t="closet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.3C10.5 5.1 8.5 4.6 6 4.6H3.7v13.2H6c2.5 0 4.5.5 6 1.7 1.5-1.2 3.5-1.7 6-1.7h2.3V4.6H18c-2.5 0-4.5.5-6 1.7Z"/><path d="M12 6.3v13.2"/></svg>내 옷장</button>
+ <button data-t="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 8.1h11.2l.9 12.3H5.5z"/><path d="M9.2 8.1V6.3a2.8 2.8 0 0 1 5.6 0v1.8"/></svg>쇼핑 리스트</button>
+ <button data-t="prog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.4"/><path d="M3.6 9.9h16.8M8.3 3.4v3.6M15.7 3.4v3.6M9.3 15.4l1.9 1.9 3.6-3.7"/></svg>내 프로그램</button>
 </div></nav>
 <script>
 const SB="https://faewczlsnpsrfitptmmr.supabase.co";
@@ -313,13 +313,15 @@ function shopList(){
 
 /* ---- 분석 항목: 이 고객 리포트(p_app=report)에 실제로 있는 섹션만 하단 메뉴 한 줄에 넣습니다 ---- */
 let REP=null,SECS=[],sec='';
+const SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
 const ICON={
- color:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9.5" r="1.3"/><circle cx="15" cy="9.5" r="1.3"/><circle cx="8.6" cy="14.6" r="1.3"/><circle cx="14.4" cy="15.4" r="1.3"/></svg>',
- face:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.8 10.4h.01M15.2 10.4h.01M9.2 14.8c1.6 1.5 4 1.5 5.6 0"/></svg>',
- body:'<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><path d="M12 7.4v6.2m0 0-2.6 6.2M12 13.6l2.6 6.2M6.6 10.2h10.8"/></svg>',
- style:'<svg viewBox="0 0 24 24"><path d="M12 3.6a2 2 0 0 1 1 3.75V9l7 7v3.4H4V16l7-7V7.35A2 2 0 0 1 12 3.6z"/></svg>',
- brand:'<svg viewBox="0 0 24 24"><path d="M4 10.2V4.6h5.6L20.6 15.6l-5 5z"/><circle cx="7.6" cy="7.8" r="1.2"/></svg>',
- pcprod:'<svg viewBox="0 0 24 24"><path d="M10 4h4v5.5H10z"/><path d="M7 9.5h10l1.5 10.5h-13z"/></svg>'};
+ color:SVG+'<path d="M3.9 12.4A10.2 10.2 0 0 1 20.1 12.4L12 19.8Z"/><path d="M8.65 9.2 12 19.8M15.35 9.2 12 19.8"/><circle cx="12" cy="19.8" r=".9"/></svg>',
+ face:SVG+'<path d="M12 3.6a6.3 6.3 0 1 0 0 12.6 6.3 6.3 0 0 0 0-12.6Z"/><path d="M12 16.2v3.2"/><path d="M10.4 20.4h3.2"/></svg>',
+ body:SVG+'<path d="M9.4 4.2h5.2"/><path d="M10.2 4.2c0 2.3-2.9 3.1-2.9 5.9 0 2.2 1.5 2.9 1.5 4.9 0 1.9-.9 3.4-1.5 4.9h9.4c-.6-1.5-1.5-3-1.5-4.9 0-2 1.5-2.7 1.5-4.9 0-2.8-2.9-3.6-2.9-5.9"/></svg>',
+ style:SVG+'<path d="M11.8 3.4c.55 4.1 2.05 5.6 6.15 6.15-4.1.55-5.6 2.05-6.15 6.15-.55-4.1-2.05-5.6-6.15-6.15C9.75 9 11.25 7.5 11.8 3.4Z"/><path d="M17.9 15.9c.28 2 .98 2.7 2.98 2.98-2 .28-2.7.98-2.98 2.98-.28-2-.98-2.7-2.98-2.98 2-.28 2.7-.98 2.98-2.98Z"/></svg>',
+ brand:SVG+'<path d="M20.4 13.1 13.1 20.4a1.2 1.2 0 0 1-1.7 0L3.6 12.6V3.6h9l7.8 7.8a1.2 1.2 0 0 1 0 1.7Z"/><circle cx="7.6" cy="7.6" r="1.1"/></svg>',
+ pcprod:SVG+'<path d="M9.3 10h5.4v10.4H9.3z"/><path d="M10.4 10V6.4l3.3-2.9v6.5"/><path d="M9.3 12.9h5.4"/></svg>',
+ skin:SVG+'<path d="M9.6 3.6h4.8v3.2H9.6z"/><path d="M10.4 6.8h3.2v10a1.6 1.6 0 0 1-1.6 1.6 1.6 1.6 0 0 1-1.6-1.6z"/><path d="M10.6 10.6h2.8"/></svg>'};
 const nz=v=>Array.isArray(v)?v.some(x=>String(x??'').trim()):!!String(v??'').trim();
 const hasC=R=>{const C=R.color||{};return nz(C.main)||nz(C.value)||nz(C.chroma)||nz(C.contrast)||nz(C.notes)||nz(C.combos)||nz(C.tit)||nz(C.tot)||(C.tees||[]).some(t=>t&&t.img)};
 const hasF=R=>{const F=R.face||{};return nz(F.type)||(F.f||[]).length>0||nz(F.hair)||nz(F.avoid)||nz(F.notes)||nz(F.balance)||nz(F.glasses)};
@@ -342,7 +344,8 @@ function buildNav(){
   SECS=sections(REP);
   const prog=row.querySelector('button[data-t="prog"]');
   SECS.forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.sec=s.k;
-    b.innerHTML=(ICON[s.k]||'')+s.n;if(prog)row.insertBefore(b,prog);else row.appendChild(b)});
+    const ic=s.k==='pcprod'&&s.n==='스킨케어'?ICON.skin:ICON[s.k];
+    b.innerHTML=(ic||'')+s.n;if(prog)row.insertBefore(b,prog);else row.appendChild(b)});
   if(sec&&!SECS.some(s=>s.k===sec)){sec='';if($('t-sec')&&!$('t-sec').hidden)tab('today')}
   navHint();
 }
