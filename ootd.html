@@ -149,9 +149,9 @@ html.sec .wrap{padding-top:14px}
 <footer>© 미오드모이(MIO DE MOI). 고객님 전용 페이지예요.<br>링크를 다른 분께 공유하지 말아 주세요.</footer>
 </div>
 <nav><div id="navrow">
+ <button data-t="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 8.1h11.2l.9 12.3H5.5z"/><path d="M9.2 8.1V6.3a2.8 2.8 0 0 1 5.6 0v1.8"/></svg>쇼핑 리스트</button>
  <button data-t="today" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9.6V8.2a2.1 2.1 0 1 0-2.1-2.1"/><path d="M12 9.6 3.6 16.7a1.3 1.3 0 0 0 .8 2.3h15.2a1.3 1.3 0 0 0 .8-2.3L12 9.6Z"/></svg>오늘 코디</button>
  <button data-t="closet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.3C10.5 5.1 8.5 4.6 6 4.6H3.7v13.2H6c2.5 0 4.5.5 6 1.7 1.5-1.2 3.5-1.7 6-1.7h2.3V4.6H18c-2.5 0-4.5.5-6 1.7Z"/><path d="M12 6.3v13.2"/></svg>내 옷장</button>
- <button data-t="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 8.1h11.2l.9 12.3H5.5z"/><path d="M9.2 8.1V6.3a2.8 2.8 0 0 1 5.6 0v1.8"/></svg>쇼핑 리스트</button>
  <button data-t="prog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.4"/><path d="M3.6 9.9h16.8M8.3 3.4v3.6M15.7 3.4v3.6M9.3 15.4l1.9 1.9 3.6-3.7"/></svg>내 프로그램</button>
 </div></nav>
 <script>
@@ -342,10 +342,11 @@ function buildNav(){
   const row=$('navrow');if(!row)return;
   row.querySelectorAll('button[data-sec]').forEach(b=>b.remove());
   SECS=sections(REP);
-  const prog=row.querySelector('button[data-t="prog"]');
+  /* 분석 항목은 하단 메뉴 맨 앞에 붙는다: 분석들 → 쇼핑 리스트 → 오늘 코디 → 스타일링북 → 내 프로그램 */
+  const head=row.firstElementChild;
   SECS.forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.sec=s.k;
     const ic=s.k==='pcprod'&&s.n==='스킨케어'?ICON.skin:ICON[s.k];
-    b.innerHTML=(ic||'')+s.n;if(prog)row.insertBefore(b,prog);else row.appendChild(b)});
+    b.innerHTML=(ic||'')+s.n;row.insertBefore(b,head)});
   if(sec&&!SECS.some(s=>s.k===sec)){sec='';if($('t-sec')&&!$('t-sec').hidden)tab('today')}
   navHint();
 }
