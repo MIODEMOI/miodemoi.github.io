@@ -88,8 +88,8 @@ nav div::-webkit-scrollbar{display:none}
 #t-sec.off{display:block!important;position:absolute;left:16px;right:16px;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none;z-index:-1}
 nav button{flex:1 0 auto;white-space:nowrap;min-width:58px;border:0;background:none;padding:9px 9px 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button:first-child{margin-left:auto}nav button:last-child{margin-right:auto}
-/* 누를 때 손맛: 기본 파란 하이라이트 대신 살짝 눌리는 느낌, 선택 색은 부드럽게 */
-nav button{-webkit-tap-highlight-color:transparent;transition:color .18s ease,opacity .12s ease}
+/* 누를 때 손맛: 기본 파란 하이라이트 대신 살짝 눌리는 느낌, 선택 색은 애니메이션 없이 즉시 */
+nav button{-webkit-tap-highlight-color:transparent}
 nav button:active{opacity:.55}
 nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 nav button[aria-current="true"]{color:var(--navy)}
@@ -208,23 +208,16 @@ function navHint(){const r=$('navrow');if(!r)return;
       :l?'linear-gradient(90deg,transparent 0,#000 20px,#000 100%)'
       :'linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%)'}
   r.style.webkitMaskImage=m;r.style.maskImage=m}
-/* 누른 탭이 가려져 있으면 하단 메뉴를 부드럽게 가운데로 당겨 옵니다 */
+/* 누른 탭이 잘려 있으면 하단 메뉴를 필요한 만큼만 즉시 당겨 옵니다 (움직이는 스크롤 없음) */
 function centerNav(b){const r=$('navrow');if(!r||!b)return;
   const rb=b.getBoundingClientRect(),rr=r.getBoundingClientRect(),max=r.scrollWidth-r.clientWidth;
   if(max<=2)return;
   if(rb.left>=rr.left+8&&rb.right<=rr.right-8)return;   /* 이미 다 보이면 그대로 */
-  const left=Math.max(0,Math.min(r.scrollLeft+(rb.left+rb.width/2)-(rr.left+rr.width/2),max));
-  try{r.scrollTo({left:left,behavior:'smooth'})}catch(e){r.scrollLeft=left}
+  r.scrollLeft=Math.max(0,Math.min(r.scrollLeft+(rb.left+rb.width/2)-(rr.left+rr.width/2),max));
 }
 $('navrow').addEventListener('scroll',navHint,{passive:true});
 addEventListener('resize',()=>{navHint();centerNav(document.querySelector('#navrow button[aria-current="true"]'))});
-/* 패널 전환은 짧은 페이드로 — 높이가 확 바뀌는 순간을 감춥니다 */
-function fade(el,to,ms){if(!el)return;clearTimeout(el._ft);
-  el.style.transition='opacity '+(ms||150)+'ms ease';el.style.opacity=String(to);
-  el._ft=setTimeout(()=>{el.style.transition='';if(to===1)el.style.opacity=''},(ms||150)+40)}
-function showPanel(el,ms){if(!el)return;el.style.transition='none';el.style.opacity='0';void el.offsetWidth;
-  el.style.transition='opacity '+(ms||160)+'ms ease';el.style.opacity='1';
-  clearTimeout(el._ft);el._ft=setTimeout(()=>{el.style.transition='';el.style.opacity=''},(ms||160)+40)}
+/* 패널 전환은 애니메이션 없이 즉시 — 페이드·opacity·트랜지션을 쓰지 않습니다 */
 let curTab='today';
 function tab(t,s){
   if(t==='sec')s=s||sec||(SECS[0]&&SECS[0].k);
@@ -233,18 +226,14 @@ function tab(t,s){
     const on=t==='sec'?b.dataset.sec===s:b.dataset.t===t;
     if(on){b.setAttribute('aria-current','true');active=b}else b.removeAttribute('aria-current');
   });
-  const from=curTab,next=$('t-'+t),sameTab=from===t;
+  const next=$('t-'+t);
   ['today','closet','shop','sec','prog'].forEach(x=>{if(x!==t)$('t-'+x).hidden=true});
-  if(next){
-    next.hidden=false;
-    if(t==='sec'){if(!sameTab){next.style.transition='none';next.style.opacity='0'}}   /* 준비되면 showSec가 켭니다 */
-    else if(!sameTab)showPanel(next,165);   /* 지금 보고 있는 탭을 다시 누를 땐 페이드 없이 맨 위로 */
-  }
+  if(next)next.hidden=false;   /* 누르는 즉시 표시, 페이드 없음 */
   document.documentElement.classList.toggle('sec',t==='sec');
   /* 새 탭은 언제나 첫머리에서 — 스크롤이 허공에 남지 않게 */
   try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}
   curTab=t;
-  if(t==='sec')showSec(s,from!=='sec');
+  if(t==='sec')showSec(s);
   noti();
   centerNav(active);navHint();
 }
@@ -388,40 +377,25 @@ function buildNav(){
   navHint();centerNav(row.querySelector('button[aria-current="true"]'));
   if(SECS.length)setTimeout(preloadRep,300);
 }
-/* 분석 섹션 iframe: 미리 띄워 두고, 높이가 확정된 뒤에만 보여 줘 튐·깜박임을 없앱니다 */
-let repPending=null,repEnter=0,repPrev=0,repLoaded=false;
+/* 분석 섹션 iframe: 미리 띄워 두고, 높이는 섹션이 보고한 값으로만 즉시 맞춥니다 (페이드 없음) */
+let repPrev=0,repLoaded=false;
 const clampH=h=>Math.max(420,Math.min(30000,Math.ceil(+h||0)));
 function postShow(f,k){
   f.dataset.sec=k;const tok=String((+f.dataset.tok||0)+1);f.dataset.tok=tok;
   try{f.contentWindow.postMessage({t:'mio-report-show',sec:k,tok:+tok},'*')}catch(e){}
 }
-function armRepFallback(){clearTimeout(armRepFallback._t);armRepFallback._t=setTimeout(()=>{if(repPending)flushRep()},900)}
-function flushRep(){const el=$('t-sec'),rep=el&&el.querySelector('.repwrap');
-  if(repEnter){if(rep){rep.style.transition='';rep.style.opacity=''}showPanel(el,170)}      /* 다른 탭 → 분석: 패널째로 */
-  else if(rep){fade(rep,1,150)}                                                            /* 분석 안에서 섹션 교체: 감춘 리포트만 */
-  repPending=null;repEnter=0}
 function setRepH(h){const f=$('repf');if(!f)return;const v=clampH(h);
-  if(v!==repPrev){f.style.height=v+'px';repPrev=v}
-  if(repPending)flushRep()}
-function showSec(k,entering){
-  sec=k;const f=$('repf');if(!f)return;const el=$('t-sec'),rep=el.querySelector('.repwrap');
+  if(v!==repPrev){f.style.height=v+'px';repPrev=v}}
+function showSec(k){
+  sec=k;const f=$('repf');if(!f)return;
   $('repo').href='report.html?c='+encodeURIComponent(code)+(k?'&sec='+encodeURIComponent(k):'');
-  if(el.classList.contains('off'))el.classList.remove('off');
-  repEnter=entering?1:0;
-  if(!f.dataset.on){/* 미리 띄우기 전에 눌렸을 때: 이 섹션으로 바로 열고 첫 높이가 오면 보여 줍니다 */
+  const el=$('t-sec');if(el.classList.contains('off'))el.classList.remove('off');
+  if(!f.dataset.on){/* 미리 띄우기 전에 눌렸을 때: 이 섹션으로 바로 엽니다 */
     f.dataset.on='1';f.dataset.sec=k;f.dataset.tok='0';
-    repPending=rep||el;if(rep){rep.style.transition='';rep.style.opacity='0'}
-    f.src='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(k);
-    armRepFallback();return
+    f.src='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(k);return
   }
-  if(f.dataset.sec===k&&f.style.height){/* 이미 그 섹션 */
-    if(rep){rep.style.transition='';rep.style.opacity=''}
-    if(entering)showPanel(el,170);
-    repPending=null;repEnter=0;return
-  }
-  repPending=rep||el;
-  if(rep&&!entering){rep.style.transition='opacity 90ms ease';rep.style.opacity='0'}
-  postShow(f,k);armRepFallback()
+  if(f.dataset.sec===k&&f.style.height)return;   /* 이미 그 섹션 */
+  postShow(f,k)
 }
 /* 리포트가 있는 고객은 앱을 연 뒤 한가한 때 분석 탭을 미리 띄워 둡니다 */
 function preloadRep(){if(repLoaded||!code)return;const f=$('repf');if(!f||!SECS.length)return;
