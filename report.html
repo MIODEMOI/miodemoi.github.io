@@ -343,8 +343,8 @@ function styleTab(){return head('04','RECOMMEND STYLING','추천 스타일')+sty
 const SAMPLE=window.SAMPLE||{look:['shopper_sample_1.jpg','shopper_sample_2.jpg'],shop:['shopper_sample_3.jpg','shopper_sample_4.jpg'],app:'shopper_sample_app.jpg'};
 const EMB=document.documentElement.classList.contains('embed');let MY=null,ONEPAGE=false,ESEC='';/* 앱 안: 탭 없이 전 섹션 한 페이지, 섹션을 지정하면 그 섹션만 *//* 이 고객의 '오늘 뭐 입지' 데이터 (퍼스널쇼퍼 이용 고객만) */
 function myShopperTab(){const n=FC?'06':'05',u='ootd.html?c='+encodeURIComponent(code);
-  if(MY.draft)return head(n,'PERSONAL SHOPPER','나의 퍼스널쇼퍼')+`<div class="card"><p class="big ko" style="font-size:20px">스타일링북을 만들고 있어요</p><p class="desc">완성되면 이 탭에서 코디와 쇼핑 리스트를 바로 보실 수 있어요.</p></div>`;
-  return head(n,'PERSONAL SHOPPER','오늘 뭐 입지')+`<div class="appwrap"><iframe src="${u}&embed=1" title="오늘 뭐 입지"></iframe></div><a class="btn" href="${u}" target="_blank" rel="noopener">새 창으로 크게 보기 →</a>`}
+  if(MY.draft)return head(n,'PERSONAL SHOPPER','나의 퍼스널쇼퍼')+`<div class="card"><p class="big ko" style="font-size:20px">스타일링북을 만들고 있어요</p><p class="desc">완성되면 이 탭과 '오늘 뭐 입지' 앱에서 코디와 쇼핑 리스트를 보실 수 있어요.</p></div>`;
+  return head(n,'PERSONAL SHOPPER','오늘 뭐 입지')+`<a class="btn" href="${u}" style="margin:0 0 12px">쇼핑 리스트 · 스타일링북은 앱에서 보기 →</a><div class="appwrap"><iframe src="${u}&embed=1" title="오늘 뭐 입지"></iframe></div><a class="btn" href="${u}">쇼핑 리스트 · 스타일링북은 앱에서 보기 →</a>`}
 function shopperTab(skipPerk){
   if(MY)return myShopperTab();
   const lock='<span class="lock">🔒 견본</span>';
