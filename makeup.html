@@ -69,8 +69,9 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
 .item{position:relative;padding:16px 0 16px 40px;border-top:1px solid #f1eee7}
 .item:first-of-type{border-top:0;margin-top:8px}
 .item .n{position:absolute;left:0;top:16px;width:26px;height:26px;border-radius:50%;background:#eef0f7;color:var(--navy);font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.item.bul{padding-left:24px}
-.item.bul:before{content:"";position:absolute;left:5px;top:25px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.item.bul{padding-left:0;display:flex;gap:10px;align-items:flex-start}
+.item.bul .dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:14px}
+.item.bul .tx{flex:1;min-width:0}
 .item .t{font-size:17px;line-height:1.72;letter-spacing:-.025em;color:#262b39}
 .item .s{margin-top:7px;font-size:14.5px;line-height:1.68;color:#6a7080}
 .t b,.s b{font-weight:800;color:var(--navy)}
@@ -80,6 +81,7 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
 .block:first-child{border-top:0;padding-top:6px}
 .blabel{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:var(--navy);border-radius:8px;padding:4px 10px;margin-bottom:10px;letter-spacing:-.02em}
 .block .item{padding-top:12px;padding-bottom:12px;border-top:0}
+.block .item.bul .dot{margin-top:11.5px}
 .block .item:first-of-type{padding-top:2px}
 
 .note{margin:4px 0 16px;background:#f4f7f6;border-left:4px solid var(--teal);border-radius:8px;padding:12px 14px;font-size:14.5px;line-height:1.65;color:#3d4450}
@@ -230,13 +232,13 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
     </div>
     <div class="block">
       <span class="blabel">아이라인</span>
-      <div class="item bul"><p class="t">아이라인 문신을 따라서 그리기</p></div>
-      <div class="item bul">
+      <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">아이라인 문신을 따라서 그리기</p></div></div>
+      <div class="item bul"><span class="dot"></span><div class="tx">
         <p class="t"><b>아이라인을 뒤까지 연결하고 싶다면</b> 정면에서 아이라인 덮은 것을 따라 자연스럽게 뒤를 연결</p>
         <p class="s">연습이 필요해요! 정면을 보고 내 눈을 따라 자연스럽게 그려 주세요.</p>
-      </div>
-      <div class="item bul"><p class="t">아이라인은 <b>섀도우 팔레트 중앙 컬러</b>로 덮기</p></div>
-      <div class="item bul"><p class="t"><b>아멜리 세피아 섀도우</b> 활용</p></div>
+      </div></div>
+      <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">아이라인은 <b>섀도우 팔레트 중앙 컬러</b>로 덮기</p></div></div>
+      <div class="item bul"><span class="dot"></span><div class="tx"><p class="t"><b>아멜리 세피아 섀도우</b> 활용</p></div></div>
     </div>
     <div class="note">꼭 <b>속눈썹 펌</b>을 하셔서 마스카라까지 해 주세요!</div>
   </div>
@@ -249,8 +251,8 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
     <img src="assets/makeup/p4.png" width="1400" height="1109" alt="광대에 블러셔를 바르는 범위와 경계선을 표시한 얼굴 그림" loading="lazy">
   </figure>
   <div class="body">
-    <div class="item bul"><p class="t">광대를 중심으로 <b>코 끝보다 윗부분</b>에 바르기</p></div>
-    <div class="item bul"><p class="t">표시된 <b>경계선을 넘지 마세요!</b></p></div>
+    <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">광대를 중심으로 <b>코 끝보다 윗부분</b>에 바르기</p></div></div>
+    <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">표시된 <b>경계선을 넘지 마세요!</b></p></div></div>
     <div class="note">Tip. 눈에 섀도우를 하지 않았을 때는 경계 부위까지 가능해요.</div>
   </div>
 </section>
