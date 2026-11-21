@@ -26,7 +26,9 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.025em;word-break:keep-all;padding-bottom:88px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:480px;margin:0 auto;padding:0 16px 30px}
+.wrap{position:relative;max-width:480px;margin:0 auto;padding:0 16px 30px;transition:padding-top .2s ease}
+/* 섹션 전환: 짧은 페이드 + 헤더 접힘으로 높이 튐 없이 */
+header{max-height:400px;overflow:hidden;transition:max-height .2s ease,opacity .15s ease,padding .2s ease}
 header{background:var(--navy);color:#fff;margin:0 -16px;padding:22px 20px 22px;border-radius:0 0 28px 28px}
 .logo{display:flex;align-items:baseline;gap:8px;font-weight:900;font-size:13px;letter-spacing:.04em}
 .logo em{font-style:normal;font-weight:500;font-size:10px;letter-spacing:.14em;color:#7fd3c9}
@@ -83,8 +85,8 @@ nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);back
 /* 하단 메뉴는 어떤 폭에서도 1줄 — 넘치면 가로 스크롤, 절대 줄바꿈하지 않습니다 */
 nav div{display:flex;flex-wrap:nowrap;max-width:480px;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
 nav div::-webkit-scrollbar{display:none}
-/* 넘칠 때 오른쪽 끝을 살짝 어둡게 해서 더 있다는 걸 알 수 있게 */
-nav div.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent 100%)}
+/* 분석 섹션을 미리 띄워 둘 때: 화면 밖에 두되 실제 폭 그대로 렌더해 높이를 재게 */
+#t-sec.off{display:block!important;position:absolute;left:16px;right:16px;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none;z-index:-1}
 nav button{flex:1 0 auto;white-space:nowrap;min-width:58px;border:0;background:none;padding:9px 9px 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button:first-child{margin-left:auto}nav button:last-child{margin-right:auto}
 nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -113,7 +115,8 @@ html.embed header,html.embed .a2hs{display:none!important}html.embed body{paddin
 html.embed nav{display:none!important}
 html.embed .wrap{padding-top:12px}
 /* 분석 항목을 보고 있을 때: 파란 헤더와 구입 체크 배너를 감추고 분석 내용만 위에서부터 */
-html.sec header,html.sec .noti{display:none!important}
+html.sec header{display:block!important;max-height:0;opacity:0;padding-top:0;padding-bottom:0;overflow:hidden}
+html.sec .noti{display:none!important}
 html.sec .wrap{padding-top:14px}
 .noti .nb{margin-left:auto;border:0;background:var(--navy);color:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}nav button[hidden]{display:none!important}
 .repwrap{margin:4px -4px 10px;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08)}.repwrap iframe{display:block;width:100%;height:70svh;min-height:360px;border:0}.repopen{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--navy);padding:6px 0 14px;text-decoration:none}
@@ -197,19 +200,52 @@ const tile=(id,i)=>`<button class="it" data-id="${esc(id)}"><span class="badge $
 
 $('navrow').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.sec)tab('sec',b.dataset.sec);else if(b.dataset.t)tab(b.dataset.t)});
-function navHint(){const r=$('navrow');if(r)r.classList.toggle('more',r.scrollWidth>r.clientWidth+2&&r.scrollLeft+r.clientWidth<r.scrollWidth-2)}
-$('navrow').addEventListener('scroll',navHint,{passive:true});addEventListener('resize',navHint);
+function navHint(){const r=$('navrow');if(!r)return;
+  const max=r.scrollWidth-r.clientWidth;let m='';
+  if(max>2){const l=r.scrollLeft>2,rt=r.scrollLeft<max-2;
+    m=(l&&rt)?'linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 20px),transparent 100%)'
+      :l?'linear-gradient(90deg,transparent 0,#000 20px,#000 100%)'
+      :'linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%)'}
+  r.style.webkitMaskImage=m;r.style.maskImage=m}
+/* 누른 탭이 가려져 있으면 하단 메뉴를 부드럽게 가운데로 당겨 옵니다 */
+function centerNav(b){const r=$('navrow');if(!r||!b)return;
+  const rb=b.getBoundingClientRect(),rr=r.getBoundingClientRect(),max=r.scrollWidth-r.clientWidth;
+  if(max<=2)return;
+  if(rb.left>=rr.left+8&&rb.right<=rr.right-8)return;   /* 이미 다 보이면 그대로 */
+  const left=Math.max(0,Math.min(r.scrollLeft+(rb.left+rb.width/2)-(rr.left+rr.width/2),max));
+  try{r.scrollTo({left:left,behavior:'smooth'})}catch(e){r.scrollLeft=left}
+}
+$('navrow').addEventListener('scroll',navHint,{passive:true});
+addEventListener('resize',()=>{navHint();centerNav(document.querySelector('#navrow button[aria-current="true"]'))});
+/* 패널 전환은 짧은 페이드로 — 높이가 확 바뀌는 순간을 감춥니다 */
+function fade(el,to,ms){if(!el)return;clearTimeout(el._ft);
+  el.style.transition='opacity '+(ms||150)+'ms ease';el.style.opacity=String(to);
+  el._ft=setTimeout(()=>{el.style.transition='';if(to===1)el.style.opacity=''},(ms||150)+40)}
+function showPanel(el,ms){if(!el)return;el.style.transition='none';el.style.opacity='0';void el.offsetWidth;
+  el.style.transition='opacity '+(ms||160)+'ms ease';el.style.opacity='1';
+  clearTimeout(el._ft);el._ft=setTimeout(()=>{el.style.transition='';el.style.opacity=''},(ms||160)+40)}
+let curTab='today';
 function tab(t,s){
   if(t==='sec')s=s||sec||(SECS[0]&&SECS[0].k);
+  let active=null;
   document.querySelectorAll('nav button').forEach(b=>{
     const on=t==='sec'?b.dataset.sec===s:b.dataset.t===t;
-    if(on)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');
+    if(on){b.setAttribute('aria-current','true');active=b}else b.removeAttribute('aria-current');
   });
-  ['today','closet','shop','sec','prog'].forEach(x=>$('t-'+x).hidden=x!==t);
+  const from=curTab,next=$('t-'+t),sameTab=from===t;
+  ['today','closet','shop','sec','prog'].forEach(x=>{if(x!==t)$('t-'+x).hidden=true});
+  if(next){
+    next.hidden=false;
+    if(t==='sec'){if(!sameTab){next.style.transition='none';next.style.opacity='0'}}   /* 준비되면 showSec가 켭니다 */
+    else if(!sameTab)showPanel(next,165);   /* 지금 보고 있는 탭을 다시 누를 땐 페이드 없이 맨 위로 */
+  }
   document.documentElement.classList.toggle('sec',t==='sec');
-  if(t==='sec')showSec(s);
-  window.scrollTo(0,0);
+  /* 새 탭은 언제나 첫머리에서 — 스크롤이 허공에 남지 않게 */
+  try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}
+  curTab=t;
+  if(t==='sec')showSec(s,from!=='sec');
   noti();
+  centerNav(active);navHint();
 }
 
 /* 상단 3개월 정리 안내 (미구입 아이템이 있을 때만, 자동 정리 제외 고객은 숨김) */
@@ -348,15 +384,52 @@ function buildNav(){
     const ic=s.k==='pcprod'&&s.n==='스킨케어'?ICON.skin:ICON[s.k];
     b.innerHTML=(ic||'')+s.n;row.insertBefore(b,head)});
   if(sec&&!SECS.some(s=>s.k===sec)){sec='';if($('t-sec')&&!$('t-sec').hidden)tab('today')}
-  navHint();
+  navHint();centerNav(row.querySelector('button[aria-current="true"]'));
+  if(SECS.length)setTimeout(preloadRep,300);
 }
-function showSec(k){
-  sec=k;const f=$('repf');if(!f)return;
-  const u='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(k);
+/* 분석 섹션 iframe: 미리 띄워 두고, 높이가 확정된 뒤에만 보여 줘 튐·깜박임을 없앱니다 */
+let repPending=null,repEnter=0,repPrev=0,repLoaded=false;
+const clampH=h=>Math.max(420,Math.min(30000,Math.ceil(+h||0)));
+function postShow(f,k){
+  f.dataset.sec=k;const tok=String((+f.dataset.tok||0)+1);f.dataset.tok=tok;
+  try{f.contentWindow.postMessage({t:'mio-report-show',sec:k,tok:+tok},'*')}catch(e){}
+}
+function armRepFallback(){clearTimeout(armRepFallback._t);armRepFallback._t=setTimeout(()=>{if(repPending)flushRep()},900)}
+function flushRep(){const el=$('t-sec'),rep=el&&el.querySelector('.repwrap');
+  if(repEnter){if(rep){rep.style.transition='';rep.style.opacity=''}showPanel(el,170)}      /* 다른 탭 → 분석: 패널째로 */
+  else if(rep){fade(rep,1,150)}                                                            /* 분석 안에서 섹션 교체: 감춘 리포트만 */
+  repPending=null;repEnter=0}
+function setRepH(h){const f=$('repf');if(!f)return;const v=clampH(h);
+  if(v!==repPrev){f.style.height=v+'px';repPrev=v}
+  if(repPending)flushRep()}
+function showSec(k,entering){
+  sec=k;const f=$('repf');if(!f)return;const el=$('t-sec'),rep=el.querySelector('.repwrap');
   $('repo').href='report.html?c='+encodeURIComponent(code)+(k?'&sec='+encodeURIComponent(k):'');
-  if(!f.dataset.on){f.dataset.on='1';f.src=u}
-  else{f.style.height='';try{f.contentWindow.postMessage({t:'mio-report-show',sec:k},'*')}catch(e){}}
+  if(el.classList.contains('off'))el.classList.remove('off');
+  repEnter=entering?1:0;
+  if(!f.dataset.on){/* 미리 띄우기 전에 눌렸을 때: 이 섹션으로 바로 열고 첫 높이가 오면 보여 줍니다 */
+    f.dataset.on='1';f.dataset.sec=k;f.dataset.tok='0';
+    repPending=rep||el;if(rep){rep.style.transition='';rep.style.opacity='0'}
+    f.src='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(k);
+    armRepFallback();return
+  }
+  if(f.dataset.sec===k&&f.style.height){/* 이미 그 섹션 */
+    if(rep){rep.style.transition='';rep.style.opacity=''}
+    if(entering)showPanel(el,170);
+    repPending=null;repEnter=0;return
+  }
+  repPending=rep||el;
+  if(rep&&!entering){rep.style.transition='opacity 90ms ease';rep.style.opacity='0'}
+  postShow(f,k);armRepFallback()
 }
+/* 리포트가 있는 고객은 앱을 연 뒤 한가한 때 분석 탭을 미리 띄워 둡니다 */
+function preloadRep(){if(repLoaded||!code)return;const f=$('repf');if(!f||!SECS.length)return;
+  if(document.documentElement.classList.contains('embed')){repLoaded=true;return}   /* 리포트 안에 들어갈 땐 분석 탭을 쓸 일이 없어 미리 띄우지 않습니다 */
+  repLoaded=true;
+  if(f.dataset.on||!$('t-sec').hidden)return;   /* 사용자가 먼저 분석 탭을 열었으면 미리 띄우지 않습니다 */
+  const el=$('t-sec');el.classList.add('off');
+  f.dataset.on='1';f.dataset.sec=SECS[0].k;f.dataset.tok='0';
+  f.src='report.html?c='+encodeURIComponent(code)+'&embed=1&sec='+encodeURIComponent(SECS[0].k)}
 async function loadRep(){
   if(!code)return;
   const K='mio-rep-'+code;let c=null;
@@ -428,8 +501,10 @@ function start(){
 </script>
 <script>if(document.documentElement.classList.contains('embed')){document.querySelector('nav').hidden=true}
 /* 리포트는 탭 없이 한 페이지로 열리고, 자기 높이를 알려 줍니다 — 그 높이에 맞춰 iframe을 늘려 한 번에 스크롤 */
-addEventListener('message',function(e){var d=e.data;if(!d||d.t!=='mio-report-height')return;var f=document.getElementById('repf');if(!f||e.source!==f.contentWindow)return;var h=Math.ceil(+d.h||0);if(h>0)f.style.height=Math.max(420,Math.min(30000,h))+'px'})</script>
+addEventListener('message',function(e){var d=e.data;if(!d||d.t!=='mio-report-height')return;var f=document.getElementById('repf');if(!f||e.source!==f.contentWindow)return;
+  if(d.tok!=null&&f.dataset.tok!=null&&String(d.tok)!==String(f.dataset.tok))return;/* 지난 섹션의 늦은 보고는 버립니다 */
+  var h=Math.ceil(+d.h||0);if(h>0)setRepH(h)})</script>
 <script>/* 분석 섹션 iframe이 늦게 뜬 경우: 지금 보고 있는 섹션으로 한 번 더 맞춰 줍니다 */
-(function(){var f=document.getElementById('repf');if(!f)return;f.addEventListener('load',function(){try{var u=new URL(f.src,location.href).searchParams.get('sec')||'';if(sec&&sec!==u)f.contentWindow.postMessage({t:'mio-report-show',sec:sec},'*')}catch(e){}})})();</script>
+(function(){var f=document.getElementById('repf');if(!f)return;f.addEventListener('load',function(){try{var u=new URL(f.src,location.href).searchParams.get('sec')||'';if(sec&&f.dataset.on&&sec!==u)postShow(f,sec)}catch(e){}})})();</script>
 </body>
 </html>

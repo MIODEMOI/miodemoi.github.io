@@ -429,14 +429,19 @@ function onePage(){
 }
 /* 앱 안에서 이 섹션만 보기 (상단에 앱의 분석 메뉴가 있습니다) */
 function renderNow(){ONEPAGE=!ESEC;$('app').innerHTML=ESEC?TABS[ESEC]():onePage();bindUI();window.scrollTo(0,0)}
-function listenShow(){addEventListener('message',function(e){var d=e.data;if(!d||d.t!=='mio-report-show')return;if(!TABS[d.sec])return;ESEC=d.sec;renderNow();autoHeight()})}
-/* 앱 안 iframe이 스스로 높이를 부모에 알려 한 번에 스크롤되게 */
+let TOK=0;
+function listenShow(){addEventListener('message',function(e){var d=e.data;if(!d||d.t!=='mio-report-show')return;if(!TABS[d.sec])return;ESEC=d.sec;TOK=d.tok||0;renderNow();autoHeight()})}
+/* 앱 안 iframe이 스스로 높이를 부모에 알려 한 번에 스크롤되게
+   어느 섹션(sec)의 높이인지·어느 요청(tok)의 답인지 함께 보내 부모가 섞이지 않게 합니다 */
+function sendH(){try{window.parent.postMessage({t:'mio-report-height',h:Math.ceil(document.body.getBoundingClientRect().height),sec:ESEC,tok:TOK},'*')}catch(e){}}
 function autoHeight(){
   if(window.parent===window)return;
-  const send=()=>{try{window.parent.postMessage({t:'mio-report-height',h:Math.ceil(document.body.getBoundingClientRect().height)},'*')}catch(e){}};
-  send();window.addEventListener('load',send);window.addEventListener('resize',send);
-  try{if(window.ResizeObserver)new ResizeObserver(send).observe(document.body)}catch(e){}
-  [200,700,1500,3000,6000].forEach(t=>setTimeout(send,t));
+  if(!autoHeight._on){autoHeight._on=1;
+    window.addEventListener('load',sendH);window.addEventListener('resize',sendH);
+    try{if(window.ResizeObserver)new ResizeObserver(sendH).observe(document.body)}catch(e){}
+    [200,700,1500,3000,6000].forEach(t=>setTimeout(sendH,t));
+  }
+  sendH();
 }
 const DEF_COMBOS=['화이트+화이트','화이트+베이지','화이트+라이트블루','화이트+블랙','화이트+네이비','핑크+아이보리','핑크+라이트베이지','핑크+라이트그레이','핑크+차콜그레이','핑크+브라운','라이트그레이+화이트','라이트그레이+크림','라이트그레이+라이트블루','라이트그레이+블랙','라이트그레이+차콜'];
 const FIXED_F=[
