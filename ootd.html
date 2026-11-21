@@ -89,6 +89,9 @@ nav div::-webkit-scrollbar{display:none}
 #t-sec.off{display:block!important;position:absolute;left:16px;right:16px;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none;z-index:-1}
 nav button{flex:1 0 auto;white-space:nowrap;min-width:58px;border:0;background:none;padding:9px 9px 11px;font:inherit;font-size:11.5px;font-weight:600;color:#a3a5b1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button:first-child{margin-left:auto}nav button:last-child{margin-right:auto}
+/* 누를 때 손맛: 기본 파란 하이라이트 대신 살짝 눌리는 느낌, 선택 색은 부드럽게 */
+nav button{-webkit-tap-highlight-color:transparent;transition:color .18s ease,opacity .12s ease}
+nav button:active{opacity:.55}
 nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 nav button[aria-current="true"]{color:var(--navy)}
 @media(min-width:620px){nav div{max-width:860px}}
