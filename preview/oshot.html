@@ -5,5 +5,7 @@
 <iframe id="f"></iframe>
 <script>var p=new URLSearchParams(location.search),v=p.get('v')||'1';
 var f=document.getElementById('f');f.style.width=(p.get('w')||'390')+'px';f.style.height=(p.get('h')||'844')+'px';
+f.onload=function(){try{var d=f.contentDocument,s=d.createElement('style');
+s.textContent='html{scrollbar-width:none}html::-webkit-scrollbar{display:none}';d.head.appendChild(s);}catch(e){}};
 f.src='../ootd.html?c='+(p.get('c')||'2xa4eh8n')+'&v='+v;</script>
 </body></html>
