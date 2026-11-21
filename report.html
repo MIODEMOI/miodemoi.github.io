@@ -180,13 +180,12 @@ h1,h2,h3,h4,.big,.sec-h h2,.prod b,.cover p{text-wrap:balance}
 footer{text-align:center;font-size:12px;color:var(--muted);margin:30px 0 10px;line-height:1.6}
 .a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}
 .appwrap{margin:0 -4px 12px;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);background:#fff}.appwrap iframe{display:block;width:100%;height:calc(100svh - 150px);min-height:560px;border:0}
-/* 앱(오늘 뭐 입지) 안에 들어갈 때: 표지·배너 숨기고, 메뉴는 위쪽 고정 */
-html.embed .cover,html.embed .a2hs{display:none!important}html.embed body{padding-bottom:16px}
-html.embed nav{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding:8px 8px}
-html.embed nav div{gap:5px;max-width:none}
-html.embed nav button{padding:7px 2px;border-radius:999px;background:#f1efea;font-size:12px;white-space:nowrap}
-html.embed nav button b{display:none}
-html.embed nav button[aria-current="true"]{background:var(--ink);color:#fff}
+/* 앱(오늘 뭐 입지) 안에 들어갈 때: 표지도 탭도 없이 분석 섹션을 한 페이지로 이어서 */
+html.embed .cover,html.embed .a2hs,html.embed nav,html.embed footer{display:none!important}
+html.embed body{padding-bottom:20px}
+html.embed .wrap{padding-top:8px}
+html.embed .sec-h.top{border-top:1px solid var(--line);margin-top:40px;padding-top:24px}
+html.embed .sec-h.top:first-child{border-top:0;margin-top:6px;padding-top:0}
 </style>
 </head>
 <body>
@@ -333,14 +332,15 @@ function perkCard(){
   const desc=exp?'리포트를 받으신 뒤 3개월 동안 드리는 혜택이에요. 지금은 혜택 기간이 지났어요.':'퍼스널컬러 · 얼굴형 · 체형분석 · 퍼스널쇼퍼 중 아직 받지 않으신 프로그램을 이어서 이용하시면 결제 금액의 10%를 할인해 드려요.';
   return `<div class="card perk${exp?' exp':''}"><p class="k">MEMBERS BENEFIT</p><p class="perk-t">다른 프로그램 이용 시 <em>10%</em> 할인</p><p class="perk-d">${desc}</p><p class="perk-when">${when}${note?`<small>${note}</small>`:''}</p></div>`;
 }
-function styleTab(){
-  return head('04','RECOMMEND STYLING','추천 스타일')+gallery(D.styles,s=>!/헤어|퍼스널컬러/.test(s.sec))+
-  `<div class="outro"><h3>Thank you</h3><p>${esc(D.outro||'고객님의 가장 좋은 모습을 찾는 데 도움이 되길 바랍니다.')}</p><p>쇼핑이 필요하시면 퍼스널쇼퍼 프로그램을 이용해 주세요.</p>
+function stylePhotos(){return gallery(D.styles,s=>!/헤어|퍼스널컬러/.test(s.sec))}
+function styleOutro(){
+  return `<div class="outro"><h3>Thank you</h3><p>${esc(D.outro||'고객님의 가장 좋은 모습을 찾는 데 도움이 되길 바랍니다.')}</p><p>쇼핑이 필요하시면 퍼스널쇼퍼 프로그램을 이용해 주세요.</p>
   ${perkCard()}
-  ${EMB&&!FC?'':`<button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show(FC?'brand':'shopper')">${FC?'추천 브랜드 보기':MY?'나의 퍼스널쇼퍼 코디 보기':'퍼스널쇼퍼 가격 · 견본 보기'} →</button>`}<a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
+  ${EMB?'':`<button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show(FC?'brand':'shopper')">${FC?'추천 브랜드 보기':MY?'나의 퍼스널쇼퍼 코디 보기':'퍼스널쇼퍼 가격 · 견본 보기'} →</button>`}<a class="btn" style="background:transparent;color:var(--ink);border:1.5px solid var(--ink)" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡으로 문의하기</a></div>`;
 }
+function styleTab(){return head('04','RECOMMEND STYLING','추천 스타일')+stylePhotos()+styleOutro()}
 const SAMPLE=window.SAMPLE||{look:['shopper_sample_1.jpg','shopper_sample_2.jpg'],shop:['shopper_sample_3.jpg','shopper_sample_4.jpg'],app:'shopper_sample_app.jpg'};
-const EMB=document.documentElement.classList.contains('embed');let MY=null;/* 이 고객의 '오늘 뭐 입지' 데이터 (퍼스널쇼퍼 이용 고객만) */
+const EMB=document.documentElement.classList.contains('embed');let MY=null,ONEPAGE=false;/* 앱 안: 탭 없이 전 섹션 한 페이지 *//* 이 고객의 '오늘 뭐 입지' 데이터 (퍼스널쇼퍼 이용 고객만) */
 function myShopperTab(){const n=FC?'06':'05',u='ootd.html?c='+encodeURIComponent(code);
   if(MY.draft)return head(n,'PERSONAL SHOPPER','나의 퍼스널쇼퍼')+`<div class="card"><p class="big ko" style="font-size:20px">스타일링북을 만들고 있어요</p><p class="desc">완성되면 이 탭에서 코디와 쇼핑 리스트를 바로 보실 수 있어요.</p></div>`;
   return head(n,'PERSONAL SHOPPER','오늘 뭐 입지')+`<div class="appwrap"><iframe src="${u}&embed=1" title="오늘 뭐 입지"></iframe></div><a class="btn" href="${u}" target="_blank" rel="noopener">새 창으로 크게 보기 →</a>`}
@@ -375,7 +375,7 @@ function brandTab(){
   return head('05','BRAND & SHOPPING','추천 브랜드')+
   `<p class="desc" style="margin:-4px 2px 14px;color:var(--muted)">퍼스널컬러 · 얼굴형 · 체형 결과를 바탕으로 고객님께 잘 맞는 브랜드와 아이템을 골랐어요.</p>`+
   (S.length?cats.filter(k=>S.some(p=>p.cat===k)).map(k=>`<div class="card"><p class="k">${k}<span style="color:var(--muted);font-weight:600;letter-spacing:0"> · ${BRAND_KO[k]}</span></p><div class="chipline">${[...new Set(S.filter(p=>p.cat===k).map(p=>p.brand).filter(Boolean))].map(b=>`<span>${esc(b)}</span>`).join('')}</div>${S.filter(p=>p.cat===k).map(box).join('')}</div>`).join(''):'<div class="card"><p class="desc">추천 브랜드를 준비하고 있어요.</p></div>')+
-  `<div class="card" style="text-align:center"><p class="desc">사이즈와 코디까지 함께 골라 드려요.</p><button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show('shopper')">퍼스널쇼퍼 알아보기 →</button></div>`;
+  `<div class="card" style="text-align:center"><p class="desc">사이즈와 코디까지 함께 골라 드려요.</p>${EMB?'':`<button class="btn" style="width:100%;border:0;font:inherit;font-weight:700" onclick="show('shopper')">퍼스널쇼퍼 알아보기 →</button>`}</div>`;
 }
 const TABS={color:colorTab,face:faceTab,body:bodyTab,style:styleTab,brand:brandTab,shopper:shopperTab};
 const SAMPLE2=window.SAMPLE2||{face:'sample_face.jpg',body:'sample_body.jpg'};
@@ -393,11 +393,46 @@ function pcNextTab(){
   shopperTab(true).replace(/<div class="sec-h">[\s\S]*?<\/div>\s*<p class="desc"[^>]*>[\s\S]*?<\/p>/,`<div class="sec-h"><small>PERSONAL SHOPPER</small><h2>퍼스널쇼퍼</h2></div>`);
 }
 Object.assign(TABS,{pcguide:pcGuideTab,pcprod:pcProdTab,pcnext:pcNextTab});
+function bindUI(){
+  document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;
+    if(ONEPAGE){const c=document.querySelector('.pchips'),y=c?c.getBoundingClientRect().top+window.scrollY:0;$('app').innerHTML=onePage();bindUI();window.scrollTo(0,y);return}
+    const y=window.scrollY;show(PCM?'pcprod':'color');window.scrollTo(0,y)});
+  document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));const c=$('teeCard');if(c)c.classList.toggle('bw',b.dataset.m==='bw')});
+}
 function show(t){
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===t));
   $('app').innerHTML=TABS[t]();window.scrollTo(0,0);
-  document.querySelectorAll('.pchips button').forEach(b=>b.onclick=()=>{PC=b.dataset.c;const y=window.scrollY;show(PCM?'pcprod':'color');window.scrollTo(0,y)});
-  document.querySelectorAll('.tog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tog button').forEach(x=>x.classList.toggle('on',x===b));$('teeCard').classList.toggle('bw',b.dataset.m==='bw')});
+  bindUI();
+}
+/* ---- 앱(오늘 뭐 입지) 안에서: 퍼스널쇼퍼 탭만 빼고 있는 섹션을 위에서 아래로 한 페이지 ---- */
+function hasC(){const C=D.color||{};return !!(C.main||C.value||C.chroma||C.contrast||L(C.notes).length||L(C.combos).length||L(C.tit).length||L(C.tot).length||(C.tees||[]).some(t=>t.img))}
+function hasF(){const F=D.face||{};return !!(F.type||(F.f||[]).length||L(F.hair).length||L(F.avoid).length||L(F.notes).length||L(F.balance).length||F.glasses)}
+function hasB(){const B=D.body||{};return !!(B.type||Object.keys(B.m||{}).length||L(B.notes).length||L(B.good).length||L(B.avoid).length||B.summary)}
+function renum(h){let i=0;return h.replace(/(<div class="sec-h">)(<small>)(\d{2}) /g,(m,d,s,n)=>`<div class="sec-h top">${s}${String(++i).padStart(2,'0')} `)}
+function onePage(){
+  const P=[];
+  if(PCM){
+    if(hasC())P.push(colorRes());
+    P.push(colorGuide());
+    const g=gallery(D.styles,s=>/퍼스널컬러/.test(s.sec));if(g)P.push(g);
+    if((D.products||[]).length)P.push(pcProdTab());
+  }else{
+    if(D.color&&hasC())P.push(colorTab());else if((D.products||[]).length)P.push(prodSec());
+    if(hasF())P.push(faceTab());
+    if(hasB())P.push(bodyTab());
+    if((D.styles||[]).some(s=>(s.items||[]).length))P.push(head('04','RECOMMEND STYLING','추천 스타일')+stylePhotos());
+    if(FC&&(D.shop||[]).length)P.push(brandTab());
+  }
+  P.push(styleOutro());
+  return `<div class="onepage">${renum(P.join(''))}</div>`;
+}
+/* 앱 안 iframe이 스스로 높이를 부모에 알려 한 번에 스크롤되게 */
+function autoHeight(){
+  if(window.parent===window)return;
+  const send=()=>{try{window.parent.postMessage({t:'mio-report-height',h:Math.ceil(document.body.getBoundingClientRect().height)},'*')}catch(e){}};
+  send();window.addEventListener('load',send);window.addEventListener('resize',send);
+  try{if(window.ResizeObserver)new ResizeObserver(send).observe(document.body)}catch(e){}
+  [200,700,1500,3000,6000].forEach(t=>setTimeout(send,t));
 }
 const DEF_COMBOS=['화이트+화이트','화이트+베이지','화이트+라이트블루','화이트+블랙','화이트+네이비','핑크+아이보리','핑크+라이트베이지','핑크+라이트그레이','핑크+차콜그레이','핑크+브라운','라이트그레이+화이트','라이트그레이+크림','라이트그레이+라이트블루','라이트그레이+블랙','라이트그레이+차콜'];
 const FIXED_F=[
@@ -414,7 +449,7 @@ function start(){
     document.querySelector('#nav div').innerHTML=['color:퍼스널컬러','face:얼굴형','body:체형','style:스타일','brand:브랜드','shopper:퍼스널쇼퍼'].map((x,i)=>{const [t,n]=x.split(':');return `<button data-t="${t}"${i?'':' aria-current="true"'}><b>0${i+1}</b>${n}</button>`}).join('');}
   if(PCM){document.querySelector('.cover h1').textContent='Personal Color Report';const fem=/^여/.test(D.sex||'');
     document.querySelector('#nav div').innerHTML=`<button data-t="color" aria-current="true"><b>01</b>진단 결과</button><button data-t="pcprod"><b>02</b>${fem?'메이크업':'스킨케어'}</button><button data-t="pcnext"><b>03</b>다음 단계</button>`;}
-  if(EMB){document.querySelectorAll('nav button[data-t="shopper"]').forEach(b=>b.remove());document.body.insertBefore($('nav'),document.body.firstChild)}
+  if(EMB){ONEPAGE=true;document.querySelectorAll('nav button[data-t="shopper"]').forEach(b=>b.remove());$('nav').remove();$('app').innerHTML=onePage();bindUI();autoHeight();return}
   $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show('color');
 }
 (async()=>{
