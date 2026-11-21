@@ -33,6 +33,13 @@ body{background:var(--bg);color:var(--ink);font:16px/1.6 "Pretendard","Apple SD 
 .wrap{max-width:640px;margin:0 auto;padding:0 16px 44px}
 a{color:inherit}
 
+/* ── 줄바꿈 다듬기: 외톨이 줄·어절 중간 끊김 방지 ── */
+h1,h1 small,h2,.cap,.tk-t,.tk-hint,.btn{text-wrap:balance}
+.tags{display:flex;flex-wrap:wrap;column-gap:.4em;row-gap:2px;flex:1;min-width:0;letter-spacing:-.01em}
+.tags i{font-style:normal;white-space:nowrap}
+.tags i + i::before{content:"·";margin-right:.4em;color:#a89a80}
+.nw{white-space:nowrap}
+
 /* ── 표지 ───────────────────────────────── */
 .hero{background:var(--navy);color:#fff;border-radius:0 0 26px 26px;padding:30px 20px 26px;margin:0 -16px}
 .hero .b{display:flex;align-items:baseline;gap:8px;font-weight:800;font-size:12.5px;letter-spacing:.26em;color:#fff}
@@ -155,7 +162,7 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
 <header class="hero">
   <p class="b">MIO DE MOI <i>PERSONAL COLOR &amp; BODY</i></p>
   <h1>메이크업 클래스<small>수업에서 알려드린 순서 그대로, 5단계 정리</small></h1>
-  <p class="lead">같은 제품이라도 손이 지나가는 자리가 다르면 얼굴이 달라 보여요.<br>내 이목구비에 맞춘 순서를 천천히 따라 해 보세요.</p>
+  <p class="lead">같은 제품이라도 손이 지나가는 자리가 다르면 얼굴이&nbsp;달라&nbsp;보여요.<br>내 이목구비에 맞춘 순서를 천천히 따라&nbsp;해&nbsp;보세요.</p>
   <p class="meta">부산 동래구 · 충렬사역 1번 출구 도보 30m · 1:1 클래스</p>
 </header>
 
@@ -181,14 +188,14 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
     <div class="item">
       <span class="n">1</span>
       <div class="ih">섀도우 베이스</div>
-      <p class="t">섀도우 팔레트에서 <b>1, 2번</b>을 섞어 동공 위에 꾹꾹 눌러 바른 뒤, 동공 주변으로 자연스럽게 퍼트리듯 발라주세요.</p>
-      <p class="s">발색이 약해 보여도 <b>베이스 단계에서 덧바르지 마세요.</b> 눈썹까지 다 그린 뒤 섀도우를 덧바르고, 남은 양으로 눈썹도 가볍게 쓸어주면 됩니다.</p>
+      <p class="t">섀도우 팔레트에서 <b>1,&nbsp;2번</b>을 섞어 동공&nbsp;위에 꾹꾹 눌러 바른 뒤, 동공 주변으로 자연스럽게 퍼뜨리듯&nbsp;발라주세요.</p>
+      <p class="s">발색이 약해 보여도 <b>베이스 단계에서 덧바르지&nbsp;마세요.</b> 눈썹까지 다 그린 뒤 섀도우를 덧바르고, 남은 양으로 눈썹도 가볍게 쓸어주면&nbsp;됩니다.</p>
     </div>
     <div class="item">
       <span class="n">2</span>
       <div class="ih">쌍꺼풀 라인</div>
-      <p class="t"><b>2, 3번</b>을 섞어 쌍꺼풀 라인에 동공을 기준으로 뒤·앞에 발라 명암을 주세요.</p>
-      <p class="s">앞·뒤에 바르고 남은 양으로 앞뒤를 자연스럽게 연결해 주세요.</p>
+      <p class="t"><b>2,&nbsp;3번</b>을 섞어 쌍꺼풀 라인에 동공을 기준으로 <span class="nw">뒤·앞에</span> 발라 명암을 주세요.</p>
+      <p class="s"><span class="nw">앞·뒤에</span> 바르고 남은 양으로 앞뒤를 자연스럽게 연결해&nbsp;주세요.</p>
     </div>
   </div>
 </section>
@@ -202,19 +209,19 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
   <div class="body">
     <div class="item">
       <span class="n">1</span>
-      <p class="t">아래 속눈썹 라인을 따라서 <b>동공까지 일자</b>로 그려주기</p>
+      <p class="t">아래 속눈썹 라인을 따라서 <b>동공까지&nbsp;일자로</b>&nbsp;그려주기</p>
     </div>
     <div class="item">
       <span class="n">2</span>
-      <p class="t"><b>투쿨포스쿨 프로타쥬 펜슬</b>로 동공 밑에 일자로 그려주기</p>
+      <p class="t"><b>투쿨포스쿨 프로타주 펜슬</b>로 동공 밑에 일자로&nbsp;그려주기</p>
     </div>
     <div class="item">
       <span class="n">3</span>
-      <p class="t">섀도우 팔레트에서 <b>1번으로 2번을 덮고</b> 애교살 앞뒤로 펴주기</p>
+      <p class="t">섀도우 팔레트에서 <b>1번으로 2번을 덮고</b> 애교살 앞뒤로&nbsp;펴주기</p>
     </div>
     <div class="item">
       <span class="n">4</span>
-      <p class="t"><b>삼각존</b> 부분에는 섀도우 팔레트 1번을 발라주기</p>
+      <p class="t"><b>삼각존</b> 부분에는 섀도우 팔레트 1번을&nbsp;발라주기</p>
     </div>
   </div>
 </section>
@@ -228,19 +235,19 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
   <div class="body">
     <div class="block">
       <span class="blabel">눈 앞머리 하이라이터</span>
-      <p class="t" style="font-size:17px;line-height:1.72">눈 앞머리에 하이라이터로 <b>앞머리 포인트</b>를 주세요.</p>
+      <p class="t" style="font-size:17px;line-height:1.72">눈 앞머리에 하이라이터로 <b>앞머리&nbsp;포인트</b>를&nbsp;주세요.</p>
     </div>
     <div class="block">
       <span class="blabel">아이라인</span>
       <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">아이라인 문신을 따라서 그리기</p></div></div>
       <div class="item bul"><span class="dot"></span><div class="tx">
-        <p class="t"><b>아이라인을 뒤까지 연결하고 싶다면</b> 정면에서 아이라인 덮은 것을 따라 자연스럽게 뒤를 연결</p>
-        <p class="s">연습이 필요해요! 정면을 보고 내 눈을 따라 자연스럽게 그려 주세요.</p>
+        <p class="t"><b>뒤까지 연결하고 싶다면,</b> 정면에서 덮인 아이라인을 따라 자연스럽게 이어&nbsp;주세요.</p>
+        <p class="s">연습이 필요해요! 정면을 보고 내 눈을 따라 자연스럽게 그려&nbsp;주세요.</p>
       </div></div>
-      <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">아이라인은 <b>섀도우 팔레트 중앙 컬러</b>로 덮기</p></div></div>
+      <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">아이라인은 <b>섀도우 팔레트 중앙&nbsp;컬러</b>로&nbsp;덮기</p></div></div>
       <div class="item bul"><span class="dot"></span><div class="tx"><p class="t"><b>아멜리 세피아 섀도우</b> 활용</p></div></div>
     </div>
-    <div class="note">꼭 <b>속눈썹 펌</b>을 하셔서 마스카라까지 해 주세요!</div>
+    <div class="note">꼭 <b>속눈썹 펌</b>을 하셔서 마스카라까지 해&nbsp;주세요!</div>
   </div>
 </section>
 
@@ -251,9 +258,9 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
     <img src="assets/makeup/p4.png" width="1400" height="1109" alt="광대에 블러셔를 바르는 범위와 경계선을 표시한 얼굴 그림" loading="lazy">
   </figure>
   <div class="body">
-    <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">광대를 중심으로 <b>코 끝보다 윗부분</b>에 바르기</p></div></div>
+    <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">광대를 중심으로 <b>코끝보다 윗부분</b>에&nbsp;바르기</p></div></div>
     <div class="item bul"><span class="dot"></span><div class="tx"><p class="t">표시된 <b>경계선을 넘지 마세요!</b></p></div></div>
-    <div class="note">Tip. 눈에 섀도우를 하지 않았을 때는 경계 부위까지 가능해요.</div>
+    <div class="note">Tip. 눈에 섀도우를 하지 않았을 때는 경계&nbsp;부위까지&nbsp;가능해요.</div>
   </div>
 </section>
 
@@ -290,13 +297,13 @@ figure img{display:block;width:100%;height:auto;border-radius:8px}
       <div class="tk-t">10% 할인 쿠폰<span>CLASS DAY · 3 MONTHS</span></div>
     </div>
     <div class="perf"></div>
-    <p class="tk-d">메이크업 클래스 <b>수업일(발급일)로부터 3개월 이내</b>, 미오드모이의 다른 프로그램을 이어서 이용하시면 <b>결제 금액의 10%</b>를 할인해 드려요.</p>
+    <p class="tk-d">메이크업 클래스 <b>수업일(발급일)로부터 3개월&nbsp;이내</b>, 미오드모이의 다른 프로그램을 이어서 이용하시면 <b>결제&nbsp;금액의&nbsp;10%</b>를 할인해 드려요.</p>
     <ul class="terms">
       <li><b>사용 기간</b><span>수업일(발급일)부터 3개월 이내</span></li>
-      <li><b>사용 방법</b><span>예약 또는 방문 시 이 쿠폰 화면을 보여 주세요</span></li>
-      <li><b>할인 대상</b><span>퍼스널컬러 · 얼굴형 · 체형분석 · 메이크업 클래스 · 패션스타일링 · 퍼스널쇼퍼</span></li>
+      <li><b>사용 방법</b><span>예약 또는 방문 시 이 쿠폰 화면을 보여&nbsp;주세요</span></li>
+      <li><b>할인 대상</b><span class="tags"><i>퍼스널컬러</i><i>얼굴형</i><i>체형분석</i><i>메이크업 클래스</i><i>패션스타일링</i><i>퍼스널쇼퍼</i></span></li>
     </ul>
-    <p class="tk-hint">📲 이 화면을 캡처해 두시면 예약할 때 바로 보여 드릴 수 있어요</p>
+    <p class="tk-hint">📲 이 화면을 캡처해 두시면 예약할 때 바로 보여 드릴&nbsp;수&nbsp;있어요</p>
   </div>
   <div class="btns">
     <a class="btn b3 full" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener" data-ev="click_coupon_kakao">🎟️ 카카오톡으로 쿠폰 사용 · 예약하기</a>
