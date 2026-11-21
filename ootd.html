@@ -26,9 +26,8 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.025em;word-break:keep-all;padding-bottom:88px;-webkit-font-smoothing:antialiased}
-.wrap{position:relative;max-width:480px;margin:0 auto;padding:0 16px 30px;transition:padding-top .2s ease}
-/* 섹션 전환: 짧은 페이드 + 헤더 접힘으로 높이 튐 없이 */
-header{max-height:400px;overflow:hidden;transition:max-height .2s ease,opacity .15s ease,padding .2s ease}
+.wrap{position:relative;max-width:480px;margin:0 auto;padding:0 16px 30px}
+/* 섹션 전환: 짧은 페이드만 — 헤더는 접히지 않고 그 자리에서 사라집니다 */
 header{background:var(--navy);color:#fff;margin:0 -16px;padding:22px 20px 22px;border-radius:0 0 28px 28px}
 .logo{display:flex;align-items:baseline;gap:8px;font-weight:900;font-size:13px;letter-spacing:.04em}
 .logo em{font-style:normal;font-weight:500;font-size:10px;letter-spacing:.14em;color:#7fd3c9}
@@ -117,9 +116,8 @@ html.embed header,html.embed .a2hs{display:none!important}html.embed body{paddin
 /* 리포트 안에 들어갈 때: 탭은 리포트 것 하나만 — 앱 탭바는 숨기고 오늘 코디만 보여줍니다 */
 html.embed nav{display:none!important}
 html.embed .wrap{padding-top:12px}
-/* 분석 항목을 보고 있을 때: 파란 헤더와 구입 체크 배너를 감추고 분석 내용만 위에서부터 */
-html.sec header{display:block!important;max-height:0;opacity:0;padding-top:0;padding-bottom:0;overflow:hidden}
-html.sec .noti{display:none!important}
+/* 분석 항목을 보고 있을 때: 파란 헤더와 구입 체크 배너를 접힘 없이 바로 감춥니다 */
+html.sec header,html.sec .noti{display:none!important}
 html.sec .wrap{padding-top:14px}
 .noti .nb{margin-left:auto;border:0;background:var(--navy);color:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}nav button[hidden]{display:none!important}
 .repwrap{margin:4px -4px 10px;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08)}.repwrap iframe{display:block;width:100%;height:70svh;min-height:360px;border:0}.repopen{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--navy);padding:6px 0 14px;text-decoration:none}
