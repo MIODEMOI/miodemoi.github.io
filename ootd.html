@@ -102,9 +102,11 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
 .noti .nx{position:absolute;top:6px;right:6px;border:0;background:none;color:#8b93bf;font:inherit;font-size:15px;line-height:1;padding:6px;cursor:pointer}
 .noti .nrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
 .noti .nm{font-size:11.5px;font-weight:700;color:#7b82b3;letter-spacing:0}
+html.embed header,html.embed .a2hs{display:none!important}html.embed body{padding-top:0}
 .noti .nb{margin-left:auto;border:0;background:var(--navy);color:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}</style>
 </head>
 <body>
+<script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed')</script>
 <div class="wrap">
 <header><div class="logo">MIO DE MOI <em>BEYOND TRENDS</em></div><h1 id="ttl">오늘 뭐 입지?</h1><p id="sub">내 옷장 속 옷으로 미오드모이가 짜 둔 코디예요.</p><p class="only">퍼스널쇼퍼 3시간 이상 이용 고객님 전용 앱입니다.</p>
  </header>
