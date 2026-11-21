@@ -104,6 +104,7 @@ footer{text-align:center;font-size:11px;color:#a3a5b1;margin-top:30px;line-heigh
 .nobuy{font-size:12px;color:#9a8f80;white-space:nowrap}.buyhint small{color:#999;font-size:12px}
 .card.sh.got{box-shadow:0 0 0 2px var(--teal,#2ba59a) inset}
 .sh-note{white-space:pre-line;font-size:14px;line-height:1.6;margin:12px 0 0;background:var(--soft);border-radius:12px;padding:10px 12px}
+.sh-sz{display:inline-block;margin-top:10px;background:var(--navy);color:#fff;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:800;letter-spacing:0}
 .btn.sm{padding:12px;font-size:14px;margin-top:12px}
 .a2hs{position:fixed;left:12px;right:12px;bottom:84px;z-index:9;background:#2f3d86;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:13px;line-height:1.5;max-width:456px;margin:0 auto}.a2hs img{width:44px;height:44px;border-radius:10px;flex:none}.a2hs b{display:block;font-size:14px}.a2hs button{border:0;background:#fff;color:#2f3d86;font:inherit;font-weight:800;border-radius:999px;padding:7px 12px;flex:none;cursor:pointer}.a2hs .x{background:none;color:#fff;padding:4px;font-size:18px;font-weight:400}
 .noti{position:relative;background:#eef1fb;border:1px solid #dde2f4;border-radius:16px;padding:12px 14px;margin:14px 0 0}
@@ -322,16 +323,19 @@ function closet(){
   $('closet').querySelectorAll('.it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
 }
 
+/* 쇼핑 리스트 코멘트에 '사이즈 M' 첫 줄로 저장된 값을 사이즈 표시와 코멘트로 나눕니다 */
+const shSz=n=>{const t=String(n||'').trim();const m=t.match(/^사이즈[\s:：]+([A-Za-z0-9.+]{1,8})(?:\n([\s\S]*))?$/);return m?{sz:m[1],body:(m[2]||'').trim()}:{sz:'',body:t}};
 function shopList(){
   const L=D.shop||[];if(!L.length)return;loadBought();
   const rounds=[...new Set(L.map(x=>+x.round||0))].sort((a,b)=>b-a);
   $('scnt').textContent=L.length+'개';const nb=L.filter(x=>BOUGHT.has(shopKey(x))).length;
   const HB=Array.isArray(D.bought);
   $('shop').innerHTML=(HB?`<p class="buyhint">구입했거나 구입할 옷에 체크해 주세요. <b>${nb}/${L.length}</b><br>${EXEMPT()?'':`<small>체크하지 않은 옷은 미구입으로 표시되고, 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디와 함께 정리돼요.</small>`}</p>`:'')+rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
-    const bk=shopKey(x),on=BOUGHT.has(bk);return `<div class="card sh${on?' got':''}"><div style="display:flex;align-items:center;gap:8px">${x.cat?`<div class="tags" style="flex:1;margin:0"><span>${esc(x.cat)}</span></div>`:'<span style="flex:1"></span>'}${HB?`${on?'':`<span class="nobuy">미구입${dLeft(x.added)}</span>`}<button class="buy${on?' on':''}" data-bk="${esc(bk)}">${on?'✓ 구입 · 구입 예정':'구입 체크'}</button>`:''}</div>
+    const bk=shopKey(x),on=BOUGHT.has(bk),zN=shSz(x.note);return `<div class="card sh${on?' got':''}"><div style="display:flex;align-items:center;gap:8px">${x.cat?`<div class="tags" style="flex:1;margin:0"><span>${esc(x.cat)}</span></div>`:'<span style="flex:1"></span>'}${HB?`${on?'':`<span class="nobuy">미구입${dLeft(x.added)}</span>`}<button class="buy${on?' on':''}" data-bk="${esc(bk)}">${on?'✓ 구입 · 구입 예정':'구입 체크'}</button>`:''}</div>
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
     ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
-    ${String(x.note||'').trim()?`<p class="sh-note">${esc(x.note)}</p>`:''}
+    ${zN.sz?`<span class="sh-sz">사이즈 ${esc(zN.sz)}</span>`:''}
+    ${zN.body?`<p class="sh-note">${esc(zN.body)}</p>`:''}
     ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
   $('shop').querySelectorAll('.sh-it').forEach(b=>b.onclick=()=>{focus=b.dataset.id;tab('today');render(true)});
   $('shop').querySelectorAll('.buy').forEach(b=>b.onclick=()=>{const k=b.dataset.bk,on=!BOUGHT.has(k);setBought(k,on);shopList()});

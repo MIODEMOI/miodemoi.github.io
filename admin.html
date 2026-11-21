@@ -117,6 +117,15 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
 .pk button em{position:absolute;top:2px;right:2px;background:var(--navy);color:#fff;border-radius:50%;width:16px;height:16px;font:700 10px/16px sans-serif;font-style:normal}
 .mini{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.mini .chip{padding:5px 10px;font-size:12.5px}
 .item .btn.sm{white-space:nowrap;flex:none}
+.szb{margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.szb .h{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.szb .h b{font-size:13px;color:var(--sub)}
+.szb .h .v{margin-left:auto;background:#eef0fa;color:var(--navy);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
+.szb .h .v:empty{display:none}
+.szg{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:5px}
+.szc{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:0;min-height:40px;font:inherit;font-size:13.5px;font-weight:700;color:var(--sub);cursor:pointer;line-height:1.1}
+.szc.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.szb .szi{margin-top:7px;font-size:12.5px;padding:7px 9px;border-radius:9px}
 .pz-on{outline:2.5px solid var(--teal);outline-offset:2px}
 .pz-on{position:relative}.pz-on::after{content:'Ctrl+V 붙여넣기';position:absolute;right:10px;bottom:-11px;background:var(--teal);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;pointer-events:none;z-index:3}
 .pic .cov{position:absolute;left:5px;top:5px;background:var(--navy);color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px}.pic .mv{position:absolute;left:5px;bottom:5px;border:0;background:rgba(255,255,255,.92);color:var(--navy);font:inherit;font-size:11px;font-weight:800;border-radius:6px;padding:3px 7px;cursor:pointer}
@@ -493,6 +502,22 @@ const SITU=['출근','데이트','모임·약속','주말·나들이','격식 �
 const WX=['한여름 28°↑','여름 23~27°','간절기 17~22°','선선 12~16°','쌀쌀 5~11°','한겨울 4°↓'];
 const SEASONS=['봄','여름','가을','겨울'];
 const MOODS=['단정하게','세련되게','고급스럽게','편안하게','캐주얼하게','포멀하게','따뜻하게','여성스럽게','귀엽게','트렌디하게'];
+/* 쇼핑 리스트 '사야 할 사이즈' — 값은 note 한 칸에 '사이즈 M' 첫 줄 + 코멘트로 저장해 DB 는 그대로 둔다 */
+const SIZES=['XS','S','M','L','XL','2XL','64','67','70','26','27','28','29','30','31','32','33','34','35','36','37','38'];
+const szStd=v=>SIZES.find(s=>s===String(v||'').toUpperCase().replace(/\s/g,''))||'';
+const szFree=v=>/^[A-Za-z0-9.+]{1,8}$/.test(String(v||''));
+function szParse(note){
+  const t=String(note==null?'':note);
+  const m=t.match(/^\s*사이즈[\s:：]+([^\n]{1,14})\n?([\s\S]*)$/);
+  if(m){const tok=m[1].trim(),s=szStd(tok),rest=(m[2]||'').replace(/^\n+/,'');
+    if(s)return {std:s,custom:'',text:rest};
+    if(szFree(tok))return {std:'',custom:tok,text:rest};
+    return {std:'',custom:'',text:t}}
+  const p=t.match(/^\s*(?:구입\s*)?사이즈\s*[:：]?\s*([A-Za-z0-9.+]{1,8})\s*$/);   // 예전 '구입사이즈 : XS' 처럼 사이즈만 적어 둔 값
+  if(p){const s=szStd(p[1]);return s?{std:s,custom:'',text:''}:{std:'',custom:p[1],text:''}}
+  return {std:'',custom:'',text:t};
+}
+function szNote(std,custom,text){const head=std?'사이즈 '+std:(custom?'사이즈 '+custom:'');const body=String(text||'').replace(/^\n+/,'');return [head,body].filter(Boolean).join('\n')}
 const lst=v=>String(v||'').split(/[,，\/]/).map(x=>x.trim()).filter(Boolean);
 const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
 function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
@@ -521,11 +546,15 @@ function renderShop(){
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
   const ckn=S.sp.shop.filter(x=>x.ck).length;const HB=Array.isArray(S.bought),BG=new Set(S.bought||[]),nNo=HB?S.sp.shop.filter(x=>!BG.has(shopKey(x))).length:0;
   $('shopMk').innerHTML=S.sp.shop.length?`${!HB?'':`<p class="hint" style="margin:0 0 8px">고객 구입 체크 · 구입 ${S.sp.shop.length-nNo}개 / 미구입 ${nNo}개 ${nNo?`<button class="btn sm del" id="rmNo" style="margin-left:6px">미구입 ${nNo}개 삭제</button>`:''}${S.exempt?'<br><small>이 고객은 자동 삭제 제외예요.</small>':`<br><small>미구입은 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디 페이지와 함께 자동 삭제돼요.</small>`}</p>`}<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
-  $('sShop').innerHTML=S.sp.shop.map((x,i)=>`<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
+  $('sShop').innerHTML=S.sp.shop.map((x,i)=>{const sz=szParse(x.note);return `<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">입는 계절</b>${SEASONS.map(z=>`<button type="button" class="chip ${x.season.includes(z)?'on':''}" data-sse="${i}">${z}</button>`).join('')}</div>
-   <textarea placeholder="코멘트 (사이즈, 입는 법)" style="margin-top:8px;min-height:56px" data-sf="note" data-si2="${i}">${esc(x.note)}</textarea></div>`).join('')+
+   <div class="szb" data-szbox="${i}"><div class="h"><b>사야 할 사이즈</b><span class="v">${esc(sz.std||sz.custom||'')}</span></div>
+    <div class="szg">${SIZES.map(s=>`<button type="button" class="szc${sz.std===s?' on':''}" data-sz="${i}" data-sv="${s}">${s}</button>`).join('')}</div>
+    <input type="text" class="szi" placeholder="목록에 없으면 직접 입력 (예: FREE, 240, 66)" value="${esc(sz.custom)}" data-szx="${i}">
+    <p class="hint" style="margin:6px 0 0">한 번 더 누르면 해제돼요.</p></div>
+   <textarea placeholder="코멘트 (입는 법 · 컬러 등)" style="margin-top:8px;min-height:56px" data-sf="note" data-si2="${i}">${esc(sz.text)}</textarea></div>`}).join('')+
    `<label class="badd shopadd" style="min-height:96px;margin-top:10px">＋ 상품 사진 붙여넣어 추가<br><small style="font-weight:400;color:#8a8e9c">여기에 마우스를 올리고 Ctrl+V · 끌어다 놓기도 돼요<br>사진 여러 장이면 상품 여러 개로 추가돼요</small><input type="file" accept="image/*" multiple data-shadd="1"></label>`;
   status();
 }
@@ -534,7 +563,10 @@ $('shopPub').onchange=e=>{S.pub=e.target.checked;dirty=true;status()};
 document.addEventListener('input',e=>{const t=e.target;if(!S||!S.sp)return;
   if(t.dataset.p!=null){S.sp.prog[+t.dataset.p]=t.value;dirty=true}
   if(t.dataset.bi2!=null&&t.tagName!=='SELECT'){S.sp.book[+t.dataset.bi2][t.dataset.bf2]=t.value;dirty=true}
-  if(t.dataset.si2!=null&&t.tagName!=='SELECT'){S.sp.shop[+t.dataset.si2][t.dataset.sf]=t.value;dirty=true}});
+  if(t.dataset.si2!=null&&t.tagName!=='SELECT'){const it=S.sp.shop[+t.dataset.si2];if(t.dataset.sf==='note'){const z=szParse(it.note);it.note=szNote(z.std,z.custom,t.value)}else it[t.dataset.sf]=t.value;dirty=true}
+  if(t.dataset.szx!=null){const i=+t.dataset.szx,it=S.sp.shop[i],z=szParse(it.note),v=t.value.trim(),s=szStd(v);
+    it.note=szNote(s||'',s?'':v,z.text);dirty=true;
+    const box=document.querySelector('[data-szbox="'+i+'"]');if(box){box.querySelectorAll('.szc').forEach(b=>b.classList.remove('on'));const vv=box.querySelector('.v');if(vv)vv.textContent=s||v||''}}});
 $('shopCard').addEventListener('change',async e=>{const t=e.target;
   if(t.dataset.p!=null&&t.tagName==='SELECT'){S.sp.prog[+t.dataset.p]=t.value;dirty=true;return}
   if(t.dataset.bi2!=null&&t.tagName==='SELECT'){S.sp.book[+t.dataset.bi2][t.dataset.bf2]=t.value;dirty=true;return}
@@ -557,6 +589,10 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
   else if(t.dataset.bw!=null){e.preventDefault();const b=B[+t.dataset.bw],x=t.textContent;b.wx=b.wx.includes(x)?b.wx.filter(y=>y!==x):b.wx.concat(x);dirty=true;renderShop()}
   else if(t.dataset.brm!=null){e.preventDefault();if(confirm('이 페이지를 지울까요?')){B.splice(+t.dataset.brm,1);dirty=true;renderShop()}}
   else if(t.dataset.bup!=null){e.preventDefault();const i=+t.dataset.bup;if(i>0){[B[i-1],B[i]]=[B[i],B[i-1]];dirty=true;renderShop()}}
+  else if(t.dataset.sz!=null){e.preventDefault();const i=+t.dataset.sz,it=S.sp.shop[i],z=szParse(it.note),pick=z.std===t.dataset.sv?'':t.dataset.sv;
+    it.note=szNote(pick,'',z.text);dirty=true;
+    const box=document.querySelector('[data-szbox="'+i+'"]');
+    if(box){box.querySelectorAll('.szc').forEach(b=>b.classList.toggle('on',b.dataset.sv===pick));const v=box.querySelector('.v');if(v)v.textContent=pick||z.custom||'';const c=box.querySelector('[data-szx]');if(c&&pick)c.value=''}}
   else if(t.dataset.srm2!=null){e.preventDefault();S.sp.shop.splice(+t.dataset.srm2,1);dirty=true;renderShop()}
   else if(t.dataset.bsp){e.preventDefault();const [i,k]=t.dataset.bsp.split(':').map(Number);const b=B[i],x=S.sp.shop[k],j=b.photos.findIndex(p=>p.img===x.img);j>=0?b.photos.splice(j,1):b.photos.push({img:x.img,local:x.local});dirty=true;renderShop()}
   else if(t.id==='mkPage'){e.preventDefault();const P=S.sp.shop.filter(x=>x.ck);const ph=P.filter(x=>x.img).map(x=>({img:x.img,local:x.local}));if(!ph.length)return toast('사진이 있는 상품을 골라 주세요');
