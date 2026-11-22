@@ -463,6 +463,9 @@ function start(){
   $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show(SEC0&&TABS[SEC0]?SEC0:'color');
 }
 (async()=>{
+  /* 예시 리포트: report.html?demo=female|shopper — 항상 지금 리포트 화면에 예시 데이터만 넣어서 보여 줘요 */
+  const DM=new URLSearchParams(location.search).get('demo');
+  if(!D&&/^(female|shopper)$/.test(DM||'')){try{window.DEMO=D=await (await fetch('demo/'+DM+'.json')).json();document.title='리포트 예시 ('+(DM==='female'?'여성':'퍼스널쇼퍼 추가')+') | 미오드모이'}catch(e){$('app').innerHTML='<p class="msg">예시를 불러오지 못했어요.</p>';return}}
   if(D){start();return}
   if(!code){$('app').innerHTML='<p class="msg">미오드모이에서 받은 전용 링크로 들어와 주세요.</p>';return}
   try{const [rt,ot]=await Promise.all([sbGet(code,'report'),EMB?'':sbGet(code,'ootd').catch(()=>'')]);const j=JSON.parse(rt);
@@ -474,7 +477,7 @@ function start(){
 <script>
 (function(){
   var K='mio-report';
-  try{var q=new URLSearchParams(location.search).get('c');if(q)localStorage.setItem(K,q);else{var s=localStorage.getItem(K);if(s){location.replace(location.pathname+'?c='+encodeURIComponent(s));return}}}catch(e){}
+  try{var q=new URLSearchParams(location.search).get('c');if(q)localStorage.setItem(K,q);else if(!new URLSearchParams(location.search).get('demo')){var s=localStorage.getItem(K);if(s){location.replace(location.pathname+'?c='+encodeURIComponent(s));return}}}catch(e){}
   var ua=navigator.userAgent;
   if(/KAKAOTALK/i.test(ua)){var kd=document.createElement('div');kd.className='a2hs kk';var iosK=/iphone|ipad|ipod/i.test(ua);
     kd.innerHTML='<img src="icon-180.png" alt=""><div style="flex:1"><b>카카오톡 안에서 열렸어요</b>'+(iosK?'사파리로':'크롬으로')+' 열어 홈 화면에 추가하면, 다음부터 카톡에서 링크를 찾지 않아도 바로 열려요.<button class="go" style="margin-top:8px;display:block">'+(iosK?'사파리로':'크롬으로')+' 열기</button><small style="display:block;margin-top:6px;opacity:.8">안 넘어가면 화면의 ⋯ 또는 공유 버튼 → \''+(iosK?'Safari로 열기':'다른 브라우저로 열기')+'\'</small></div><button class="x" aria-label="닫기">✕</button>';
