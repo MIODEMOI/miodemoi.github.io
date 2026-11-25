@@ -321,7 +321,7 @@ async function draw(){const s=num('s'),w=num('w'),h=num('h'),m=$('msg');
  const sig=[r.type,r.status,r.a,r.b,r.d].join('|');if(sig!==lastResultSig){lastResultSig=sig;track('result_shown')}
  return true}
 let tm;$('f').addEventListener('input',e=>{
- if(!formStarted){formStarted=true;track('form_start')}
+ if(!formStarted){formStarted=true;track('bc_form_start')}
  if(!bodyDone&&num('s')>0&&num('w')>0&&num('h')>0){bodyDone=true;track('form_body_done')}
  if(!shown)return;clearTimeout(tm);tm=setTimeout(async()=>{await draw();$('result').hidden=!isValid},700)});
 $('go').addEventListener('click',async()=>{shown=true;await draw();$('result').hidden=!isValid;if(isValid){$('result').scrollIntoView({behavior:'smooth',block:'start'});return}
