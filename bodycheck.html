@@ -17,6 +17,8 @@
 <link rel="canonical" href="https://miodemoi.shop/bodycheck.html">
 <meta property="og:url" content="https://miodemoi.shop/bodycheck.html">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://miodemoi.shop/#business", "name": "미오드모이 퍼스널패션메이크업컨설팅", "alternateName": "MIO DE MOI", "url": "https://miodemoi.shop/bodycheck.html", "image": "https://miodemoi.shop/og_bodycheck.jpg", "description": "부산 동래구 충렬사역 1번 출구에서 도보 30m(반송로 209, 4층)에 있는 퍼스널컬러·얼굴형·체형 분석 스튜디오. 집에 있는 줄자로 재는 무료 체형 확인과, 측정값·사진으로 전문가가 직접 진단하는 비대면 체형·얼굴형 분석(120,000원)을 진행합니다. 예약제로 운영하며 월~목은 10:00~19:00, 금~일은 11:00~20:00까지 예약을 받습니다.", "priceRange": "120,000원", "address": {"@type": "PostalAddress", "streetAddress": "반송로 209, 4층", "addressLocality": "동래구", "addressRegion": "부산광역시", "addressCountry": "KR"}, "sameAs": ["https://www.instagram.com/miodemoi_official"], "founder": {"@type": "Person", "name": "곽채경"}, "hasOfferCatalog": {"@type": "OfferCatalog", "name": "미오드모이 체형분석 프로그램", "itemListElement": [{"@type": "Offer", "price": "120000", "priceCurrency": "KRW", "itemOffered": {"@type": "Service", "name": "비대면 체형·얼굴형 분석 (부가세 포함)"}}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "무료 체형 확인과 120,000원 분석은 무엇이 다른가요?", "acceptedAnswer": {"@type": "Answer", "text": "무료 확인은 직접 잰 어깨·허리·엉덩이 둘레 비율로 체형 유형을 참고 판정해 드려요. 비대면 체형·얼굴형 분석(120,000원)은 측정값과 사진을 함께 보고 전문가가 직접 진단해 결과 링크로 정리해 드려요."}}, {"@type": "Question", "name": "결제하면 결과를 어떻게 받나요?", "acceptedAnswer": {"@type": "Answer", "text": "결제 후 카카오톡으로 안내를 보내 드려요. 줄자와 측정 가이드를 택배로 받아 측정값과 사진을 보내 주시면, 7~10일 뒤 결과 링크로 받아보실 수 있어요."}}, {"@type": "Question", "name": "대면으로도 받을 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "네. 부산 동래구 반송로 209, 4층, 충렬사역 1번 출구에서 도보 30m 거리에 있는 스튜디오에서 직접 측정하고 분석해 드려요. 예약제로 운영하며 월~목은 10:00~19:00, 금~일은 11:00~20:00까지 예약을 받아요."}}, {"@type": "Question", "name": "입력한 측정값은 어디에 쓰이나요?", "acceptedAnswer": {"@type": "Answer", "text": "이름·연락처는 받지 않아요. 입력한 체형 수치는 결과 확인과 통계·개선을 위해서만 저장돼요."}}]}</script>
 <style>
 /* Layout: 줄자 눈금 띠를 기준선으로, 왼쪽 입력지와 오른쪽 결과지를 나란히 놓는다 */
 :root{--bg:#f6f3ee;--paper:#fffdfa;--ink:#24252e;--muted:#6b645e;--line:#e3dbd2;--plum:#a24b35;--tape:#e8b4a8;--tape-ink:#24252e;--soft:#efe9e2;--warn:#a24b35;--hero:#24252e;--hero-ink:#f6f1ea;--hero-sub:#d6cfc8;
@@ -209,6 +211,19 @@ form.panel>div:not(.headline),form.panel>label:not(.check),#teaser>div{border:0}
 .wrap,.top .inner{max-width:460px!important}
 html{background:var(--bg)}
 .offline{background:#fff;border:1px solid #111;padding:24px 20px;margin-top:28px;display:grid;gap:10px}.offline strong{font-size:18px;font-weight:900}.offline p{margin:0;font-size:14px;line-height:1.75;color:var(--muted)}.opt{display:grid;gap:8px;border-top:1px solid #ddd;padding-top:14px}.opt b{font-size:15px;font-weight:800}.opt p{margin:0}.onbtn{display:block;text-align:center;background:var(--tape);color:#111;font-weight:800;font-size:15px;padding:13px;text-decoration:none}.offbtn{display:block;text-align:center;background:#23252c;color:#fff;font-weight:700;font-size:15px;padding:13px;text-decoration:none}
+
+/* 결과 화면 상단 CTA 2개 */
+.cta2{display:grid;gap:8px;margin-top:14px}
+.cta2 button,.cta2 a{display:block;width:100%;text-align:center;border:0;border-radius:0;font-family:inherit;font-size:15px;padding:13px;text-decoration:none;cursor:pointer}
+#jumpPay{background:var(--tape);color:#111;font-weight:800}
+.cta2 .book{background:#23252c;color:#fff;font-weight:700}
+/* 자주 묻는 질문 */
+.faq{margin-top:34px}
+.faq>h2{font:700 21px/1.4 var(--display);margin:0 0 6px}
+.qa{border-top:1px solid var(--line);padding:14px 0}
+.qa:first-of-type{border-top:0;padding-top:2px}
+.qa h3{font:700 15px/1.5 var(--display);color:var(--ink);margin:0 0 4px}
+.qa p{margin:0;font-size:14px;line-height:1.75;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -244,7 +259,8 @@ html{background:var(--bg)}
 <button type="button" id="go">결과 보기</button><p class="msg" id="goMsg" hidden></p>
 </form>
 <section class="panel" id="result" aria-live="polite" hidden>
-<div><span class="tag dark">02 / RESULT</span><span class="pill" id="status"></span><h2 style="margin-top:6px">내 체형은</h2><p class="type" id="type"></p><div class="warn dark">실제 미오드모이에서 측정하는 위치와 다른 경우<br>다른 결과가 나올 수 있습니다.</div></div>
+<div><span class="tag dark">02 / RESULT</span><span class="pill" id="status"></span><h2 style="margin-top:6px">내 체형은</h2><p class="type" id="type"></p>
+<div class="cta2"><button type="button" id="jumpPay">가려진 결과 전체 받기 · 120,000원 ↓</button><a class="book" href="https://naver.me/5CW71ZCo" target="_blank" rel="noopener">스튜디오에서 대면 예약하기</a></div><div class="warn dark">실제 미오드모이에서 측정하는 위치와 다른 경우<br>다른 결과가 나올 수 있습니다.</div></div>
 <div class="nums" hidden><div><b id="a">-</b><span>어깨 − 허리</span></div><div><b id="b">-</b><span>엉덩이 − 허리</span></div><div><b id="d">-</b><span>어깨 − 엉덩이</span></div></div>
 <p class="msg" id="msg" hidden></p>
 <div id="lock" class="locked">
@@ -258,6 +274,13 @@ html{background:var(--bg)}
 <div class="offline"><strong>바로 신청하기</strong>
 <div class="opt" id="onlineOpt"><b>비대면 체형분석 · 120,000원 <small class="vat">부가세 포함</small></b><p>줄자와 측정 가이드를 집으로 보내드려요.</p><a class="onbtn" href="https://smartstore.naver.com/miodemoi/products/13864990147" target="_blank" rel="noopener">스마트스토어에서 결제하기</a></div>
 <div class="opt"><b>대면으로 받고 싶으신가요?</b><p>스튜디오에서 직접 측정하고 분석해 드려요.<br>스마트플레이스에서 체형분석을 선택해 주세요.</p><a class="offbtn" href="https://naver.me/5CW71ZCo" target="_blank" rel="noopener">스마트플레이스에서 대면 예약하기</a></div></div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<div class="qa"><h3>무료 체형 확인과 120,000원 분석은 무엇이 다른가요?</h3><p>무료 확인은 직접 잰 어깨·허리·엉덩이 둘레 비율로 체형 유형을 참고 판정해 드려요. 비대면 체형·얼굴형 분석(120,000원)은 측정값과 사진을 함께 보고 전문가가 직접 진단해 결과 링크로 정리해 드려요.</p></div>
+<div class="qa"><h3>결제하면 결과를 어떻게 받나요?</h3><p>결제 후 카카오톡으로 안내를 보내 드려요. 줄자와 측정 가이드를 택배로 받아 측정값과 사진을 보내 주시면, 7~10일 뒤 결과 링크로 받아보실 수 있어요.</p></div>
+<div class="qa"><h3>대면으로도 받을 수 있나요?</h3><p>네. 부산 동래구 반송로 209, 4층, 충렬사역 1번 출구에서 도보 30m 거리에 있는 스튜디오에서 직접 측정하고 분석해 드려요. 예약제로 운영하며 월~목은 10:00~19:00, 금~일은 11:00~20:00까지 예약을 받아요.</p></div>
+<div class="qa"><h3>입력한 측정값은 어디에 쓰이나요?</h3><p>이름·연락처는 받지 않아요. 입력한 체형 수치는 결과 확인과 통계·개선을 위해서만 저장돼요.</p></div>
+</section>
 <p class="foot">결과는 입력한 수치를 기준으로 한 참고 판정이며,<br>최종 체형은 결제 후 사진을 확인해 안내합니다.</p>
 <p style="text-align:center;font-size:12px;color:#8a817a;margin:24px 0 0">© 미오드모이(MIO DE MOI). 체형 판정 기준과 페이지 콘텐츠의 무단 복제·사용을 금지합니다.</p>
 </main>
@@ -269,7 +292,7 @@ window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(argu
 function track(n){try{if(window.gtag)gtag('event',n)}catch(e){}}
 document.addEventListener('click',e=>{const t=e.target.closest('a,button');if(!t)return;
 const h=t.getAttribute('href')||'';
-if(t.id==='go')track('click_result');else if(t.id==='copy')track('click_copy');else if(t.id==='share')track('click_kakao_send');
+if(t.id==='go')track('click_result');else if(t.id==='copy')track('click_copy');else if(t.id==='jumpPay')track('click_jump_pay');else if(t.id==='share')track('click_kakao_send');
 else if(h.includes('smartstore.naver.com'))track('click_pay');else if(h.includes('naver.me'))track('click_offline_booking');});
 </script>
 <script>
@@ -329,6 +352,7 @@ $('go').addEventListener('click',async()=>{shown=true;await draw();$('result').h
 function summary(){const v=(n,i,u)=>n+': '+($(i).value||'-')+(u||'');return['[미오드모이 측정값]','판정 체형: '+$('type').textContent,v('성별','sex'),v('키','height','cm'),v('몸무게','weight','kg'),v('어깨 둘레','s','cm'),v('가슴 둘레','chest','cm'),v('허리 둘레','w','cm'),v('엉덩이 둘레','h','cm'),v('허벅지 둘레','thigh','cm'),'복부 상태: '+bellyText,v('이마(상안)','f1','cm'),v('코(중안)','f2','cm'),v('턱(하안)','f3','cm'),v('얼굴 폭','fw','cm')].join('\n')}
 $('copy').addEventListener('click',()=>{const text=summary(),done=$('copied'),box=$('copyText');const manual=()=>{box.hidden=false;box.value=text;box.focus();box.select();done.hidden=false;done.textContent='자동 복사가 안 되었어요. 아래 내용을 길게 눌러 복사해 주세요.'};
  if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>{box.hidden=true;done.hidden=false;done.textContent='복사했어요. 메모장에 붙여 넣어 두세요.'}).catch(manual);else manual()});
+$('jumpPay').addEventListener('click',()=>{const g=document.querySelector('#lock .gate')||$('lock');if(g)g.scrollIntoView({behavior:'smooth',block:'start'})});
 $('buyBox').innerHTML=STORE_URL?'<a class="buy" href="'+STORE_URL+'" target="_blank" rel="noopener">스마트스토어에서 결제하기</a>':'<span>상품 준비 중이에요.</span>';
 draw();
 </script>
