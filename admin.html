@@ -185,6 +185,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
    <label class="f"><span>하안부 cm</span><input type="number" step="0.1" inputmode="decimal" data-k="하안부(cm)"></label>
   </div>
   <p class="hint" id="faceHint"></p>
+  <label class="f"><span>체형 분석 코멘트 <small>(리포트 체형 탭에 표시 · 체형+퍼스널쇼퍼는 비어 있으면 안내 문구 자동)</small></span><textarea data-k="체형 분석 코멘트"></textarea></label><button type="button" class="btn sm ghost" id="bsMsg" style="margin-top:6px">1회 고객 안내 문구 넣기</button>
  </details>
 
  <details class="card"><summary><span class="n">3</span>퍼스널컬러<span class="st" id="st3"></span></summary>
@@ -342,7 +343,7 @@ function openEdit(d){
   shopInit(d);syncChips();renderBody();renderProds();renderSecs();renderBrands();calc();status();
   $('doneBox').innerHTML='';$('preview').hidden=!S.code;$('barMsg').textContent=S.code?'코드 '+S.code:'저장 전이에요';dirty=false;
   ['추천 헤어스타일','잘 어울리는 스타일','추천 스타일링'].forEach(n=>{if(!S.secs.some(x=>x.sec===n))S.secs.push({sec:n,desc:'',items:[]})});renderSecs();
-  view('vEdit');tplFill();
+  view('vEdit');tplFill();bsFill();
 }
 function sex(){return /^남/.test(S.values['성별']||'')?'남':'여'}
 function set(k,v){S.values[k]=v;dirty=true;$('barMsg').textContent='저장하지 않은 변경이 있어요'}
@@ -357,7 +358,7 @@ function syncChips(){
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
-  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands();tplFill()}status()}
+  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='리포트 종류')bsFill();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands();tplFill()}status()}
   else if(g.dataset.range){e.preventDefault();b.classList.toggle('on');const on=[...g.querySelectorAll('.chip')].map((x,i)=>x.classList.contains('on')?i:-1).filter(i=>i>=0);
     set(g.dataset.range,on.length?(on.length===1?LV(g)[on[0]]:LV(g)[on[0]]+' ~ '+LV(g)[on[on.length-1]]):'');syncChips();status()}
 });
@@ -451,6 +452,11 @@ async function tplFill(){
     if(got.length){dirty=true;renderSecs();status();toast('여성 고정 페이지를 넣었어요: '+got.join(' · '))}
   }catch(e){}
 }
+/* ---------- 체형+퍼스널쇼퍼: 체형 분석 코멘트 기본 문구 ---------- */
+const BS_MSG='퍼스널쇼퍼 1회성이라, 2회를 추가로 구입하셔야 앞으로 구입할 옷과 이번에 구입하실 옷에 대해 스타일링 관리를 해드립니다. 참고하세요.';
+function bsFill(force){if(!S)return;const k=S.values['리포트 종류']||'';if(!force&&!/체형\+퍼스널쇼퍼/.test(k))return;const cur=String(S.values['체형 분석 코멘트']||'').trim();if(cur&&!force)return;if(force&&cur.includes(BS_MSG))return;
+  S.values['체형 분석 코멘트']=cur?cur+'\n'+BS_MSG:BS_MSG;const el=document.querySelector('[data-k="체형 분석 코멘트"]');if(el)el.value=S.values['체형 분석 코멘트'];dirty=true}
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='bsMsg'){e.preventDefault();bsFill(true)}});
 /* ---------- reference sections ---------- */
 function renderSecs(){
   $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';
@@ -523,12 +529,13 @@ const wxFix=v=>lst(v).map(w=>WX.find(x=>x.startsWith(w.split(' ')[0]))||w);
 function shopInit(d){const sp=d.shopper||{};S.shopOn=!!d.shopper;S.pub=d.shopper?sp.pub!==false:false;$('shopPub').checked=S.pub;
   S.sp={prog:(sp.prog||[]).map(x=>x==null?'':String(x)),items:sp.items||[],outfits:sp.outfits||[],
     book:(sp.book||[]).map(b=>({name:b.name||'',photos:String(b.photos||'').split(/\n/).map(x=>x.trim()).filter(Boolean).map(u=>({img:u})),tip:b.tip||'',sit:lst(b.sit),wx:wxFix(b.wx),round:String(b.round||'기존'),season:lst(b.season)})),
-    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',season:lst(x.season),added:x.added||''}))};S.bought=Array.isArray(sp.bought)?sp.bought:(Array.isArray(d.bought)?d.bought:null);S.exempt=sp.purge_exempt===true||d.purge_exempt===true;
+    shop:(sp.shop||[]).map(x=>({round:String(x.round||''),cat:x.cat||'',items:x.items||'',url:x.url||'',note:x.note||'',name:x.name||'',img:x.img||'',img2:x.img2||'',season:lst(x.season),added:x.added||''}))};S.bought=Array.isArray(sp.bought)?sp.bought:(Array.isArray(d.bought)?d.bought:null);S.exempt=sp.purge_exempt===true||d.purge_exempt===true;
   while(S.sp.prog.length<11)S.sp.prog.push('');
   $('shopOn').checked=S.shopOn;document.querySelectorAll('[data-p]').forEach(el=>el.value=S.sp.prog[+el.dataset.p]||'');renderShop()}
 const maxRound=()=>S.sp.book.concat(S.sp.shop).reduce((m,x)=>Math.max(m,+x.round||0),0);
 const rounds=()=>Array.from({length:Math.max(10,maxRound()+1)},(_,k)=>String(k+1));
 const busyTag='<span class="up" style="position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.7);font-weight:700;color:#2f3d86;font-size:12px">올리는 중</span>';
+const inShop=(u,x)=>!!u&&(u===x.img||(!!x.img2&&u===x.img2));const coPic=x=>x.img2?{img:x.img2,local:x.local2}:{img:x.img,local:x.local};/* 코디(스타일링북)에는 2번 단면 사진 우선 */
 function renderShop(){
   $('shopBody').hidden=!S.shopOn;$('pubRow').hidden=$('pubHint').hidden=!S.shopOn;const rs=rounds();
   $('bookCnt').textContent=S.sp.book.length?S.sp.book.length+'페이지':'';
@@ -537,7 +544,7 @@ function renderShop(){
      <button class="btn sm ghost" data-bup="${i}" title="위로">▲</button><button class="btn sm del" data-brm="${i}">삭제</button></div>
    <div class="pics">${b.photos.map((ph,j)=>`<div class="pic"><div class="im">${ph.local||ph.img?`<img src="${esc(ph.local||thumb(ph.img))}" alt="">`:''}${ph.busy?busyTag:''}<button class="x" data-bpx="${i}:${j}">✕</button>${j===0?'<span class="cov">대표</span>':`<button class="mv" data-bcv="${i}:${j}" title="대표 사진으로">★ 대표로</button>`}</div></div>`).join('')}
     <label class="add">＋ 사진 여러 장<br><small style="font-weight:400;color:#8a8e9c">선택 또는 끌어다 놓기</small><input type="file" accept="image/*" multiple data-badd2="${i}"></label></div>
-   ${S.sp.shop.some(x=>x.img)?`<p class="hint" style="margin:10px 0 0">쇼핑 리스트에서 넣기 <small>(눌러서 넣고 빼기)</small></p><div class="pk">${S.sp.shop.map((x,k)=>x.img?`<button type="button" class="${b.photos.some(p=>p.img===x.img)?'on':''}" data-bsp="${i}:${k}" title="${esc(x.name)}"><img src="${esc(x.local||thumb(x.img))}" alt=""><span>${esc((x.name||x.cat||'상품').slice(0,6))}</span>${b.photos.some(p=>p.img===x.img)?'<em>✓</em>':''}</button>`:'').join('')}</div>`:''}
+   ${S.sp.shop.some(x=>x.img||x.img2)?`<p class="hint" style="margin:10px 0 0">쇼핑 리스트에서 넣기 <small>(눌러서 넣고 빼기 · 2번 단면 사진이 있으면 그걸로 들어가요)</small></p><div class="pk">${S.sp.shop.map((x,k)=>{const on=b.photos.some(p=>inShop(p.img,x));return (x.img||x.img2)?`<button type="button" class="${on?'on':''}" data-bsp="${i}:${k}" title="${esc(x.name)}"><img src="${esc(x.img2?(x.local2||thumb(x.img2)):(x.local||thumb(x.img)))}" alt=""><span>${esc((x.name||x.cat||'상품').slice(0,6))}</span>${on?'<em>✓</em>':''}</button>`:''}).join('')}</div>`:''}
    <textarea placeholder="코멘트 (한 줄에 하나: 셔츠는 앞만 넣어 입기 / 양말은 네이비 / 재킷 단추는 하나만)" style="margin-top:8px;min-height:84px" data-bf2="tip" data-bi2="${i}">${esc(b.tip)}</textarea>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">느낌</b>${MOODS.map(x=>`<button type="button" class="chip ${b.name===x?'on':''}" data-bmd="${i}">${x}</button>`).join('')}</div>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">계절</b>${SEASONS.map(x=>`<button type="button" class="chip ${b.season.includes(x)?'on':''}" data-bse="${i}">${x}</button>`).join('')}</div>
@@ -546,7 +553,7 @@ function renderShop(){
    <p class="hint" style="margin-top:4px">상황·날씨를 안 고르면 모든 날에 나와요.</p></div>`).join('');
   const ckn=S.sp.shop.filter(x=>x.ck).length;const HB=Array.isArray(S.bought),BG=new Set(S.bought||[]),nNo=HB?S.sp.shop.filter(x=>!BG.has(shopKey(x))).length:0;
   $('shopMk').innerHTML=S.sp.shop.length?`${!HB?'':`<p class="hint" style="margin:0 0 8px">고객 구입 체크 · 구입 ${S.sp.shop.length-nNo}개 / 미구입 ${nNo}개 ${nNo?`<button class="btn sm del" id="rmNo" style="margin-left:6px">미구입 ${nNo}개 삭제</button>`:''}${S.exempt?'<br><small>이 고객은 자동 삭제 제외예요.</small>':`<br><small>미구입은 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디 페이지와 함께 자동 삭제돼요.</small>`}</p>`}<button class="btn sm ${ckn?'':'ghost'}" id="mkPage" ${ckn?'':'disabled'}>✓ 고른 상품 ${ckn}개로 스타일링북 페이지 만들기</button>`:'';
-  $('sShop').innerHTML=S.sp.shop.map((x,i)=>{const sz=szParse(x.note);return `<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label>
+  $('sShop').innerHTML=S.sp.shop.map((x,i)=>{const sz=szParse(x.note);return `<div class="item"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><label class="tog" style="font-size:13px;margin:0;flex:1"><input type="checkbox" data-sck="${i}" ${x.ck?'checked':''}> 스타일링북에 넣기</label>${!HB?'':BG.has(shopKey(x))?'<span class="bgt on">고객 구입 ✓</span>':`<span class="bgt">미구입${dLeft(x.added)}</span>`}</div><div class="top"><label class="ph">${x.local||x.img?`<img src="${esc(x.local||thumb(x.img))}" alt="">`:'사진 추가<br><small style="font-size:10.5px">누르고 Ctrl+V</small>'}${x.busy?busyTag:''}<input type="file" accept="image/*" data-sph="${i}"></label><label class="ph" title="2번 사진 · 상품 단면 (오늘 코디·스타일링북에 쓰여요)">${x.local2||x.img2?`<img src="${esc(x.local2||thumb(x.img2))}" alt="">`:'2번 단면<br><small style="font-size:10.5px">코디용 · Ctrl+V</small>'}${x.busy2?busyTag:''}<input type="file" accept="image/*" data-sph2="${i}"></label>
    <div class="fields"><div class="g3" style="gap:8px"><select data-sf="round" data-si2="${i}">${rs.map(r=>`<option value="${r}" ${x.round===r?'selected':''}>${r}회차</option>`).join('')}</select><input type="text" placeholder="구분 (이너, 팬츠…)" value="${esc(x.cat)}" data-sf="cat" data-si2="${i}"><button class="btn sm del" data-srm2="${i}">삭제</button></div>
    <input type="text" placeholder="상품 이름" value="${esc(x.name)}" data-sf="name" data-si2="${i}"><input type="url" placeholder="상품 링크" value="${esc(x.url)}" data-sf="url" data-si2="${i}"></div></div>
    <div class="mini"><b style="font-size:12.5px;color:var(--sub);align-self:center;margin-right:2px">입는 계절</b>${SEASONS.map(z=>`<button type="button" class="chip ${x.season.includes(z)?'on':''}" data-sse="${i}">${z}</button>`).join('')}</div>
@@ -572,12 +579,13 @@ $('shopCard').addEventListener('change',async e=>{const t=e.target;
   if(t.dataset.bi2!=null&&t.tagName==='SELECT'){S.sp.book[+t.dataset.bi2][t.dataset.bf2]=t.value;dirty=true;return}
   if(t.dataset.sck!=null){S.sp.shop[+t.dataset.sck].ck=t.checked;renderShop();return}
   if(t.dataset.si2!=null&&t.tagName==='SELECT'){S.sp.shop[+t.dataset.si2][t.dataset.sf]=t.value;dirty=true;return}
-  let its,files,label;
+  let its,files,label,F='img',L='local',BZ='busy';
   if(t.dataset.badd2!=null){const b=S.sp.book[+t.dataset.badd2];files=[...t.files];its=files.map(()=>({img:'',busy:1}));b.photos.push(...its);label='스타일링북'}
   else if(t.dataset.sph!=null){files=[t.files[0]];its=[S.sp.shop[+t.dataset.sph]];its[0].busy=1;label='쇼핑'}
+  else if(t.dataset.sph2!=null){files=[t.files[0]];its=[S.sp.shop[+t.dataset.sph2]];F='img2';L='local2';BZ='busy2';its[0].busy2=1;label='쇼핑'}
   else if(t.dataset.shadd!=null){files=[...t.files];const r=String(maxRound()||1);its=files.map(()=>({round:r,cat:'',items:'',url:'',note:'',name:'',img:'',season:[],busy:1}));S.sp.shop.push(...its);label='쇼핑'}else return;
   renderShop();
-  for(let n=0;n<files.length;n++){if(!files[n])continue;try{const r=await upload(files[n],label);its[n].img=r.url;its[n].local=r.local}catch(err){toast('사진 1장을 올리지 못했어요');its[n].fail=1}delete its[n].busy;renderShop()}
+  for(let n=0;n<files.length;n++){if(!files[n])continue;try{const r=await upload(files[n],label);its[n][F]=r.url;its[n][L]=r.local}catch(err){toast('사진 1장을 올리지 못했어요');if(F==='img')its[n].fail=1}delete its[n][BZ];renderShop()}
   S.sp.book.forEach(b=>b.photos=b.photos.filter(x=>!x.fail));S.sp.shop=S.sp.shop.filter(x=>!(x.fail&&!x.name&&!x.url));dirty=true;renderShop()});
 $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if(!t||!S.sp)return;const B=S.sp.book;
   if(t.dataset.bcv){e.preventDefault();const [i,j]=t.dataset.bcv.split(':').map(Number);const ph=B[i].photos.splice(j,1)[0];B[i].photos.unshift(ph);dirty=true;renderShop()}
@@ -594,14 +602,14 @@ $('shopCard').addEventListener('click',e=>{const t=e.target.closest('button');if
     const box=document.querySelector('[data-szbox="'+i+'"]');
     if(box){box.querySelectorAll('.szc').forEach(b=>b.classList.toggle('on',b.dataset.sv===pick));const v=box.querySelector('.v');if(v)v.textContent=pick||z.custom||'';const c=box.querySelector('[data-szx]');if(c&&pick)c.value=''}}
   else if(t.dataset.srm2!=null){e.preventDefault();S.sp.shop.splice(+t.dataset.srm2,1);dirty=true;renderShop()}
-  else if(t.dataset.bsp){e.preventDefault();const [i,k]=t.dataset.bsp.split(':').map(Number);const b=B[i],x=S.sp.shop[k],j=b.photos.findIndex(p=>p.img===x.img);j>=0?b.photos.splice(j,1):b.photos.push({img:x.img,local:x.local});dirty=true;renderShop()}
-  else if(t.id==='mkPage'){e.preventDefault();const P=S.sp.shop.filter(x=>x.ck);const ph=P.filter(x=>x.img).map(x=>({img:x.img,local:x.local}));if(!ph.length)return toast('사진이 있는 상품을 골라 주세요');
+  else if(t.dataset.bsp){e.preventDefault();const [i,k]=t.dataset.bsp.split(':').map(Number);const b=B[i],x=S.sp.shop[k],j=b.photos.findIndex(p=>inShop(p.img,x));j>=0?b.photos.splice(j,1):b.photos.push(coPic(x));dirty=true;renderShop()}
+  else if(t.id==='mkPage'){e.preventDefault();const P=S.sp.shop.filter(x=>x.ck);const ph=P.filter(x=>x.img||x.img2).map(coPic);if(!ph.length)return toast('사진이 있는 상품을 골라 주세요');
     B.push({name:'',photos:ph,tip:'',sit:[],wx:[],season:(()=>{const Q=P.filter(x=>(x.season||[]).length);return Q.length?SEASONS.filter(z=>Q.every(x=>x.season.includes(z))):[]})(),round:String(Math.max(...P.map(x=>+x.round||0))||'기존')});S.sp.shop.forEach(x=>delete x.ck);dirty=true;renderShop();toast('스타일링북 페이지를 만들었어요');$('sBook').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(t.id==='addPage'){e.preventDefault();B.push({name:'',photos:[],tip:'',sit:[],wx:[],season:[],round:String(maxRound()||'기존')});dirty=true;renderShop();$('sBook').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(t.id==='addShopRow'){e.preventDefault();S.sp.shop.push({round:String(maxRound()||1),cat:'',items:'',url:'',note:'',name:'',img:'',season:[]});dirty=true;renderShop()}});
 function shopPayload(){if(!S.shopOn)return null;return {pub:S.pub,prog:S.sp.prog,items:S.sp.items,outfits:S.sp.outfits,
   book:S.sp.book.map(b=>({name:b.name,photos:b.photos.map(p=>p.img).filter(Boolean).join('\n'),tip:b.tip,sit:b.sit.join(', '),wx:b.wx.join(', '),round:b.round,season:SEASONS.filter(z=>b.season.includes(z)).join(', ')})),
-  shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img,added:x.added||'',season:SEASONS.filter(z=>x.season.includes(z)).join(', ')}))}}
+  shop:S.sp.shop.map(x=>({round:x.round,cat:x.cat,items:x.items,url:x.url,note:x.note,name:x.name,img:x.img,img2:x.img2||'',added:x.added||'',season:SEASONS.filter(z=>x.season.includes(z)).join(', ')}))}}
 
 
 /* ---------- 사진 붙여넣기 (Ctrl+V) ---------- */
@@ -610,8 +618,9 @@ const ZONES='#prods .item, #secs .item, #brands .bcat, #sBook .item, #sShop .ite
 function zoneKey(z){const inp=z&&(z.querySelector('input[type=file][multiple]')||z.querySelector('input[type=file]'));if(!inp)return null;const a=[...inp.attributes].find(x=>x.name.startsWith('data-'));return a?`input[${a.name}="${a.value}"]`:(inp.id?'#'+inp.id:null)}
 function markZone(){document.querySelectorAll('.pz-on').forEach(x=>x.classList.remove('pz-on'));if(!pz)return;const i=document.querySelector(pz);const z=i&&i.closest(ZONES);if(z)z.classList.add('pz-on')}
 let hz=null;
-document.addEventListener('pointerover',e=>{const z=e.target.closest&&e.target.closest(ZONES);hz=z?zoneKey(z):null});
-document.addEventListener('pointerdown',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){const k=zoneKey(z);z.dataset.fresh=k!==pz?'1':'';pz=k;markZone()}},true);
+function slotKey(e,z){const l=e.target.closest&&e.target.closest('label');const i=l&&z.contains(l)&&l.querySelector('input[type=file]');if(i){const a=[...i.attributes].find(x=>x.name.startsWith('data-'));if(a)return `input[${a.name}="${a.value}"]`}return zoneKey(z)}
+document.addEventListener('pointerover',e=>{const z=e.target.closest&&e.target.closest(ZONES);hz=z?slotKey(e,z):null});
+document.addEventListener('pointerdown',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){const k=slotKey(e,z);z.dataset.fresh=k!==pz?'1':'';pz=k;markZone()}},true);
 // 사진 칸을 처음 누르면 파일 창 대신 붙여넣기 대기. 한 번 더 누르면 파일 선택
 document.addEventListener('click',e=>{const l=e.target.closest&&e.target.closest('label.ph, label.add, label.badd, .bt label.im');if(!l)return;const z=l.closest(ZONES);if(z&&z.dataset.fresh==='1'){e.preventDefault();z.dataset.fresh='';toast('Ctrl+V로 사진 붙여넣기 · 파일에서 고르려면 한 번 더 누르세요')}},true);
 document.addEventListener('focusin',e=>{const z=e.target.closest&&e.target.closest(ZONES);if(z){pz=zoneKey(z);markZone()}});

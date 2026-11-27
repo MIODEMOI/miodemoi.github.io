@@ -191,7 +191,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SZN=['봄','여름','가을','겨울'];const szTag=a=>(a&&a.length)?`<span class="sz">${a.length===4?'사계절':SZN.filter(z=>a.includes(z)).join(' · ')}</span>`:'';
 const SHORT=n=>String(n||'').replace(/\[[^\]]*\]|\([^)]*\)|_[A-Z0-9]+$|\b\d{4,}\b/g,' ').replace(/\s+/g,' ').trim();
-function mkKeys(P,S){const UC={},NM={};P.forEach(o=>new Set(o.photos).forEach(u=>UC[u]=(UC[u]||0)+1));(S||[]).forEach(x=>{if(x.img&&x.name)NM[x.img]=SHORT(x.name)});
+function mkKeys(P,S){const UC={},NM={};P.forEach(o=>new Set(o.photos).forEach(u=>UC[u]=(UC[u]||0)+1));(S||[]).forEach(x=>{if(x.name){if(x.img)NM[x.img]=SHORT(x.name);if(x.img2)NM[x.img2]=SHORT(x.name)}});
   const ord=ph=>ph.slice().sort((a,b)=>(UC[a]||0)-(UC[b]||0));const keys=o=>ord(o.photos).map(u=>NM[u]).filter(Boolean).slice(0,2);return {ord,keys}}
 const rnd=i=>i.round!=null?+i.round:(/구매|새|new/i.test(i.own||'')?1:0);
 let LATEST=0;
@@ -333,7 +333,7 @@ function shopList(){
   $('shop').innerHTML=(HB?`<p class="buyhint">구입했거나 구입할 옷에 체크해 주세요. <b>${nb}/${L.length}</b><br>${EXEMPT()?'':`<small>체크하지 않은 옷은 미구입으로 표시되고, 리스트에 올린 날부터 3개월이 지나면 그 옷이 들어간 코디와 함께 정리돼요.</small>`}</p>`:'')+rounds.map(r=>`${rounds.length>1||r?`<p class="shop-r">${r?r+'회차 쇼핑':'추천'}${r===rounds[0]?' · 최근':''}</p>`:''}`+L.filter(x=>(+x.round||0)===r).map(x=>{const its=(x.items||[]).map(id=>[id,D.items[id]]).filter(y=>y[1]);
     const bk=shopKey(x),on=BOUGHT.has(bk),zN=shSz(x.note);return `<div class="card sh${on?' got':''}"><div style="display:flex;align-items:center;gap:8px">${x.cat?`<div class="tags" style="flex:1;margin:0"><span>${esc(x.cat)}</span></div>`:'<span style="flex:1"></span>'}${HB?`${on?'':`<span class="nobuy">미구입${dLeft(x.added)}</span>`}<button class="buy${on?' on':''}" data-bk="${esc(bk)}">${on?'✓ 구입 · 구입 예정':'구입 체크'}</button>`:''}</div>
     ${its.length?`<div class="sh-row">${its.map(([id,i])=>`<button class="sh-it" data-id="${esc(id)}"><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span>${esc(i.name)}</span></button>`).join('')}</div>`:''}
-    ${x.img?`<img class="shimg" src="${esc(x.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
+    ${(x.img||x.img2)?`<img class="shimg" src="${esc(x.img||x.img2)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${x.name?`<b style="display:block;margin-top:4px">${esc(x.name)}</b>`:''}${szTag(x.season)}
     ${zN.sz?`<span class="sh-sz">사이즈 ${esc(zN.sz)}</span>`:''}
     ${zN.body?`<p class="sh-note">${esc(zN.body)}</p>`:''}
     ${x.url?`<a class="btn ghost sm" href="${esc(x.url)}" target="_blank" rel="noopener">상품 페이지 보기 →</a>`:''}</div>`}).join('')).join('');
@@ -355,7 +355,7 @@ const ICON={
 const nz=v=>Array.isArray(v)?v.some(x=>String(x??'').trim()):!!String(v??'').trim();
 const hasC=R=>{const C=R.color||{};return nz(C.main)||nz(C.value)||nz(C.chroma)||nz(C.contrast)||nz(C.notes)||nz(C.combos)||nz(C.tit)||nz(C.tot)||(C.tees||[]).some(t=>t&&t.img)};
 const hasF=R=>{const F=R.face||{};return nz(F.type)||(F.f||[]).length>0||nz(F.hair)||nz(F.avoid)||nz(F.notes)||nz(F.balance)||nz(F.glasses)};
-const hasB=R=>{const B=R.body||{};return nz(B.type)||Object.keys(B.m||{}).length>0||nz(B.notes)||nz(B.good)||nz(B.avoid)||nz(B.summary)};
+const hasB=R=>{const B=R.body||{};return nz(B.type)||Object.keys(B.m||{}).length>0||nz(B.notes)||nz(B.good)||nz(B.avoid)||nz(B.summary)||nz(B.comment)};
 const SHOPC=['OUTER','INNER','PANTS','ACCESSORIES','DRESS','SKIRT'];
 function sections(R){
   const out=[];if(!R||R.error||/퍼스널쇼퍼만/.test(R.kind||''))return out;
@@ -432,7 +432,9 @@ function program(){
    <p class="note">사고 싶은 옷, 필요한 상황을 카톡으로 보내 주시면 고객님 체형과 지금 옷장에 맞춰 골라 드려요. 산 옷은 옷장과 코디에 추가해 드려요.</p></div>`;
 }
 
-function start(){
+/* 쇼핑 아이템 2번 사진(상품 단면): 코디에 1번 사진이 들어 있어도 2번이 있으면 2번으로 보여 줘요 */
+function useImg2(D){const m={};(D.shop||[]).forEach(x=>{if(x.img&&x.img2)m[x.img]=x.img2});if(!Object.keys(m).length)return;(D.outfits||[]).forEach(o=>{if(Array.isArray(o.photos))o.photos=o.photos.map(u=>m[u]||u)})}
+function start(){useImg2(D);
   if(D.draft){program();['closet','shop'].forEach(t=>document.querySelector('nav button[data-t='+t+']').hidden=true);$('sits').innerHTML='';$('out').innerHTML='<div class="card"><p class="msg">미오드모이가 고객님 스타일링북을 만들고 있어요.<br>완성되면 카카오톡으로 알려 드릴게요.</p></div>';return}
   LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd),...(D.outfits||[]).filter(o=>o.photos).map(o=>+o.round||0));
   if(D.book){document.querySelector('nav button[data-t=closet]').lastChild.textContent='스타일링북'}
