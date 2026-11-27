@@ -161,8 +161,8 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
    <label class="f"><span>고객 이름 <small>(나만 봄)</small></span><input type="text" id="name"></label>
    <label class="f"><span>앱 표시 이름 <small>(고객 화면에 "○○ 님"으로 나와요 · 자동 입력)</small></span><input type="text" data-k="앱 표시 이름"></label>
   </div>
-  <div class="f"><span>리포트 종류</span><div class="chips" data-one="리포트 종류"><button class="chip">종합</button><button class="chip">퍼스널컬러</button><button class="chip">패션컨설팅</button><button class="chip">퍼스널쇼퍼만</button></div></div>
-  <p class="hint" style="margin:4px 0 0">종합 = 퍼스널컬러+얼굴형+체형 · 퍼스널컬러 = 퍼스널컬러만 (치수·얼굴형·체형 칸 숨김) · 패션컨설팅 = 종합 + 추천 브랜드 · 퍼스널쇼퍼만 = 리포트 없이 '오늘 뭐 입지' 앱만</p>
+  <div class="f"><span>리포트 종류</span><div class="chips" data-one="리포트 종류"><button class="chip">종합</button><button class="chip">퍼스널컬러</button><button class="chip">패션컨설팅</button><button class="chip">체형+퍼스널쇼퍼</button><button class="chip">퍼스널쇼퍼만</button></div></div>
+  <p class="hint" style="margin:4px 0 0">종합 = 퍼스널컬러+얼굴형+체형 · 퍼스널컬러 = 퍼스널컬러만 (치수·얼굴형·체형 칸 숨김) · 패션컨설팅 = 종합 + 추천 브랜드 · 체형+퍼스널쇼퍼 = 퍼스널컬러 없이 얼굴형·체형 + '오늘 뭐 입지' (온라인 체형분석 고객, 메이크업 제품 칸 숨김) · 퍼스널쇼퍼만 = 리포트 없이 '오늘 뭐 입지' 앱만</p>
   <div class="f"><span>성별</span><div class="chips" data-one="성별"><button class="chip">여</button><button class="chip">남</button></div></div>
   <div class="f"><span>측정 방식</span><div class="chips" data-one="측정 방식"><button class="chip">대면</button><button class="chip">온라인</button></div></div>
   <label class="f"><span>진단일</span><input type="text" data-k="진단일" placeholder="예) 2026. 11. 15"></label>
@@ -675,7 +675,7 @@ const SECN=['기본 정보','치수','퍼스널컬러','제품','얼굴형','체
 function side(){const cards=[...document.querySelectorAll('#vEdit details.card')];cards.forEach((c,i)=>{if(!c.id||/^sec\d/.test(c.id))c.id='sec'+(i+1)});
   $('side').innerHTML=cards.map((c,i)=>{const st=c.querySelector('.st');return `<a href="#${c.id}"><span class="n">${c.id==='brandCard'?'★':c.id==='shopCard'?'S':(i<7?i+1:i-1)}</span><span>${SECN[i]}<small class="${st&&st.classList.contains('ok')?'ok':''}">${esc(st?st.textContent:'')||'&nbsp;'}</small></span></a>`}).join('');
   $('side').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));t.open=true;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})})}
-function cardHidden(i){if(i===2||i===5)return true;const k=(S&&S.values['리포트 종류'])||'',pc=/퍼스널컬러/.test(k),fc=/패션컨설팅/.test(k),so=/퍼스널쇼퍼만/.test(k);return (pc&&[1,4,5].includes(i))||(i===7&&!fc)||(so&&((i>=1&&i<=7)||i===9))}
+function cardHidden(i){if(i===2||i===5)return true;const k=(S&&S.values['리포트 종류'])||'',pc=/퍼스널컬러/.test(k),fc=/패션컨설팅/.test(k),so=/퍼스널쇼퍼만/.test(k),bs=/체형\+퍼스널쇼퍼/.test(k);return (bs&&i===3)||(pc&&[1,4,5].includes(i))||(i===7&&!fc)||(so&&((i>=1&&i<=7)||i===9))}
 const _status=status;status=function(){_status();if($('side')){side();document.querySelectorAll('#side a').forEach((x,i)=>x.hidden=cardHidden(i))}};
 const wide=()=>matchMedia('(min-width:1000px)').matches;
 function preview(){if(!S||!S.code){$('pvF').removeAttribute('src');$('pvMsg').hidden=false;return}$('pvMsg').hidden=true;$('pvF').src=SITE+(/퍼스널쇼퍼만/.test(S.values['리포트 종류']||'')?'ootd.html?c=':'report.html?c=')+encodeURIComponent(S.code)+'&t='+Date.now()}
