@@ -220,7 +220,7 @@ const hex=n=>{n=String(n).trim();const m=n.match(/#[0-9a-f]{3,6}/i);return m?m[0
 const cname=n=>String(n).replace(/[:：]?\s*#[0-9a-f]{3,6}/i,'').trim();
 const L=a=>(Array.isArray(a)?a:String(a||'').split(/\n/)).map(x=>String(x).trim()).filter(Boolean).reduce((o,x)=>{if(o.length&&/^[,.!?)~]/.test(x))o[o.length-1]+=x;else o.push(x);return o},[]);
 const ul=a=>L(a).length?`<ul class="notes">${L(a).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
-const head=(n,en,ko)=>`<div class="sec-h"><small>${n} ${en}</small><h2>${ko}</h2></div>`;
+const head=(n,en,ko)=>{if(BS)n=({'02':'01','03':'02','04':'03','05':'04'})[n]||n;return `<div class="sec-h"><small>${n} ${en}</small><h2>${ko}</h2></div>`};
 let D=window.DEMO||null;
 
 function grey(v){
@@ -365,7 +365,7 @@ function shopperTab(skipPerk){
   ${skipPerk?'':perkCard()}
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
 }
-let FC=false;
+let FC=false,BS=false;/* BS: 체형분석+퍼스널쇼퍼 (퍼스널컬러 없음, 온라인 체형분석 고객용) */
 const BRAND_KO={OUTER:'아우터',INNER:'이너',PANTS:'팬츠',ACCESSORIES:'액세서리',DRESS:'원피스',SKIRT:'스커트'};
 const SHOP_CATS=['OUTER','INNER','PANTS','ACCESSORIES','DRESS','SKIRT'];
 function brandTab(){
@@ -452,15 +452,17 @@ const FIXED_F=[
 function addFixed(){if(!D||!/^여/.test(D.sex||''))return;D.styles=D.styles||[];
  FIXED_F.filter(f=>!PCM||/퍼스널컬러|컬러 코디/.test(f.sec)).forEach(f=>{const m=D.styles.find(x=>x.sec===f.sec);if(m&&(m.items||[]).length)return;const g={sec:f.sec,desc:(m&&m.desc)||f.desc,items:f.items.map(([img,cap,row])=>({img,cap,row:row||0}))};if(m)Object.assign(m,g);else D.styles.push(g)})}
 function start(){
-  PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));addFixed();
+  PCM=/퍼스널컬러/.test(D.kind||'');FC=!PCM&&/패션컨설팅/.test(D.kind||'');BS=!PCM&&!FC&&/체형\+퍼스널쇼퍼/.test(D.kind||'');D.shop=(D.products||[]).filter(p=>SHOP_CATS.includes(p.cat));D.products=(D.products||[]).filter(p=>!SHOP_CATS.includes(p.cat));addFixed();
   $('who').textContent=PCM?`${D.name||'고객'} 님의 퍼스널컬러 분석`:`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 분석`;$('date').textContent=D.date||'';
   if(FC){document.querySelector('.cover h1').textContent='Fashion Consulting Report';$('who').textContent=`${D.name||'고객'} 님을 위한 퍼스널컬러 · 얼굴형 · 체형 · 브랜드 컨설팅`;
     document.querySelector('#nav div').innerHTML=['color:퍼스널컬러','face:얼굴형','body:체형','style:스타일','brand:브랜드','shopper:퍼스널쇼퍼'].map((x,i)=>{const [t,n]=x.split(':');return `<button data-t="${t}"${i?'':' aria-current="true"'}><b>0${i+1}</b>${n}</button>`}).join('');}
+  if(BS){$('who').textContent=`${D.name||'고객'} 님을 위한 얼굴형 · 체형 분석`;
+    document.querySelector('#nav div').innerHTML=['face:얼굴형','body:체형','style:스타일','shopper:퍼스널쇼퍼'].map((x,i)=>{const [t,n]=x.split(':');return `<button data-t="${t}"${i?'':' aria-current="true"'}><b>0${i+1}</b>${n}</button>`}).join('');}
   if(PCM){document.querySelector('.cover h1').textContent='Personal Color Report';const fem=/^여/.test(D.sex||'');
     document.querySelector('#nav div').innerHTML=`<button data-t="color" aria-current="true"><b>01</b>진단 결과</button><button data-t="pcprod"><b>02</b>${fem?'메이크업':'스킨케어'}</button><button data-t="pcnext"><b>03</b>다음 단계</button>`;}
   if(EMB){document.querySelectorAll('nav button[data-t="shopper"]').forEach(b=>b.remove());$('nav').remove();
     ESEC=(SEC0&&TABS[SEC0])?SEC0:'';renderNow();listenShow();autoHeight();return}
-  $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show(SEC0&&TABS[SEC0]?SEC0:'color');
+  $('nav').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));show(SEC0&&TABS[SEC0]?SEC0:(BS?'face':'color'));
 }
 (async()=>{
   /* 예시 리포트: report.html?demo=female|shopper — 항상 지금 리포트 화면에 예시 데이터만 넣어서 보여 줘요 */
