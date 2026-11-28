@@ -382,7 +382,8 @@ $('parse').onclick=()=>{
 };
 
 /* ---------- photos ---------- */
-function resize(file,max=800){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.width,h=im.height;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.85))};im.onerror=no;im.src=u})}
+function resize(file,max=800){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.width,h=im.height;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const png=/png|webp/i.test(file.type||'');/* 투명 PNG(누끼)는 배경 그대로 PNG로 */const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');if(!png){x.fillStyle='#fff';x.fillRect(0,0,w,h)}x.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);let clear=false;if(png){const a=x.getImageData(0,0,w,h).data;for(let i=3;i<a.length;i+=16)if(a[i]<250){clear=true;break}}
+  if(png&&!clear){x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,w,h)}ok(clear?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.85))/* 실제로 투명한 사진만 PNG, 나머지(캡처 등)는 가벼운 JPEG */};im.onerror=no;im.src=u})}
 let uploading=0;
 async function upload(file,label){uploading++;upd();try{const data=await resize(file);const j=await api({action:'upload',data,name:(S.name||'customer')+'_'+label,code:S.code});return {url:j.url,local:data}}finally{uploading--;upd()}}
 function upd(){$('save').disabled=uploading>0;$('save').textContent=uploading?'사진 올리는 중 '+uploading:'저장하기'}
