@@ -440,7 +440,9 @@ function start(){useImg2(D);
   if(D.draft){program();['closet','shop'].forEach(t=>document.querySelector('nav button[data-t='+t+']').hidden=true);$('sits').innerHTML='';$('out').innerHTML='<div class="card"><p class="msg">미오드모이가 고객님 스타일링북을 만들고 있어요.<br>완성되면 카카오톡으로 알려 드릴게요.</p></div>';return}
   LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd),...(D.outfits||[]).filter(o=>o.photos).map(o=>+o.round||0));
   if(D.book){document.querySelector('nav button[data-t=closet]').lastChild.textContent='스타일링북'}
-  if(D.kind==='체형+퍼스널쇼퍼')$('knote').hidden=false;
+  /* 옷장 안내 문구: 체형+퍼스널쇼퍼, 또는 퍼스널쇼퍼만 1회(오프라인 0시간·온라인 1회 이하) 고객에게 보입니다. 다회권 고객은 숨김 */
+  const showKnote=D.kind==='체형+퍼스널쇼퍼'||(D.kind==='퍼스널쇼퍼만'&&(+((D.program&&D.program.offline&&D.program.offline.total)||0))===0&&(+((D.program&&D.program.online&&D.program.online.total)||0))<=1);
+  if(showKnote)$('knote').hidden=false;
   chips();closet();shopList();program();noti();
   if(!(D.shop||[]).length)document.querySelector('nav button[data-t=shop]').hidden=true;
   if(D.title)$('ttl').textContent=D.title;
