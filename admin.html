@@ -185,7 +185,7 @@ h4.sh{margin:22px 0 8px;font-size:15px;border-top:1px solid var(--line);padding-
    <label class="f"><span>하안부 cm</span><input type="number" step="0.1" inputmode="decimal" data-k="하안부(cm)"></label>
   </div>
   <p class="hint" id="faceHint"></p>
-  <label class="f"><span>체형 분석 코멘트 <small>(리포트 체형 탭에 표시 · 체형+퍼스널쇼퍼는 비어 있으면 안내 문구 자동)</small></span><textarea data-k="체형 분석 코멘트"></textarea></label><button type="button" class="btn sm ghost" id="bsMsg" style="margin-top:6px">1회 고객 안내 문구 넣기</button>
+  <label class="f"><span>체형 분석 코멘트 <small>(리포트 체형 탭에 표시)</small></span><textarea data-k="체형 분석 코멘트"></textarea></label>
  </details>
 
  <details class="card"><summary><span class="n">3</span>퍼스널컬러<span class="st" id="st3"></span></summary>
@@ -343,7 +343,7 @@ function openEdit(d){
   shopInit(d);syncChips();renderBody();renderProds();renderSecs();renderBrands();calc();status();
   $('doneBox').innerHTML='';$('preview').hidden=!S.code;$('barMsg').textContent=S.code?'코드 '+S.code:'저장 전이에요';dirty=false;
   ['추천 헤어스타일','잘 어울리는 스타일','추천 스타일링'].forEach(n=>{if(!S.secs.some(x=>x.sec===n))S.secs.push({sec:n,desc:'',items:[]})});renderSecs();
-  view('vEdit');tplFill();bsFill();
+  view('vEdit');tplFill();
 }
 function sex(){return /^남/.test(S.values['성별']||'')?'남':'여'}
 function set(k,v){S.values[k]=v;dirty=true;$('barMsg').textContent='저장하지 않은 변경이 있어요'}
@@ -358,7 +358,7 @@ function syncChips(){
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b||!b.parentElement)return;const g=b.parentElement;
-  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='리포트 종류')bsFill();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands();tplFill()}status()}
+  if(g.dataset.one){e.preventDefault();set(g.dataset.one,b.classList.contains('on')?'':b.textContent);syncChips();if(g.dataset.one==='성별'){renderBody();renderProds();renderBrands();tplFill()}status()}
   else if(g.dataset.range){e.preventDefault();b.classList.toggle('on');const on=[...g.querySelectorAll('.chip')].map((x,i)=>x.classList.contains('on')?i:-1).filter(i=>i>=0);
     set(g.dataset.range,on.length?(on.length===1?LV(g)[on[0]]:LV(g)[on[0]]+' ~ '+LV(g)[on[on.length-1]]):'');syncChips();status()}
 });
@@ -452,11 +452,6 @@ async function tplFill(){
     if(got.length){dirty=true;renderSecs();status();toast('여성 고정 페이지를 넣었어요: '+got.join(' · '))}
   }catch(e){}
 }
-/* ---------- 체형+퍼스널쇼퍼: 체형 분석 코멘트 기본 문구 ---------- */
-const BS_MSG='퍼스널쇼퍼 1회성이라, 2회를 추가로 구입하셔야 앞으로 구입할 옷과 이번에 구입하실 옷에 대해 스타일링 관리를 해드립니다. 참고하세요.';
-function bsFill(force){if(!S)return;const k=S.values['리포트 종류']||'';if(!force&&!/체형\+퍼스널쇼퍼/.test(k))return;const cur=String(S.values['체형 분석 코멘트']||'').trim();if(cur&&!force)return;if(force&&cur.includes(BS_MSG))return;
-  S.values['체형 분석 코멘트']=cur?cur+'\n'+BS_MSG:BS_MSG;const el=document.querySelector('[data-k="체형 분석 코멘트"]');if(el)el.value=S.values['체형 분석 코멘트'];dirty=true}
-document.addEventListener('click',e=>{if(e.target&&e.target.id==='bsMsg'){e.preventDefault();bsFill(true)}});
 /* ---------- reference sections ---------- */
 function renderSecs(){
   $('secPreset').innerHTML=SECS.filter(s=>!S.secs.some(x=>x.sec===s)).map(s=>`<button class="chip sp">${s}</button>`).join('')+'<button class="chip sp" data-custom="1">＋ 직접 입력</button>';

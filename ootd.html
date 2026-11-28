@@ -75,6 +75,7 @@ h2 small{font-size:13px}
 .focus button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px}
 .msg{color:var(--muted);text-align:center;padding:26px 10px}
 .note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.knote{margin:0 0 14px;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:12px;padding:11px 14px;font-size:12.5px;line-height:1.6;color:#3c3f4d;letter-spacing:-.02em}
 .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;font-size:14px}
 .row b{font-size:15px}
 .bar{height:8px;background:var(--soft);border-radius:99px;margin-top:8px;overflow:hidden}
@@ -140,6 +141,7 @@ html.sec .wrap{padding-top:14px}
 
 <section id="t-closet" hidden>
  <h2>내 옷장 <small id="cnt" style="color:var(--muted);font-weight:400"></small></h2>
+ <p class="knote" id="knote" hidden>퍼스널쇼퍼 1회성이라, 2회를 추가로 구입하셔야 앞으로 구입할 옷과 이번에 구입하실 옷에 대해 스타일링 관리를 해드립니다. 참고하세요.</p>
  <div class="chips" id="cf"></div>
  <p class="note" id="cnote">옷을 누르면 그 옷으로 만든 코디를 볼 수 있어요.</p>
  <div id="closet"></div>
@@ -438,6 +440,7 @@ function start(){useImg2(D);
   if(D.draft){program();['closet','shop'].forEach(t=>document.querySelector('nav button[data-t='+t+']').hidden=true);$('sits').innerHTML='';$('out').innerHTML='<div class="card"><p class="msg">미오드모이가 고객님 스타일링북을 만들고 있어요.<br>완성되면 카카오톡으로 알려 드릴게요.</p></div>';return}
   LATEST=Math.max(0,...Object.values(D.items||{}).map(rnd),...(D.outfits||[]).filter(o=>o.photos).map(o=>+o.round||0));
   if(D.book){document.querySelector('nav button[data-t=closet]').lastChild.textContent='스타일링북'}
+  if(D.kind==='체형+퍼스널쇼퍼')$('knote').hidden=false;
   chips();closet();shopList();program();noti();
   if(!(D.shop||[]).length)document.querySelector('nav button[data-t=shop]').hidden=true;
   if(D.title)$('ttl').textContent=D.title;
