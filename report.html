@@ -390,11 +390,11 @@ function shopperTab(skipPerk){
    <p class="desc">체형과 퍼스널컬러에 맞는 아이템을 골라 구매 링크와 함께 보내 드려요.</p>
    <div class="blur2">${SAMPLE.shop.map(u=>`<div class="bl"><img src="${u}" alt="" loading="lazy">${lock}</div>`).join('')}</div></div>
   <div class="card"><p class="k">03 TODAY'S OUTFIT APP</p><p class="big ko" style="font-size:20px">'오늘 뭐 입지' 전용 앱</p>
-   <p class="desc">오늘 날씨와 상황에 맞춰 스타일링을 추천하고, 전에 쇼핑한 아이템과 함께 코디해 주는 앱이에요. 퍼스널쇼퍼 3시간 이상 이용 고객님께 별도로 드려요.</p>
+   <p class="desc">오늘 날씨와 상황에 맞춰 스타일링을 추천하고, 전에 쇼핑한 아이템과 함께 코디해 주는 앱이에요. 퍼스널쇼퍼 이용 고객님께 별도로 드려요.</p>
    <div class="bl app"><img src="${SAMPLE.app}" alt="" loading="lazy">${lock}</div></div>
   <div class="card"><p class="k">PRICE</p><p class="big ko" style="font-size:20px">퍼스널쇼퍼 가격</p><p class="desc" style="color:var(--sub)">시간이 길수록 시간당 더 저렴해요.</p>
    <table class="ptbl">${[[1,120000,0],[3,300000,360000],[5,480000,600000],[10,822000,1200000]].map(([h,p,o])=>`<tr><th>${h}시간</th><td>${o?`<s>${o.toLocaleString()}</s><span class="off">${Math.round((1-p/o)*100)}%</span><br>`:''}<b>${p.toLocaleString()}원</b><small>시간당 ${Math.round(p/h).toLocaleString()}원</small></td></tr>`).join('')}</table>
-   <div class="appnote"><b>📱 3시간 이상 이용 고객님 특별 제공</b>'오늘 뭐 입지' 앱으로 날씨와 상황에 따라 스타일링을 추천해 드려요. 전에 쇼핑한 아이템과 함께 코디되는 앱을 별도로 제공해요.</div></div>
+   <div class="appnote"><b>📱 퍼스널쇼퍼 이용 고객님 특별 제공</b>'오늘 뭐 입지' 앱으로 날씨와 상황에 따라 스타일링을 추천해 드려요. 전에 쇼핑한 아이템과 함께 코디되는 앱을 별도로 제공해요.</div></div>
   ${skipPerk?'':perkCard()}
   <a class="btn" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">퍼스널쇼퍼 문의하기 (카카오톡)</a>`;
 }
