@@ -141,7 +141,7 @@ nav button[aria-current="true"]:after{content:"";position:absolute;top:0;left:30
 .pchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -18px 12px;padding:0 18px}.pchips::-webkit-scrollbar{display:none}.pchips button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer}.pchips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.pchips small{opacity:.6;margin-left:2px}
 .ptbl{width:100%;border-collapse:collapse;margin-top:12px}.ptbl th{text-align:left;font-size:16px;font-weight:800;padding:14px 0;border-top:1px solid var(--line);width:80px;vertical-align:top}.ptbl td{text-align:right;padding:14px 0;border-top:1px solid var(--line);line-height:1.5}.ptbl s{color:var(--muted);font-size:13px}.ptbl .off{display:inline-block;margin-left:6px;font-size:12px;font-weight:800;color:#fff;background:var(--bad);border-radius:6px;padding:1px 6px}.ptbl b{font-size:18px;font-weight:800}.ptbl small{display:block;font-size:13px;color:var(--good);font-weight:700}
 .appnote{margin-top:14px;background:var(--soft);border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.65;color:var(--sub)}.appnote b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
-/* 혜택 카드 — 다른 프로그램 10% 할인 */
+/* 혜택 카드 — 다른 프로그램 1개월 이내 20% · 3개월 이내 10% 할인 */
 .perk{position:relative;overflow:hidden;background:linear-gradient(160deg,#fffdfa,#f8f1e8);border:1px solid #e9dac8;border-radius:20px;padding:20px 20px 18px;margin:16px 0 14px;text-align:left}
 .perk:after{content:"";position:absolute;right:-34px;top:-34px;width:104px;height:104px;border-radius:50%;background:rgba(138,111,87,.07);pointer-events:none}
 .perk p{margin:0}
@@ -151,9 +151,17 @@ nav button[aria-current="true"]:after{content:"";position:absolute;top:0;left:30
 .perk .perk-d{margin-top:9px;font-size:14px;line-height:1.65;color:var(--sub)}
 .perk .perk-when{display:inline-block;margin-top:14px;padding:8px 12px;border:1px dashed #dcc7ae;border-radius:10px;background:#fff;font-size:13.5px;font-weight:800;color:var(--accent);letter-spacing:-.01em}
 .perk .perk-when small{display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:0}
+.perk .perk-tiers{list-style:none;display:grid;gap:7px;margin:13px 0 0;padding:0}
+.perk .perk-tiers li{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e9dac8;border-radius:12px;padding:8px 13px;font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:var(--sub)}
+.perk .perk-tiers li i{margin-left:auto;font-style:normal;font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--accent);line-height:1.2}
+.perk .perk-tiers li em{flex:none;font-style:normal;font-size:11px;font-weight:800;letter-spacing:0;color:#fff;background:var(--accent);border-radius:999px;padding:2px 8px}
+.perk .perk-tiers li.now{background:#fdf5ea;border-color:#dcc7ae;color:var(--ink)}
+.perk .perk-tiers li.past{opacity:.45}
+.perk .nw{white-space:nowrap}
 .perk.exp{background:linear-gradient(160deg,#fbfaf8,#f2efea);border-color:var(--line)}
 .perk.exp .perk-t em{color:var(--muted)}
 .perk.exp .perk-when{background:var(--soft);border-color:var(--line);color:var(--muted)}
+.perk.exp .perk-tiers li i{color:var(--muted)}
 .outro .perk{margin:20px -6px 8px}
 /* 줄바꿈·정렬 다듬기 */
 body{word-break:keep-all;overflow-wrap:break-word;line-break:strict}
@@ -312,7 +320,7 @@ function gallery(list,f){
   return (list||[]).filter(s=>window.DEMO||(s.items||[]).length).filter(f).map(s=>`<div class="card"><p class="k">STYLING</p><p class="big ko" style="font-size:20px">${esc(s.sec)}</p>${s.desc?`<p class="desc" style="white-space:pre-line">${esc(s.desc)}</p>`:''}
   ${(s.items||[]).length?[...new Set(s.items.map(i=>i.row||0))].map(rw=>s.items.filter(i=>(i.row||0)===rw)).map(its=>`<div class="gal${galCls(its)}">${its.map(i=>`<figure><img src="${esc(i.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">${i.cap?`<figcaption>${/^(BEFORE|AFTER|WORST|BEST)$/i.test(i.cap.trim())?`<span class="lb ${/AFTER|BEST/i.test(i.cap)?'g':'b'}">${esc(i.cap.trim().toUpperCase())}</span>`:esc(i.cap)}</figcaption>`:''}</figure>`).join('')}</div>`).join(''):(window.DEMO?'<div class="gal"><div class="empty">참고 사진</div><div class="empty">참고 사진</div><div class="empty">참고 사진</div></div>':'')}</div>`).join('');
 }
-/* 혜택 안내 — 다른 프로그램 이용 시 10% 할인 · 리포트 발급일로부터 3개월 */
+/* 혜택 안내 — 다른 프로그램 이용 시 1개월 이내 20% · 3개월 이내 10% · 리포트 발급일 기준 */
 function reportDate(){
   const m=String(D.date||'').match(/(\d{4})\D{0,2}(\d{1,2})\D{0,2}(\d{1,2})/);
   if(!m)return null;
@@ -320,19 +328,43 @@ function reportDate(){
   return (mo>=1&&mo<=12&&d>=1&&dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)?dt:null;
 }
 const ymd=d=>`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+function addMon(d,n){const y=d.getFullYear(),m=d.getMonth()+n,last=new Date(y,m+1,0).getDate();return new Date(y,m,Math.min(d.getDate(),last));}
 function perkCard(){
   const rd=window.DEMO?null:reportDate();
-  let when='리포트 발급일로부터 3개월 이내',note='',exp=false;
-  if(rd){
-    const y=rd.getFullYear(),m=rd.getMonth()+3,last=new Date(y,m+1,0).getDate();
-    const end=new Date(y,m,Math.min(rd.getDate(),last));
-    const t=new Date(),t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
-    const days=Math.round((end-t0)/86400000);exp=days<0;
-    when=exp?`혜택 기간이 끝났어요 · ${ymd(end)}까지`:`${ymd(end)}까지${days===0?' · 오늘까지':` · D-${days}`}`;
-    note=`리포트 발급일 ${ymd(rd)} 기준 3개월`;
+  const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const left=end=>Math.round((end-t0)/86400000);
+  const till=(end,days)=>`${ymd(end)}까지${days===0?' · 오늘까지':` · D-${days}`}`;
+  const end1=rd?addMon(rd,1):null,end3=rd?addMon(rd,3):null;
+  const d1=rd?left(end1):null,d3=rd?left(end3):null;
+  const in20=rd?d1>=0:false, in10=rd?(d1<0&&d3>=0):false, exp=rd?d3<0:false;
+  const PRG='퍼스널컬러 · 얼굴형 · 체형분석 · 퍼스널쇼퍼 중 아직 받지 않으신 프로그램을 이어서 이용하시면 ';
+  let title='다른 프로그램 이용 시 최대 <em>20%</em> 할인';
+  let when='<span class="nw">리포트 발급일로부터 1개월 이내 20%</span><br><span class="nw">3개월 이내 10%</span>',note='';
+  let desc=PRG+'1개월 이내 20%, 3개월 이내 10%를 할인해 드려요.';
+  let s1='',s2='';
+  if(in20){
+    title='다른 프로그램 이용 시 <em>20%</em> 할인';
+    when=till(end1,d1);
+    note=`지금은 20% 할인 적용 기간 · ${ymd(end3)}까지 10%`;
+    desc=PRG+'결제 금액의 20%를 할인해 드려요. 1개월이 지나면 3개월까지 10%로 이어져요.';
+    s1='now';s2='';
+  }else if(in10){
+    title='다른 프로그램 이용 시 <em>10%</em> 할인';
+    when=till(end3,d3);
+    note=`지금은 10% 할인 적용 기간<br>리포트 발급일 ${ymd(rd)} 기준`;
+    desc=PRG+'결제 금액의 10%를 할인해 드려요.';
+    s1='past';s2='now';
+  }else if(exp){
+    title='다른 프로그램 이용 시 최대 <em>20%</em> 할인';
+    when=`혜택 기간이 끝났어요 · ${ymd(end3)}까지`;
+    note=`리포트 발급일 ${ymd(rd)} 기준 1개월 20% · 3개월 10%`;
+    desc='리포트를 받으신 뒤 1개월 동안 20%, 3개월까지 10% 할인을 드리는 혜택이에요. 지금은 혜택 기간이 지났어요.';
+    s1='past';s2='past';
   }
-  const desc=exp?'리포트를 받으신 뒤 3개월 동안 드리는 혜택이에요. 지금은 혜택 기간이 지났어요.':'퍼스널컬러 · 얼굴형 · 체형분석 · 퍼스널쇼퍼 중 아직 받지 않으신 프로그램을 이어서 이용하시면 결제 금액의 10%를 할인해 드려요.';
-  return `<div class="card perk${exp?' exp':''}"><p class="k">MEMBERS BENEFIT</p><p class="perk-t">다른 프로그램 이용 시 <em>10%</em> 할인</p><p class="perk-d">${desc}</p><p class="perk-when">${when}${note?`<small>${note}</small>`:''}</p></div>`;
+  const tier=(label,rate,st)=>`<li${st?` class="${st}"`:''}>${label}${st==='now'?'<em>지금</em>':''}<i>${rate}%</i></li>`;
+  return `<div class="card perk${exp?' exp':''}"><p class="k">MEMBERS BENEFIT</p><p class="perk-t">${title}</p>`
+    +`<ul class="perk-tiers">${tier('1개월 이내',20,s1)}${tier('3개월 이내',10,s2)}</ul>`
+    +`<p class="perk-d">${desc}</p><p class="perk-when">${when}${note?`<small>${note}</small>`:''}</p></div>`;
 }
 function stylePhotos(){return gallery(D.styles,s=>!/헤어|퍼스널컬러/.test(s.sec))}
 function styleOutro(){
