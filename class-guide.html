@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>미오드모이 수업 안내</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W6LZXCWEHB"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W6LZXCWEHB');
+</script>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600&display=swap">
+<style>
+/* layout: single phone-first column, one section per moment (before / during / after), sticky step nav */
+:root{
+  --bg:#F7F6F3; --surface:#FFFFFF; --fg:#1F2A44; --muted:#5E6577; --line:#E3E1DB;
+  --accent:#B8862B; --accent-soft:#F3EAD7; --blush:#E9C9C3;
+  --display:"Noto Serif KR","Apple SD Gothic Neo",serif;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151A26; --surface:#1E2433; --fg:#ECEEF3; --muted:#A3A9B8; --line:#2F3646;
+  --accent:#D9AE5C; --accent-soft:#33301F; --blush:#5A3F3B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151A26; --surface:#1E2433; --fg:#ECEEF3; --muted:#A3A9B8; --line:#2F3646;
+  --accent:#D9AE5C; --accent-soft:#33301F; --blush:#5A3F3B; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{padding-top:32px;display:flex;flex-direction:column;gap:6px}
+.brand{font-size:12px;letter-spacing:.18em;color:var(--muted)}
+h1{font-family:var(--display);font-size:26px;line-height:1.35;margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:0}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:8px;padding-block:10px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav a{flex:1;text-align:center;text-decoration:none;color:var(--fg);font-size:14px;font-weight:500;padding:8px 4px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+nav a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:70px}
+.when{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-family:var(--display);font-size:21px;margin:0;line-height:1.4}
+p{margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+label{font-size:14px;font-weight:500}
+.field{display:flex;flex-direction:column;gap:6px}
+input[type=text],input[type=date],textarea{font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:76px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{font-weight:400;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);cursor:pointer}
+.chips input:checked+label{background:var(--accent-soft);border-color:var(--accent);font-weight:500}
+.chips input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:12px;padding:13px 16px;cursor:pointer;background:var(--fg);color:var(--bg)}
+button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:500}
+.done{font-size:14px;color:var(--accent);min-height:1.2em}
+.kakao{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+.kakao a{color:var(--fg);font-weight:700;word-break:break-all}
+.kakao .ch{display:block;text-align:center;text-decoration:none;margin-top:6px;padding:11px 14px;border-radius:10px;background:var(--fg);color:var(--bg);font-size:14px;font-weight:700}
+.rule{display:flex;gap:12px;align-items:flex-start}
+.tag{flex:none;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px}
+.ok{background:var(--accent-soft);color:var(--fg)}
+.no{background:var(--blush);color:var(--fg)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0;font-family:var(--body);font-size:14px;line-height:1.6;max-height:280px;overflow:auto}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:start}
+.step span{font-size:14px;font-weight:700;padding-top:10px}
+.step textarea{min-height:52px}
+.review{background:var(--accent-soft);border-color:var(--accent)}
+.small{font-size:13px;color:var(--muted)}
+footer{font-size:13px;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="brand">MIO DE MOI · 부산 동래</div>
+  <h1>1:1 메이크업 클래스 안내</h1>
+  <p class="lede">수업 전, 수업 중, 수업 후에 필요한 건 이 링크 하나에 다 있어요.</p>
+</header>
+
+<nav aria-label="순서">
+  <a href="#before">수업 전</a><a href="#during">수업 중</a><a href="#after">수업 후</a>
+</nav>
+
+<section id="before">
+  <div class="when">수업 전</div>
+  <h2>고민부터 편하게 들려주세요</h2>
+  <p class="lede">미리 알고 있으면 수업 2시간을 온전히 내 얼굴에만 쓸 수 있어요. 사소한 것도 괜찮아요.</p>
+  <form class="card" id="intake">
+    <div class="field"><label for="f-name">성함</label><input type="text" id="f-name" autocomplete="name"></div>
+    <div class="field"><label for="f-date">예약일</label><input type="date" id="f-date"></div>
+    <div class="field"><label>가장 큰 고민 (여러 개 선택)</label>
+      <div class="chips" id="f-worry">
+        <input type="checkbox" id="w1" value="영상 보고 따라 해도 티가 안 나요"><label for="w1">따라 해도 티가 안 나요</label>
+        <input type="checkbox" id="w2" value="메이크업이 완전 처음이에요"><label for="w2">완전 처음이에요</label>
+        <input type="checkbox" id="w3" value="화장이 금방 뜨고 무너져요"><label for="w3">금방 뜨고 무너져요</label>
+        <input type="checkbox" id="w4" value="기미·잡티 커버가 어려워요"><label for="w4">기미·잡티 커버</label>
+        <input type="checkbox" id="w5" value="블러셔·립 색을 못 고르겠어요"><label for="w5">블러셔·립 색</label>
+        <input type="checkbox" id="w6" value="눈썹 모양이 어려워요"><label for="w6">눈썹</label>
+        <input type="checkbox" id="w7" value="결혼식 등 일정을 앞두고 있어요"><label for="w7">일정 앞두고 있어요</label>
+      </div>
+    </div>
+    <div class="field"><label for="f-more">더 자세히 (선택)</label><textarea id="f-more" placeholder="예: 쌍꺼풀이 없어서 아이섀도가 안 보여요"></textarea></div>
+    <div class="field"><label>퍼스널컬러 진단을 받아보셨나요?</label>
+      <div class="chips" id="f-pc">
+        <input type="radio" name="pc" id="pc0" value="받은 적 없어요"><label for="pc0">받은 적 없어요</label>
+        <input type="radio" name="pc" id="pc1" value="받아봤어요"><label for="pc1">받아봤어요</label>
+      </div>
+      <input type="text" id="f-pcresult" aria-label="퍼스널컬러 결과" placeholder="받아보셨다면 결과를 적어 주세요 (예: 여름 쿨 뮤트)">
+    </div>
+    <div class="field"><label for="f-mood">원하는 분위기 (선택)</label><input type="text" id="f-mood" placeholder="예: 꾸민 티 안 나게 깔끔하게"></div>
+    <button type="submit">내용 복사하기</button>
+    <div class="done" id="intake-msg" role="status"></div>
+    <div class="kakao">
+      <p>카카오톡 채널에서 <b>미오드모이</b>를 검색해 추가한 뒤, 복사한 내용을 채널로 보내주세요.</p>
+      <a class="ch" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡 채널 바로 열기</a>
+    </div>
+  </form>
+  <p class="small">쓰시던 화장품을 가져오시면 그 제품으로 배워요. 이 칸에 적은 내용은 이 휴대폰에만 남아요.</p>
+</section>
+
+<section id="during">
+  <div class="when">수업 중</div>
+  <h2>녹음은 마음껏 하세요</h2>
+  <div class="card">
+    <div class="rule"><span class="tag ok">가능</span><p>녹음. 끝나고 아래 AI 정리법으로 다시 보시면 돼요.</p></div>
+    <p class="small">바쁜 아침에 할 수 있는 5분 메이크업 루틴은 수업 중에 따로 말씀드려요. 녹음해 두세요.</p>
+    <div class="rule"><span class="tag no">불가</span><p>사진·영상 촬영</p></div>
+  </div>
+</section>
+
+<section id="after">
+  <div class="when">수업 후</div>
+  <h2>녹음을 부위별 노트와 5분 메이크업 루틴으로 정리하기</h2>
+  <div class="card">
+    <p><b>ChatGPT · Gemini · Claude</b> 중 편한 앱에 <b>녹음을 문서로 바꾼 내용</b>을 붙여 넣고, 아래 문장을 같이 보내 주세요.</p>
+    <pre id="prompt">메이크업 1:1 수업 녹음을 문서화했어. 할루시네이션 없이 가독성 좋게 정리해줘.
+아래 순서대로 정리해줘.
+
+1. 5분 메이크업 루틴 차트
+   선생님이 수업 중에 '5분 메이크업 루틴'이라고 따로 말해준 내용만 표로 정리해줘.
+   칸: 순서 / 단계 / 제품 / 방법
+2. 부위별 정리
+   스킨케어 → 베이스 → 컨실러 → 눈썹 → 아이 → 쉐딩 → 블러셔 → 립
+   부위마다: 쓴 제품 / 양·도구 / 바르는 방법 / 선생님이 말한 이유
+3. 내가 자주 틀린다고 짚어주신 점
+4. 다음에 사면 좋다고 언급된 제품 (언급된 것만)</pre>
+    <button type="button" id="copy-prompt">AI 정리 문장 복사</button>
+    <div class="done" id="prompt-msg" role="status"></div>
+  </div>
+
+  <h2>수업이 끝나도 곁에 있을게요</h2>
+  <div class="card">
+    <p>카카오톡 채널에서 <b>미오드모이</b>를 검색해서 추가해 주세요!</p>
+    <a class="ch" href="http://pf.kakao.com/_ESuxln" target="_blank" rel="noopener">카카오톡 채널 추가하기</a>
+    <p class="small">집에서 혼자 해보다가 조금이라도 막히면, 언제든 편하게 물어봐 주세요. 하나하나 다시 알려드릴게요.</p>
+  </div>
+
+  <div class="card review">
+    <h2>오늘 함께해 주셔서 고마워요</h2>
+    <p>리뷰 할인 3,000원은 미리 챙겨 드렸어요. 오늘 시간이 조금이라도 도움이 되셨다면, 한 줄 후기로 마음을 나눠 주세요. 다음에 오실 분들께 가장 큰 힘이 돼요.</p>
+    <p class="small">네이버 예약 → 예약 내역 → 리뷰 쓰기 · 솜씨당으로 예약하셨다면 솜씨당 앱에서 써주세요.</p>
+  </div>
+</section>
+
+<footer>미오드모이 퍼스널패션메이크업컨설팅 · 부산 동래구 반송로 209 4층</footer>
+</div>
+
+<script>
+const KEY='mdm-guide-v1';
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+function store(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
+
+const ids=['f-name','f-date','f-more','f-pcresult','f-mood'];
+document.querySelectorAll('#f-pc input').forEach(r=>{
+  if(saved.pc===r.id)r.checked=true;
+  r.addEventListener('change',()=>{saved.pc=r.id;store()})});
+ids.forEach(id=>{const el=document.getElementById(id);if(saved[id])el.value=saved[id];
+  el.addEventListener('input',()=>{saved[id]=el.value;store()})});
+document.querySelectorAll('#f-worry input').forEach(cb=>{
+  if((saved.worry||[]).includes(cb.id))cb.checked=true;
+  cb.addEventListener('change',()=>{saved.worry=[...document.querySelectorAll('#f-worry input:checked')].map(c=>c.id);store()})});
+
+async function copy(text,msgId,okMsg,srcEl){
+  const msg=document.getElementById(msgId);
+  try{await navigator.clipboard.writeText(text);msg.textContent=okMsg}
+  catch(e){
+    if(srcEl){const r=document.createRange();r.selectNodeContents(srcEl);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+    msg.textContent='복사가 막혀 있어요. 길게 눌러 직접 복사해 주세요.';
+  }
+}
+function v(id){return document.getElementById(id).value.trim()}
+
+document.getElementById('intake').addEventListener('submit',e=>{
+  e.preventDefault();
+  const worries=[...document.querySelectorAll('#f-worry input:checked')].map(c=>'- '+c.value);
+  const lines=['[미오드모이 수업 전 접수]','성함: '+(v('f-name')||'-'),'예약일: '+(v('f-date')||'-'),'고민:',
+    ...(worries.length?worries:['- (선택 안 함)'])];
+  if(v('f-more'))lines.push('자세히: '+v('f-more'));
+  const pc=document.querySelector('#f-pc input:checked');
+  lines.push('퍼스널컬러 진단: '+(pc?pc.value:'-')+(v('f-pcresult')?' ('+v('f-pcresult')+')':''));
+  if(v('f-mood'))lines.push('원하는 분위기: '+v('f-mood'));
+  copy(lines.join('\n'),'intake-msg','복사했어요. 미오드모이 카카오톡 채널에 붙여 넣어 보내주세요.');
+});
+document.getElementById('copy-prompt').addEventListener('click',()=>
+  copy(document.getElementById('prompt').textContent,'prompt-msg','복사했어요. AI 앱에 녹음과 함께 붙여 넣으세요.',document.getElementById('prompt')));
+</script>
+</body>
+</html>
